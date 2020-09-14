@@ -4,7 +4,7 @@ The starter code for the major group project.
 Group members (3-5) (no Student IDs, only names):
 1. Aron-Seth Cohen (SethCohen)
 2. Kabilan Manogaran (Kab332)
-3. Group Member3 (github_username3)
+3. Anthony Huang (Nycarus)
 4. Group Member4 (github_username4)
 5. Group Member5 (github_username5)
 
