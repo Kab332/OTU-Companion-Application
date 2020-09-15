@@ -5,7 +5,7 @@ Group members (3-5) (no Student IDs, only names):
 1. Aron-Seth Cohen (SethCohen)
 2. Kabilan Manogaran (Kab332)
 3. Anthony Huang (Nycarus)
-4. Group Member4 (github_username4)
+4. Minh Huynh (QuangMinhHuynh)
 5. Group Member5 (github_username5)
 
 ## Overview
