@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'event_finder/event_finder_main.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -107,6 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+      // TODO: Change to a nav button to go to event_finder_page
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
