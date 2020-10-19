@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       home: MyHomePage(title: 'OTU Companion Hub'),
       routes: <String, WidgetBuilder>{
         '/eventFinderMain': (BuildContext context) =>
-          EventFinderMain(title: 'Event Finder Main'),
+          EventFinderMain(title: 'Event Finder'),
       },
     );
   }

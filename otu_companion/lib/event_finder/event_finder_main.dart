@@ -1,23 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Event {
-  String name;
-  String description;
-  DateTime startDateTime;
-  DateTime endDateTime; 
-
-  Event({this.name, this.description, this.startDateTime, this.endDateTime});
-
-  String toString() {
-    return '$name: ($startDateTime) ($endDateTime)';
-  }
-}
+import 'event_finder_UI.dart';
+import 'event.dart';
 
 class EventPageApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Event Finder Main',
+      title: 'Event Finder',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -41,6 +31,7 @@ class _EventFinderMainState extends State<EventFinderMain> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
+      body: buildEventFinder(),
     );
   }
 }
