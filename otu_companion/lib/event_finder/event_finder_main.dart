@@ -3,7 +3,7 @@ import 'package:otu_companion/event_finder/views/add_event.dart';
 
 import './views/event_finder_list.dart';
 import './views/add_event.dart';
-import 'model/event.dart';
+import 'model/event_model.dart';
 
 class EventPageApp extends StatelessWidget {
   @override
@@ -32,6 +32,7 @@ class EventFinderMain extends StatefulWidget {
 }
 
 class _EventFinderMainState extends State<EventFinderMain> {
+  EventModel _eventModel = EventModel();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,10 +40,22 @@ class _EventFinderMainState extends State<EventFinderMain> {
         title: Text(widget.title),
       ),
       body: buildEventFinder(),
-      floatingActionButton: RaisedButton(
-        child: Text("Add Event"),
-        onPressed: _addEvent,
-      ), 
+      floatingActionButton: Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.bottomCenter,
+        child: Row(
+          children: <Widget>[
+            RaisedButton(
+              onPressed: _addEvent,
+              child: Text("Add Event"),
+            ),
+            RaisedButton(
+              onPressed: _delete,
+              child: Text("Delete All Events"),
+            )
+          ],
+        ),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
@@ -51,6 +64,19 @@ class _EventFinderMainState extends State<EventFinderMain> {
     var event = await Navigator.push(context, new MaterialPageRoute(
       builder: (context) => new AddEventPage(title: 'Add an Event')),
     );
-    print("Adding event...");
+
+    if (event != null) {
+      setState(() {
+        _eventModel.insert(event);
+      });
+
+      print("Adding event $event...");
+    }
+  }
+
+  Future<void> _delete() async {
+    setState(() {
+      _eventModel.deleteAll();
+    });
   }
 }

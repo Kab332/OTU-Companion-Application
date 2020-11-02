@@ -25,4 +25,9 @@ class EventModel {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
+
+  Future<void> deleteAll() async {
+    final db = await DatabaseUtilities.init();
+    db.execute("DELETE FROM events");
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../model/event_model.dart';
 
 Widget buildEventFinder() {
@@ -22,7 +23,6 @@ Widget buildEventFinder() {
   );
 }
 
-// TODO: create a builder here that builds a list of type Events to populate this scrollable box
 Widget _buildListView() {
   EventModel _eventModel = EventModel();
   return FutureBuilder(
@@ -40,7 +40,7 @@ Widget _buildListView() {
               child: ListTile(
                 title: Text(snapshot.data[i].name),
                 subtitle: Text(snapshot.data[i].description),
-              )
+              ),
             );
           }
         );
