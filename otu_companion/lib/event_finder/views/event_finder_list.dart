@@ -18,10 +18,6 @@ Widget buildEventFinder() {
           ),
         ),
       ),
-      Padding(
-        padding: EdgeInsets.all(10.0),
-        child: _buildAddButton(),
-      )
     ],
   );
 }
@@ -50,18 +46,5 @@ Widget _buildListView() {
         );
       }
     } 
-  );
-}
-
-Widget _buildAddButton() {
-  return Container(
-    padding: EdgeInsets.all(10.0),
-    alignment: Alignment.bottomCenter,
-    child: RaisedButton(
-      child: Text("Add Event"),
-      onPressed: () {
-        print("Add Event Page!");
-      }
-    )
   );
 }

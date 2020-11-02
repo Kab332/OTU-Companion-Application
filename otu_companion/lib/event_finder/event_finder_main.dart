@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:otu_companion/event_finder/views/add_event.dart';
 
 import './views/event_finder_list.dart';
+import './views/add_event.dart';
 import 'model/event.dart';
 
 class EventPageApp extends StatelessWidget {
@@ -11,6 +13,11 @@ class EventPageApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      home: EventFinderMain(title: 'Event Finder'),
+      routes: <String, WidgetBuilder>{
+        '/addEvent': (BuildContext context) =>
+        AddEventPage(title: 'Add an Event'),
+      },
     );
   }
 }
@@ -32,6 +39,18 @@ class _EventFinderMainState extends State<EventFinderMain> {
         title: Text(widget.title),
       ),
       body: buildEventFinder(),
+      floatingActionButton: RaisedButton(
+        child: Text("Add Event"),
+        onPressed: _addEvent,
+      ), 
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+
+  Future<void> _addEvent() async{
+    var event = await Navigator.push(context, new MaterialPageRoute(
+      builder: (context) => new AddEventPage(title: 'Add an Event')),
+    );
+    print("Adding event...");
   }
 }
