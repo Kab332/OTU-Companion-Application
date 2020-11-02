@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'event_finder_UI.dart';
-import 'event.dart';
+import './views/event_finder_list.dart';
+import 'model/event.dart';
 
 class EventPageApp extends StatelessWidget {
   @override
