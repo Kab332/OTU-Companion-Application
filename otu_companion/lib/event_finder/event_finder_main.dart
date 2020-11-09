@@ -3,6 +3,7 @@ import 'package:otu_companion/event_finder/views/add_event.dart';
 
 import './views/event_finder_list.dart';
 import './views/add_event.dart';
+import 'model/event.dart';
 import 'model/event_model.dart';
 
 class EventPageApp extends StatelessWidget {
@@ -34,12 +35,13 @@ class EventFinderMain extends StatefulWidget {
 class _EventFinderMainState extends State<EventFinderMain> {
   EventModel _eventModel = EventModel();
   @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: buildEventFinder(),
+      body: EventListWidget(),
       floatingActionButton: Container(
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.bottomCenter,
