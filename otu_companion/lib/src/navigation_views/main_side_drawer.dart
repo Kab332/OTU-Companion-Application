@@ -34,7 +34,7 @@ class MainSideDrawer extends StatelessWidget
             title: Text('Classroom Finder'),
             onTap: ()
             {
-              Navigator.pop(context);
+              Navigator.pushNamed(context, Routes.roomFinderMain);
             },
           ),
           ListTile(
