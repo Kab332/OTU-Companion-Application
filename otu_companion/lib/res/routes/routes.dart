@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:otu_companion/event_finder/event_finder_main.dart';
-import 'package:otu_companion/event_finder/views/add_event.dart';
+import 'package:otu_companion/src/event_finder/event_finder_main.dart';
+import 'package:otu_companion/src/event_finder/views/add_event.dart';
 import 'package:otu_companion/src/home_page/home_page_main.dart';
 
 class Routes {
