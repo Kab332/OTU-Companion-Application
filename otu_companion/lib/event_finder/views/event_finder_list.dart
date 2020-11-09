@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../model/event_model.dart';
 import '../model/event.dart';
-import '../views/add_event.dart';
 
 class EventListWidget extends StatefulWidget {
   EventListWidget({Key key, this.title}) : super(key: key);
@@ -88,7 +87,6 @@ class _EventListWidgetState extends State<EventListWidget> {
         });
   }
 
-  
   Future<void> _addEvent() async {
     var event = await Navigator.pushNamed(context, "/addEvent");
 
