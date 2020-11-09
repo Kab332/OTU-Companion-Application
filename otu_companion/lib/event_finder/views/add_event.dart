@@ -34,7 +34,7 @@ class _AddEventPageState extends State<AddEventPage> {
               decoration: const InputDecoration(
                 labelText: 'Event Name',
               ),
-              autovalidate: true,
+              autovalidateMode: AutovalidateMode.always,
               // set initial value, i noticed that the initial value is not actually the form value until it is edited,
               // validation to check if empty or not 9 numbers
               validator: (String value) {
@@ -52,7 +52,7 @@ class _AddEventPageState extends State<AddEventPage> {
               decoration: const InputDecoration(
                 labelText: 'Description',
               ),
-              autovalidate: true,
+              autovalidateMode: AutovalidateMode.always,
               // validation to check if there is no grade, or if the grade is more than 3 characters
               validator: (String value) {
                 if (value.isEmpty) {

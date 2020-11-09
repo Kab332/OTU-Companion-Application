@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'event_finder/event_finder_main.dart';
+import 'event_finder/views/add_event.dart';
 
 void main() {
   runApp(MyApp());
@@ -19,6 +20,8 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/eventFinderMain': (BuildContext context) =>
           EventFinderMain(title: 'Event Finder'),
+        '/addEvent': (BuildContext context) =>
+            AddEventPage(title: 'Add an Event'),
       },
     );
   }
