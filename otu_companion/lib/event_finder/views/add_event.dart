@@ -6,6 +6,7 @@ class AddEventPage extends StatefulWidget {
   AddEventPage({Key key, this.title}) : super(key: key);
 
   final String title;
+
   @override
   _AddEventPageState createState() => _AddEventPageState();
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../model/event_model.dart';
 import '../model/event.dart';
-import '../views/add_event.dart';
 
 class EventListWidget extends StatefulWidget {
   EventListWidget({Key key, this.title}) : super(key: key);
@@ -88,13 +87,8 @@ class _EventListWidgetState extends State<EventListWidget> {
         });
   }
 
-  
   Future<void> _addEvent() async {
-    var event = await Navigator.push(
-      context,
-      new MaterialPageRoute(
-        builder: (context) => new AddEventPage(title: 'Add an Event')),
-    );
+    var event = await Navigator.pushNamed(context, "/addEvent");
 
     if (event != null) {
       setState(() {
@@ -110,7 +104,7 @@ class _EventListWidgetState extends State<EventListWidget> {
       _eventModel.deleteAll();
     });
   }
-  
+
   // Building a tile representing a single event in the event list
   Widget buildTile(Event event) {
     return ListTile(
