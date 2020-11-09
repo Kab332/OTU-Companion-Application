@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../model/event_model.dart';
 import '../model/event.dart';
+import '../views/add_event.dart';
 
 class EventListWidget extends StatefulWidget {
   EventListWidget({Key key, this.title}) : super(key: key);
@@ -27,6 +28,23 @@ class _EventListWidgetState extends State<EventListWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: buildEventFinder(),
+      floatingActionButton: Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.bottomCenter,
+        child: Row(
+          children: <Widget>[
+            RaisedButton(
+              onPressed: _addEvent,
+              child: Text("Add Event"),
+            ),
+            RaisedButton(
+              onPressed: _delete,
+              child: Text("Delete All Events"),
+            )
+          ],
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
@@ -71,6 +89,29 @@ class _EventListWidgetState extends State<EventListWidget> {
                 );
               });
         });
+  }
+
+  
+  Future<void> _addEvent() async {
+    var event = await Navigator.push(
+      context,
+      new MaterialPageRoute(
+        builder: (context) => new AddEventPage(title: 'Add an Event')),
+    );
+
+    if (event != null) {
+      setState(() {
+        _eventModel.insert(event);
+      });
+
+      print("Adding event $event...");
+    }
+  }
+
+  Future<void> _delete() async {
+    setState(() {
+      _eventModel.deleteAll();
+    });
   }
 
   Future<List<Event>> getAllEvents() async {
