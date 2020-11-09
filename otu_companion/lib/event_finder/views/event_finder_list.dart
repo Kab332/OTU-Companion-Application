@@ -64,13 +64,18 @@ class _EventListWidgetState extends State<EventListWidget> {
               itemCount: snapshot.data != null ? snapshot.data.length : 0,
               itemBuilder: (BuildContext context, int i) {
                 return Container(
-                  child: ListTile(
-                    title: Text(snapshot.data[i].name),
-                    subtitle: Text(snapshot.data[i].description),
-                  ),
+                  child: buildTile(snapshot.data[i]),
                 );
               });
         });
+  }
+
+  // Building a tile representing a single event in the event list
+  Widget buildTile(Event event) {
+    return ListTile(
+      title: Text(event.name),
+      subtitle: Text(event.description),
+    );
   }
 
   Future<List<Event>> getAllEvents() async {
