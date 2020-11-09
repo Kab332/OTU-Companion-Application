@@ -5,9 +5,9 @@ import '../model/event.dart';
 
 class EventListWidget extends StatefulWidget {
   EventListWidget({Key key, this.title}) : super(key: key);
-  
+
   final String title;
-  
+
   @override
   _EventListWidgetState createState() => _EventListWidgetState();
 }
@@ -15,15 +15,15 @@ class EventListWidget extends StatefulWidget {
 class _EventListWidgetState extends State<EventListWidget> {
   List<Event> events;
   final _eventModel = EventModel();
-  
+
   @override
   void initState() {
     super.initState();
 
-    getAllEvents(); 
+    getAllEvents();
   }
 
-    @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: buildEventFinder(),
@@ -54,24 +54,23 @@ class _EventListWidgetState extends State<EventListWidget> {
   Widget _buildListView() {
     EventModel _eventModel = EventModel();
     return FutureBuilder(
-      future: _eventModel.getAll(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.none || snapshot.hasData == null) {
-          return LinearProgressIndicator(); 
-        } 
-        return ListView.builder(
-          itemCount: snapshot.data != null ? snapshot.data.length : null,
-          itemBuilder: (BuildContext context, int i) {
-            return Container(
-              child: ListTile(
-                title: Text(snapshot.data[i].name),
-                subtitle: Text(snapshot.data[i].description),
-              ),
-            );
+        future: _eventModel.getAll(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.none ||
+              snapshot.hasData == null) {
+            return LinearProgressIndicator();
           }
-        );
-      } 
-    );
+          return ListView.builder(
+              itemCount: snapshot.data != null ? snapshot.data.length : 0,
+              itemBuilder: (BuildContext context, int i) {
+                return Container(
+                  child: ListTile(
+                    title: Text(snapshot.data[i].name),
+                    subtitle: Text(snapshot.data[i].description),
+                  ),
+                );
+              });
+        });
   }
 
   Future<List<Event>> getAllEvents() async {

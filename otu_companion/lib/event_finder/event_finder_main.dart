@@ -17,7 +17,7 @@ class EventPageApp extends StatelessWidget {
       home: EventFinderMain(title: 'Event Finder'),
       routes: <String, WidgetBuilder>{
         '/addEvent': (BuildContext context) =>
-        AddEventPage(title: 'Add an Event'),
+            AddEventPage(title: 'Add an Event'),
       },
     );
   }
@@ -25,7 +25,7 @@ class EventPageApp extends StatelessWidget {
 
 class EventFinderMain extends StatefulWidget {
   EventFinderMain({Key key, this.title}) : super(key: key);
-  
+
   final String title;
 
   @override
@@ -35,7 +35,6 @@ class EventFinderMain extends StatefulWidget {
 class _EventFinderMainState extends State<EventFinderMain> {
   EventModel _eventModel = EventModel();
   @override
-
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -62,9 +61,11 @@ class _EventFinderMainState extends State<EventFinderMain> {
     );
   }
 
-  Future<void> _addEvent() async{
-    var event = await Navigator.push(context, new MaterialPageRoute(
-      builder: (context) => new AddEventPage(title: 'Add an Event')),
+  Future<void> _addEvent() async {
+    var event = await Navigator.push(
+      context,
+      new MaterialPageRoute(
+          builder: (context) => new AddEventPage(title: 'Add an Event')),
     );
 
     if (event != null) {
