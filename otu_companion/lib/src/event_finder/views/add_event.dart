@@ -220,6 +220,8 @@ class _AddEventPageState extends State<AddEventPage> {
             Event event = Event(
               name: _name,
               description: _description,
+              startDateTime: _startDate,
+              endDateTime: _endDate,
             );
             Navigator.pop(context, event);
           }

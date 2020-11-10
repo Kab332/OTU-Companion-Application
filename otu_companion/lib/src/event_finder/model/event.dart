@@ -18,8 +18,8 @@ class Event {
     this.id = maps['id'];
     this.name = maps['name'];
     this.description = maps['description'];
-    this.startDateTime = maps['startDateTime'];
-    this.endDateTime = maps['endDateTime'];
+    this.startDateTime = maps['startDateTime'] != null ? DateTime.parse(maps['startDateTime'].toDate().toString()) : null;
+    this.endDateTime = maps['endDateTime'] != null ? DateTime.parse(maps['endDateTime'].toDate().toString()) : null;
   }
 
   Map<String, dynamic> toMap() {

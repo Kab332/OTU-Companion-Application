@@ -18,7 +18,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   final _eventModel = EventModel();
 
   int _selectedIndex;
-  int _selectedID;
+  Event _selectedEvent;
 
   @override
   void initState() {
@@ -88,8 +88,8 @@ class _EventListWidgetState extends State<EventListWidget> {
                       onTap: () {
                         setState(() {
                           _selectedIndex = i;
-                          _selectedID = Event.fromMap(snapshot.data.docs[i].data()).id;
-                          print("Selected ${Event.fromMap(snapshot.data.docs[i].data()).id}");
+                          _selectedEvent = Event.fromMap(snapshot.data.docs[i].data());
+                          print("Selected ID: $_selectedEvent");
                         });
                       }),
                 );
@@ -97,6 +97,7 @@ class _EventListWidgetState extends State<EventListWidget> {
         });
   }
 
+  // Future function to add an event to the firestore database
   Future<void> _addEvent() async {
     var event = await Navigator.pushNamed(context, "/addEvent");
 
@@ -109,7 +110,7 @@ class _EventListWidgetState extends State<EventListWidget> {
     }
   }
 
-  // Deleting a single event based on ID
+  // Deleting a single event based on event object
   Future<void> _deleteItem(Event event) async {
     setState(() {
       _eventModel.delete(event);
@@ -131,7 +132,12 @@ class _EventListWidgetState extends State<EventListWidget> {
   }
 
   Future<QuerySnapshot> getAllEvents() async {
-    _eventModel.getAll().then((value) => print('events: ${value.docs}'));
+    _eventModel.getAll().then((value) {
+      // print events for debugging purposes
+      for (int i = 0; i < value.docs.length; i++) {
+        print(value.docs[i].data());
+      }
+    });
     return await _eventModel.getAll();
   }
 }
