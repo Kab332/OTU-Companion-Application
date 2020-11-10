@@ -31,19 +31,11 @@ class _EventListWidgetState extends State<EventListWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: buildEventFinder(),
-      floatingActionButton: Container(
-        padding: const EdgeInsets.all(8.0),
-        alignment: Alignment.bottomCenter,
-        child: Row(
-          children: <Widget>[
-            RaisedButton(
-              onPressed: _addEvent,
-              child: Text("Add Event"),
-            ),
-          ],
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addEvent,
+        child: Icon(Icons.add),
+        tooltip: "Add an event",
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
@@ -84,7 +76,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                   decoration: BoxDecoration(
                       color: i == _selectedIndex ? Colors.blue : Colors.white),
                   child: GestureDetector(
-                      child: buildTile(Event.fromMap(snapshot.data.docs[i].data(), reference: snapshot.data.docs[i].reference)),
+                      child: buildTile(context, Event.fromMap(snapshot.data.docs[i].data(), reference: snapshot.data.docs[i].reference)),
                       onTap: () {
                         setState(() {
                           _selectedIndex = i;
@@ -111,22 +103,27 @@ class _EventListWidgetState extends State<EventListWidget> {
   }
 
   // Deleting a single event based on event object
-  Future<void> _deleteItem(Event event) async {
-    print('deleting $event');
+  Future<void> _deleteEvent(Event event) async {
     setState(() {
       _eventModel.delete(event);
     });
   }
 
   // Building a tile representing a single event in the event list
-  Widget buildTile(Event event) {
+  Widget buildTile(BuildContext context, Event event) {
     return ListTile(
       title: Text(event.name),
       subtitle: Text(event.description),
-      trailing: FlatButton(
-        child: Icon(Icons.delete),
+      trailing: IconButton(
+        icon: Icon(Icons.delete),
         onPressed: () {
-          _deleteItem(event);
+          _deleteEvent(event);
+        },
+      ),
+      leading: IconButton(
+        icon: Icon(Icons.edit),
+        onPressed: () {
+          _showEditDialog(context, event);
         },
       ),
     );
@@ -140,5 +137,60 @@ class _EventListWidgetState extends State<EventListWidget> {
       }
     });
     return await _eventModel.getAll();
+  }
+
+  void _showEditDialog(BuildContext context, Event event) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Container(
+            height: 300,
+            child: Column(
+              children: [
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Event Name',
+                  ),
+                  initialValue: event.name,
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Event Description',
+                  ),
+                  initialValue: event.description,
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Start Date and Time',
+                  ),
+                  initialValue: event.startDateTime.toString(),
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'End Date and Time',
+                  ),
+                  initialValue: event.endDateTime.toString(),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            ButtonBar(
+              alignment: MainAxisAlignment.spaceBetween,
+              children: [
+                FlatButton(
+                  child: Text('Dismiss'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 }
