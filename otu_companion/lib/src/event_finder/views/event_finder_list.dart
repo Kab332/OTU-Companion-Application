@@ -16,6 +16,9 @@ class _EventListWidgetState extends State<EventListWidget> {
   List<Event> events;
   final _eventModel = EventModel();
 
+  int _selectedIndex;
+  int _selectedID;
+
   @override
   void initState() {
     super.initState();
@@ -81,7 +84,17 @@ class _EventListWidgetState extends State<EventListWidget> {
               itemCount: snapshot.data != null ? snapshot.data.length : 0,
               itemBuilder: (BuildContext context, int i) {
                 return Container(
-                  child: buildTile(snapshot.data[i]),
+                  decoration: BoxDecoration(
+                      color: i == _selectedIndex ? Colors.blue : Colors.white),
+                  child: GestureDetector(
+                      child: buildTile(snapshot.data[i]),
+                      onTap: () {
+                        setState(() {
+                          _selectedIndex = i;
+                          _selectedID = snapshot.data[i].id;
+                          print("Selected ${snapshot.data[i]}");
+                        });
+                      }),
                 );
               });
         });
