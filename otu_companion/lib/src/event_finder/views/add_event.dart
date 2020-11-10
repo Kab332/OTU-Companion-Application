@@ -16,7 +16,8 @@ class _AddEventPageState extends State<AddEventPage> {
 
   String _name = '';
   String _description = '';
-  DateTime _eventDate = DateTime.now();
+  DateTime _startDate = DateTime.now();
+  DateTime _endDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -66,38 +67,38 @@ class _AddEventPageState extends State<AddEventPage> {
                 _description = newValue;
               },
             ),
-            // Event Date input
+            // Start Date input
             Container(
               child: Row(
                 children: [
                   Text(
-                    "Event Date: ",
+                    "Start Date: ",
                     style: TextStyle(color: Colors.grey[700], fontSize: 16.0),
                   ),
-                  Text(_eventDate.day.toString() +
+                  Text(_startDate.day.toString() +
                       "/" +
-                      _eventDate.month.toString() +
+                      _startDate.month.toString() +
                       "/" +
-                      _eventDate.year.toString()),
+                      _startDate.year.toString()),
                   FlatButton(
-                    child: Text("Select Date"),
+                    child: Text("Select"),
                     onPressed: () {
                       showDatePicker(
                               context: context,
-                              initialDate: _eventDate,
+                              initialDate: _startDate,
                               firstDate: _currentDate,
                               lastDate: DateTime(2150))
                           .then((value) {
                         setState(() {
-                          _eventDate = DateTime(
-                            value != null ? value.year : _eventDate.year,
-                            value != null ? value.month : _eventDate.month,
-                            value != null ? value.day : _eventDate.day,
-                            _eventDate.hour,
-                            _eventDate.minute,
-                            _eventDate.second,
+                          _startDate = DateTime(
+                            value != null ? value.year : _startDate.year,
+                            value != null ? value.month : _startDate.month,
+                            value != null ? value.day : _startDate.day,
+                            _startDate.hour,
+                            _startDate.minute,
+                            0,
                           );
-                          print("_eventDate: " + _eventDate.toString());
+                          print("_startDate: " + _startDate.toString());
                         });
                       });
                     },
@@ -109,29 +110,100 @@ class _AddEventPageState extends State<AddEventPage> {
             Container(
               child: Row(children: [
                 Text(
-                  "Select time: ",
+                  "Start Time: ",
                   style: TextStyle(color: Colors.grey[700], fontSize: 16.0),
                 ),
-                Text(_eventDate.hour.toString() +
+                Text(_startDate.hour.toString() +
                     ":" +
-                    _eventDate.minute.toString()),
+                    _startDate.minute.toString()),
                 FlatButton(
-                  child: Text("Select Time"),
+                  child: Text("Select"),
                   onPressed: () {
                     showTimePicker(
                       context: context,
                       initialTime: _currentTime,
                     ).then((value) {
                       setState(() {
-                        _eventDate = DateTime(
-                          _eventDate.year,
-                          _eventDate.month,
-                          _eventDate.day,
-                          value != null ? value.hour : _eventDate.hour,
-                          value != null ? value.minute : _eventDate.minute,
-                          _eventDate.second,
+                        _startDate = DateTime(
+                          _startDate.year,
+                          _startDate.month,
+                          _startDate.day,
+                          value != null ? value.hour : _startDate.hour,
+                          value != null ? value.minute : _startDate.minute,
+                          0,
                         );
-                        print("_eventDate: " + _eventDate.toString());
+                        print("_startDate: " + _startDate.toString());
+                      });
+                    });
+                  },
+                ),
+              ]),
+            ),
+            // Event Date input
+            Container(
+              child: Row(
+                children: [
+                  Text(
+                    "End Date: ",
+                    style: TextStyle(color: Colors.grey[700], fontSize: 16.0),
+                  ),
+                  Text(_endDate.day.toString() +
+                      "/" +
+                      _endDate.month.toString() +
+                      "/" +
+                      _endDate.year.toString()),
+                  FlatButton(
+                    child: Text("Select"),
+                    onPressed: () {
+                      showDatePicker(
+                              context: context,
+                              initialDate: _endDate,
+                              firstDate: _currentDate,
+                              lastDate: DateTime(2150))
+                          .then((value) {
+                        setState(() {
+                          _endDate = DateTime(
+                            value != null ? value.year : _endDate.year,
+                            value != null ? value.month : _endDate.month,
+                            value != null ? value.day : _endDate.day,
+                            _endDate.hour,
+                            _endDate.minute,
+                          );
+                          print("_endDate: " + _endDate.toString());
+                        });
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+            // Event time input
+            Container(
+              child: Row(children: [
+                Text(
+                  "End time: ",
+                  style: TextStyle(color: Colors.grey[700], fontSize: 16.0),
+                ),
+                Text(_endDate.hour.toString() +
+                    ":" +
+                    _endDate.minute.toString()),
+                FlatButton(
+                  child: Text("Select"),
+                  onPressed: () {
+                    showTimePicker(
+                      context: context,
+                      initialTime: _currentTime,
+                    ).then((value) {
+                      setState(() {
+                        _endDate = DateTime(
+                          _endDate.year,
+                          _endDate.month,
+                          _endDate.day,
+                          value != null ? value.hour : _endDate.hour,
+                          value != null ? value.minute : _endDate.minute,
+                          0,
+                        );
+                        print("_endDate: " + _endDate.toString());
                       });
                     });
                   },
