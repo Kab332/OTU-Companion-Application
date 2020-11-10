@@ -17,6 +17,8 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
   DateFormat dateFormatter = DateFormat('yyyy/MM/dd');
   DateFormat timeFormatter = DateFormat('HH:mm');
 
+  String type = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +53,11 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
                   ),),
                 ),
                 RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      type = 'time';
+                    });
+                  },
                   color: Colors.blue,
                   textColor: Colors.white,
                   child: Text("Confirm Time"),
@@ -81,6 +87,7 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
                         onChanged: (value) {
                           setState(() {
                             selectedRoom = value;
+                            type = 'room';
                           });
                         },
                         isExpanded: true,
@@ -89,25 +96,7 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
                   ]),
               Divider(),
               Expanded(
-                child: ListView.separated(
-                  itemCount: 20,
-                  itemBuilder: (BuildContext context, int index) {
-                    return ButtonTheme(
-                      height: 50,
-                      child: RaisedButton(
-                        color: Colors.blue,
-                        textColor: Colors.white,
-                        child: Center(child: Text('Entry $index')),
-                        onPressed: () {},
-                      ),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return SizedBox(
-                      height: 4,
-                    );
-                  },
-                ),
+                child: _buildList(context, type)
               )
             ],
           ),
@@ -139,6 +128,52 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
         selectedTime = picked;
       });
   }
+
+  Widget _buildList(BuildContext context, String type) {
+    if (type == 'room'){
+      return ListView.separated(
+        itemCount: classes.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ButtonTheme(
+            height: 50,
+            child: RaisedButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              child: Center(child: Text(classes[index].value.toString())),
+              onPressed: () {},
+            ),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return SizedBox(
+            height: 4,
+          );
+        },
+      );
+    }
+    else if (type == 'time'){
+      return ListView.separated(
+        itemCount: times.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ButtonTheme(
+            height: 50,
+            child: RaisedButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              child: Center(child: Text(times[index].value.toString())),
+              onPressed: () {},
+            ),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return SizedBox(
+            height: 4,
+          );
+        },
+      );
+    }
+    return Container();
+  }
 }
 
 String selectedRoom = "";
@@ -151,4 +186,12 @@ List<DropdownMenuItem> classes = [
   DropdownMenuItem(child: Text("UB2080"), value: "UB2080"),
   DropdownMenuItem(child: Text("UB4095"), value: "UB4095"),
   DropdownMenuItem(child: Text("UB4085"), value: "UB4085"),
+];
+
+List<DropdownMenuItem> times = [
+  DropdownMenuItem(child: Text("11:00 am"), value: "11:00 am"),
+  DropdownMenuItem(child: Text("12:30 pm"), value: "12:30 pm"),
+  DropdownMenuItem(child: Text("2:00 pm"), value: "2:00 pm"),
+  DropdownMenuItem(child: Text("3:30 pm"), value: "3:30 pm"),
+  DropdownMenuItem(child: Text("5:00 pm"), value: "5:00 pm"),
 ];
