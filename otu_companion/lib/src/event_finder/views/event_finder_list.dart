@@ -76,11 +76,15 @@ class _EventListWidgetState extends State<EventListWidget> {
                   decoration: BoxDecoration(
                       color: i == _selectedIndex ? Colors.blue : Colors.white),
                   child: GestureDetector(
-                      child: buildTile(context, Event.fromMap(snapshot.data.docs[i].data(), reference: snapshot.data.docs[i].reference)),
+                      child: buildTile(
+                          context,
+                          Event.fromMap(snapshot.data.docs[i].data(),
+                              reference: snapshot.data.docs[i].reference)),
                       onTap: () {
                         setState(() {
                           _selectedIndex = i;
-                          _selectedEvent = Event.fromMap(snapshot.data.docs[i].data());
+                          _selectedEvent =
+                              Event.fromMap(snapshot.data.docs[i].data());
                           print("Selected ID: $_selectedEvent");
                         });
                       }),
@@ -96,6 +100,8 @@ class _EventListWidgetState extends State<EventListWidget> {
     if (event != null) {
       setState(() {
         _eventModel.insert(event);
+        var snackbar = SnackBar(content: Text("Event has been added."));
+        Scaffold.of(context).showSnackBar(snackbar);
       });
 
       print("Adding event $event...");
@@ -106,6 +112,8 @@ class _EventListWidgetState extends State<EventListWidget> {
   Future<void> _deleteEvent(Event event) async {
     setState(() {
       _eventModel.delete(event);
+      var snackbar = SnackBar(content: Text("Event has been deleted."));
+      Scaffold.of(context).showSnackBar(snackbar);
     });
   }
 
