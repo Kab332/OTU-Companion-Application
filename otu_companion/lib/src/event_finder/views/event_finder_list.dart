@@ -84,7 +84,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                   decoration: BoxDecoration(
                       color: i == _selectedIndex ? Colors.blue : Colors.white),
                   child: GestureDetector(
-                      child: buildTile(Event.fromMap(snapshot.data.docs[i].data())),
+                      child: buildTile(Event.fromMap(snapshot.data.docs[i].data(), reference: snapshot.data.docs[i].reference)),
                       onTap: () {
                         setState(() {
                           _selectedIndex = i;
@@ -112,6 +112,7 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   // Deleting a single event based on event object
   Future<void> _deleteItem(Event event) async {
+    print('deleting $event');
     setState(() {
       _eventModel.delete(event);
     });

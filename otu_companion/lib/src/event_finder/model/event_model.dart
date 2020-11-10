@@ -20,6 +20,7 @@ class EventModel {
   }
 
   Future<void> delete(Event event) async {
+    print('deleting event $event...');
     event.reference.delete();
   }
   
