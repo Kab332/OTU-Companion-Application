@@ -118,11 +118,24 @@ class _EventListWidgetState extends State<EventListWidget> {
     });
   }
 
+  // Deleting a single event based on ID
+  Future<void> _deleteItem(int id) async {
+    setState(() {
+      _eventModel.deleteEventById(id);
+    });
+  }
+
   // Building a tile representing a single event in the event list
   Widget buildTile(Event event) {
     return ListTile(
       title: Text(event.name),
       subtitle: Text(event.description),
+      trailing: FlatButton(
+        child: Icon(Icons.delete),
+        onPressed: () {
+          _deleteItem(event.id);
+        },
+      ),
     );
   }
 

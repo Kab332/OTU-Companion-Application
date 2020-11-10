@@ -20,9 +20,18 @@ class EventModel {
   Future<void> insert(Event event) async {
     final db = await DatabaseUtilities.init();
     db.insert(
-      'events', 
+      'events',
       event.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> deleteEventById(int id) async {
+    final db = await DatabaseUtilities.init();
+    await db.delete(
+      'events',
+      where: 'id = ?',
+      whereArgs: [id],
     );
   }
 

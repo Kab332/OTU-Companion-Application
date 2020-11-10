@@ -21,6 +21,7 @@ class _AddEventPageState extends State<AddEventPage> {
   @override
   Widget build(BuildContext context) {
     DateTime _currentDate = DateTime.now();
+    TimeOfDay _currentTime = TimeOfDay.now();
 
     return Scaffold(
       appBar: AppBar(
@@ -89,19 +90,53 @@ class _AddEventPageState extends State<AddEventPage> {
                           .then((value) {
                         setState(() {
                           _eventDate = DateTime(
-                            value.year,
-                            value.month,
-                            value.day,
+                            value != null ? value.year : _eventDate.year,
+                            value != null ? value.month : _eventDate.month,
+                            value != null ? value.day : _eventDate.day,
                             _eventDate.hour,
                             _eventDate.minute,
                             _eventDate.second,
                           );
+                          print("_eventDate: " + _eventDate.toString());
                         });
                       });
                     },
                   ),
                 ],
               ),
+            ),
+            // Event time input
+            Container(
+              child: Row(children: [
+                Text(
+                  "Select time: ",
+                  style: TextStyle(color: Colors.grey[700], fontSize: 16.0),
+                ),
+                Text(_eventDate.hour.toString() +
+                    ":" +
+                    _eventDate.minute.toString()),
+                FlatButton(
+                  child: Text("Select Time"),
+                  onPressed: () {
+                    showTimePicker(
+                      context: context,
+                      initialTime: _currentTime,
+                    ).then((value) {
+                      setState(() {
+                        _eventDate = DateTime(
+                          _eventDate.year,
+                          _eventDate.month,
+                          _eventDate.day,
+                          value != null ? value.hour : _eventDate.hour,
+                          value != null ? value.minute : _eventDate.minute,
+                          _eventDate.second,
+                        );
+                        print("_eventDate: " + _eventDate.toString());
+                      });
+                    });
+                  },
+                ),
+              ]),
             ),
           ],
         ),
