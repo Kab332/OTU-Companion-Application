@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../model/event_model.dart';
@@ -39,10 +40,6 @@ class _EventListWidgetState extends State<EventListWidget> {
               onPressed: _addEvent,
               child: Text("Add Event"),
             ),
-            RaisedButton(
-              onPressed: _delete,
-              child: Text("Delete All Events"),
-            )
           ],
         ),
       ),
@@ -73,26 +70,26 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   Widget _buildListView() {
     EventModel _eventModel = EventModel();
-    return FutureBuilder(
+    return FutureBuilder<QuerySnapshot>(
         future: _eventModel.getAll(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.none ||
               snapshot.hasData == null) {
             return LinearProgressIndicator();
           }
           return ListView.builder(
-              itemCount: snapshot.data != null ? snapshot.data.length : 0,
+              itemCount: snapshot.data != null ? snapshot.data.docs.length : 0,
               itemBuilder: (BuildContext context, int i) {
                 return Container(
                   decoration: BoxDecoration(
                       color: i == _selectedIndex ? Colors.blue : Colors.white),
                   child: GestureDetector(
-                      child: buildTile(snapshot.data[i]),
+                      child: buildTile(Event.fromMap(snapshot.data.docs[i].data())),
                       onTap: () {
                         setState(() {
                           _selectedIndex = i;
-                          _selectedID = snapshot.data[i].id;
-                          print("Selected ${snapshot.data[i]}");
+                          _selectedID = Event.fromMap(snapshot.data.docs[i].data()).id;
+                          print("Selected ${Event.fromMap(snapshot.data.docs[i].data()).id}");
                         });
                       }),
                 );
@@ -112,16 +109,10 @@ class _EventListWidgetState extends State<EventListWidget> {
     }
   }
 
-  Future<void> _delete() async {
-    setState(() {
-      _eventModel.deleteAll();
-    });
-  }
-
   // Deleting a single event based on ID
-  Future<void> _deleteItem(int id) async {
+  Future<void> _deleteItem(Event event) async {
     setState(() {
-      _eventModel.deleteEventById(id);
+      _eventModel.delete(event);
     });
   }
 
@@ -133,15 +124,14 @@ class _EventListWidgetState extends State<EventListWidget> {
       trailing: FlatButton(
         child: Icon(Icons.delete),
         onPressed: () {
-          _deleteItem(event.id);
+          _deleteItem(event);
         },
       ),
     );
   }
 
-  Future<List<Event>> getAllEvents() async {
-    List<Event> events = await _eventModel.getAll();
-    this.events = events;
-    return events;
+  Future<QuerySnapshot> getAllEvents() async {
+    _eventModel.getAll().then((value) => print('events: ${value.docs}'));
+    return await _eventModel.getAll();
   }
 }
