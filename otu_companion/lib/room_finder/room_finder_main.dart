@@ -48,9 +48,12 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
                 FlatButton(
                   textColor: Colors.blue,
                   onPressed: () => _selectTime(context),
-                  child: Text(selectedTime.format(context).toString(), style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                  ),),
+                  child: Text(
+                    selectedTime.format(context).toString(),
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
                 ),
                 RaisedButton(
                   onPressed: () {
@@ -95,9 +98,11 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
                     ),
                   ]),
               Divider(),
-              Expanded(
-                child: _buildList(context, type)
-              )
+              _buildListHeader(context, type),
+              SizedBox(
+                height: 4,
+              ),
+              Expanded(child: _buildList(context, type))
             ],
           ),
         ));
@@ -130,8 +135,9 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
   }
 
   Widget _buildList(BuildContext context, String type) {
-    if (type == 'room'){
+    if (type == 'time') {
       return ListView.separated(
+        shrinkWrap: true,
         itemCount: classes.length,
         itemBuilder: (BuildContext context, int index) {
           return ButtonTheme(
@@ -150,8 +156,7 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
           );
         },
       );
-    }
-    else if (type == 'time'){
+    } else if (type == 'room') {
       return ListView.separated(
         itemCount: times.length,
         itemBuilder: (BuildContext context, int index) {
@@ -174,6 +179,25 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
     }
     return Container();
   }
+
+  Widget _buildListHeader(BuildContext context, String type) {
+    if (type == 'time') {
+      return Text(
+        "List of available rooms at specified time...",
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      );
+    } else if (type == 'room') {
+      return Text(
+        "List of available times at specified room...",
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      );
+    }
+    return Container();
+  }
 }
 
 String selectedRoom = "";
@@ -186,6 +210,11 @@ List<DropdownMenuItem> classes = [
   DropdownMenuItem(child: Text("UB2080"), value: "UB2080"),
   DropdownMenuItem(child: Text("UB4095"), value: "UB4095"),
   DropdownMenuItem(child: Text("UB4085"), value: "UB4085"),
+  DropdownMenuItem(child: Text("test1"), value: "test1"),
+  DropdownMenuItem(child: Text("test2"), value: "test2"),
+  DropdownMenuItem(child: Text("test3"), value: "test3"),
+  DropdownMenuItem(child: Text("test4"), value: "test4"),
+  DropdownMenuItem(child: Text("test5"), value: "test5"),
 ];
 
 List<DropdownMenuItem> times = [
