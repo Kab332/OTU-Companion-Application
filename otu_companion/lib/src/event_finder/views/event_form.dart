@@ -213,7 +213,7 @@ class _EventFormPageState extends State<EventFormPage> {
     return Container(
       child: Row(children: [
         Text(
-          "Start Time: ",
+          type + ": ",
           style: TextStyle(color: Colors.grey[700], fontSize: 16.0),
         ),
         Text(_date.hour.toString() + ":" + _date.minute.toString()),
