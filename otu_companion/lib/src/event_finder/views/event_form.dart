@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+
 import '../model/event.dart';
+import '../model/notification_utilities.dart';
+
 
 class EventFormPage extends StatefulWidget {
   EventFormPage({Key key, this.title}) : super(key: key);
@@ -13,6 +18,7 @@ class EventFormPage extends StatefulWidget {
 
 class _EventFormPageState extends State<EventFormPage> {
   final _formKey = GlobalKey<FormState>();
+  final _eventNotifications = EventNotifications();
 
   String _name = '';
   String _description = '';
@@ -21,6 +27,8 @@ class _EventFormPageState extends State<EventFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    tz.initializeTimeZones();
+    _eventNotifications.init();
     final Event selectedEvent = ModalRoute.of(context).settings.arguments;
     DateTime _currentDate = DateTime.now();
     TimeOfDay _currentTime = TimeOfDay.now();
@@ -226,6 +234,17 @@ class _EventFormPageState extends State<EventFormPage> {
               startDateTime: _startDate,
               endDateTime: _endDate,
             );
+            var secondsDiff = (event.startDateTime.millisecondsSinceEpoch - tz.TZDateTime.now(tz.local).millisecondsSinceEpoch) ~/ 1000;
+
+            print('seconds: $secondsDiff');
+            // if the start date is greater than one day, send a notification later, otherwise, send it now
+            if (secondsDiff >= 86400 ) {
+              var later = tz.TZDateTime.now(tz.local).add(Duration(seconds: secondsDiff - 86400));
+              _eventNotifications.sendNotificationLater(event.name, event.description, later, event.reference != null ? event.reference.id : null);
+            } else {
+              _eventNotifications.sendNotificationNow(event.name, event.description, event.reference != null ? event.reference.id : null);
+            }
+
             Navigator.pop(context, event);
           }
         },
