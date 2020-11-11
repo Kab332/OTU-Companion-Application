@@ -152,7 +152,7 @@ class MainSideDrawer extends StatelessWidget
       trailing: Icon(Icons.nights_stay),
       onTap: ()
       {
-        Navigator.pop(context);
+        Navigator.popAndPushNamed(context, Routes.settingMain);
       },
     );
   }
