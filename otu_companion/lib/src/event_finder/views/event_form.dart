@@ -6,7 +6,6 @@ import 'package:timezone/timezone.dart' as tz;
 import '../model/event.dart';
 import '../model/notification_utilities.dart';
 
-
 class EventFormPage extends StatefulWidget {
   EventFormPage({Key key, this.title}) : super(key: key);
 
@@ -67,16 +66,26 @@ class _EventFormPageState extends State<EventFormPage> {
               endDateTime: _endDate,
             );
             // calculating the difference in milliseconds between the event start date and the time it is not
-            var secondsDiff = (event.startDateTime.millisecondsSinceEpoch - tz.TZDateTime.now(tz.local).millisecondsSinceEpoch) ~/ 1000;
+            var secondsDiff = (event.startDateTime.millisecondsSinceEpoch -
+                    tz.TZDateTime.now(tz.local).millisecondsSinceEpoch) ~/
+                1000;
 
             print('seconds: $secondsDiff');
-            // if the start date is greater than one day, send a notification later, 
-            if (secondsDiff >= 86400 ) {
-              var later = tz.TZDateTime.now(tz.local).add(Duration(seconds: secondsDiff - 86400));
-              _eventNotifications.sendNotificationLater(event.name, event.description, later, event.reference != null ? event.reference.id : null);
+            // if the start date is greater than one day, send a notification later,
+            if (secondsDiff >= 86400) {
+              var later = tz.TZDateTime.now(tz.local)
+                  .add(Duration(seconds: secondsDiff - 86400));
+              _eventNotifications.sendNotificationLater(
+                  event.name,
+                  event.description,
+                  later,
+                  event.reference != null ? event.reference.id : null);
             } else {
               // send the notification now
-              _eventNotifications.sendNotificationNow(event.name, event.description, event.reference != null ? event.reference.id : null);
+              _eventNotifications.sendNotificationNow(
+                  event.name,
+                  event.description,
+                  event.reference != null ? event.reference.id : null);
             }
 
             Navigator.pop(context, event);
@@ -127,13 +136,11 @@ class _EventFormPageState extends State<EventFormPage> {
 
     if (type == "Start Date") {
       _date = _startDate;
-
       if (selectedEvent != null) {
         _currentSelectedDate = selectedEvent.startDateTime;
       }
     } else if (type == "End Date") {
       _date = _endDate;
-
       if (selectedEvent != null) {
         _currentSelectedDate = selectedEvent.endDateTime;
       }
@@ -192,13 +199,11 @@ class _EventFormPageState extends State<EventFormPage> {
 
     if (type == "Start Time") {
       _date = _startDate;
-
       if (selectedEvent != null) {
         _currentSelectedDate = selectedEvent.startDateTime;
       }
     } else if (type == "End Time") {
       _date = _endDate;
-
       if (selectedEvent != null) {
         _currentSelectedDate = selectedEvent.endDateTime;
       }
