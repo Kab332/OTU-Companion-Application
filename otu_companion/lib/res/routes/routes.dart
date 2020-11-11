@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:otu_companion/src/event_finder/event_finder_main.dart';
 import 'package:otu_companion/src/event_finder/views/event_form.dart';
 import 'package:otu_companion/src/home_page/home_page_main.dart';
+import 'package:otu_companion/src/settings/settings_main.dart';
+import 'package:otu_companion/src/settings/views/appearance_settings_page.dart';
 
 class Routes {
   // Login
@@ -12,6 +14,10 @@ class Routes {
   static const eventFinderMain = "/eventFinderMain";
   static const eventForm = "/eventForm";
   // Classroom Finder
+
+  // Settings
+  static const settingMain = "/settingMain";
+  static const appearanceSettingPage = "/appearanceSettingPage";
 
   // Others
 
@@ -29,6 +35,13 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) =>
                 EventFormPage(title: 'Event Form'));
+      case settingMain:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => SettingMain(title: 'Settings'));
+      case appearanceSettingPage:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                AppearanceSettingPage(title: 'Appearance'));
     }
 
     return null;
