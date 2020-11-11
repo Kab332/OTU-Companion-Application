@@ -18,8 +18,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   List<Event> events;
   final _eventModel = EventModel();
 
-  int _selectedIndex;
-  Event _selectedEvent;
+  Event _selectedEvent = new Event();
 
   @override
   void initState() {
@@ -31,12 +30,24 @@ class _EventListWidgetState extends State<EventListWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: buildEventFinder(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addEvent,
-        child: Icon(Icons.add),
-        tooltip: "Add an event",
+      appBar: AppBar(
+        title: Text(widget.title),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: _addEvent,
+          ),
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: _editEvent,
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: _deleteEvent,
+          ),
+        ],
       ),
+      body: buildEventFinder(),
     );
   }
 
@@ -66,32 +77,39 @@ class _EventListWidgetState extends State<EventListWidget> {
     return FutureBuilder<QuerySnapshot>(
         future: _eventModel.getAll(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.connectionState == ConnectionState.none ||
-              snapshot.hasData == null) {
-            return LinearProgressIndicator();
+          // NEW: Modified if statement and changed ListView.Builder to ListView
+          if (snapshot.hasData) {
+            return ListView(
+              children: snapshot.data.docs
+                  .map((DocumentSnapshot document) =>
+                      buildEvent(context, document))
+                  .toList(),
+            );
+          } else {
+            return CircularProgressIndicator();
           }
-          return ListView.builder(
-              itemCount: snapshot.data != null ? snapshot.data.docs.length : 0,
-              itemBuilder: (BuildContext context, int i) {
-                return Container(
-                  decoration: BoxDecoration(
-                      color: i == _selectedIndex ? Colors.blue : Colors.white),
-                  child: GestureDetector(
-                      child: buildTile(
-                          context,
-                          Event.fromMap(snapshot.data.docs[i].data(),
-                              reference: snapshot.data.docs[i].reference)),
-                      onTap: () {
-                        setState(() {
-                          _selectedIndex = i;
-                          _selectedEvent =
-                              Event.fromMap(snapshot.data.docs[i].data());
-                          print("Selected Event: $_selectedEvent");
-                        });
-                      }),
-                );
-              });
         });
+  }
+
+  // NEW: bulidEvent Randy style
+  Widget buildEvent(BuildContext context, DocumentSnapshot eventData) {
+    final event =
+        Event.fromMap(eventData.data(), reference: eventData.reference);
+
+    return Container(
+      decoration: BoxDecoration(
+          color: event.reference == _selectedEvent.reference
+              ? Colors.blue
+              : Colors.white),
+      child: GestureDetector(
+          child: buildTile(context, event),
+          onTap: () {
+            setState(() {
+              _selectedEvent = event;
+              print("Selected Event: $_selectedEvent");
+            });
+          }),
+    );
   }
 
   // Building a tile representing a single event in the event list
@@ -99,21 +117,9 @@ class _EventListWidgetState extends State<EventListWidget> {
     return ListTile(
       title: Text(event.name),
       subtitle: Text(event.description),
-      trailing: IconButton(
-        icon: Icon(Icons.delete),
-        onPressed: () {
-          _deleteEvent(event);
-        },
-      ),
       leading: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {
-              _editEvent();
-            }
-          ),
           IconButton(
             icon: Icon(Icons.visibility),
             onPressed: () {
@@ -135,7 +141,7 @@ class _EventListWidgetState extends State<EventListWidget> {
     return await _eventModel.getAll();
   }
 
-    // Future function to add an event to the firestore database
+  // Future function to add an event to the firestore database
   Future<void> _addEvent() async {
     var event = await Navigator.pushNamed(context, "/eventForm");
 
@@ -151,9 +157,10 @@ class _EventListWidgetState extends State<EventListWidget> {
   }
 
   // Deleting a single event based on event object
-  Future<void> _deleteEvent(Event event) async {
+  Future<void> _deleteEvent() async {
     setState(() {
-      _eventModel.delete(event);
+      _selectedEvent.reference.delete();
+
       var snackbar = SnackBar(content: Text("Event has been deleted."));
       Scaffold.of(context).showSnackBar(snackbar);
     });
@@ -162,11 +169,20 @@ class _EventListWidgetState extends State<EventListWidget> {
   Future<void> _editEvent() async {
     if (_selectedEvent != null) {
       print('selected Event: $_selectedEvent');
-      var newEvent = await Navigator.pushNamed(context, "/eventForm", arguments: _selectedEvent);
+      var event = await Navigator.pushNamed(context, "/eventForm",
+          arguments: _selectedEvent);
 
-      if (newEvent != null) {
+      Event newEvent = event;
+
+      if (event != null) {
         setState(() {
-          _eventModel.insert(newEvent);
+          _selectedEvent.reference.update({
+            "name": newEvent.name,
+            "description": newEvent.description,
+            "startDateTime": newEvent.startDateTime,
+            "endDateTime": newEvent.endDateTime
+          });
+
           var snackbar = SnackBar(content: Text("Event has been edited."));
           Scaffold.of(context).showSnackBar(snackbar);
         });

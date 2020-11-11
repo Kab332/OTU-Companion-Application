@@ -23,15 +23,14 @@ class _EventFinderMainState extends State<EventFinderMain> {
           return Text('Error initializing Firebase');
         }
 
-        if (snapshot.hasData == true && snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.hasData == true &&
+            snapshot.connectionState == ConnectionState.done) {
           return Scaffold(
-            appBar: AppBar(
-              title: Text(widget.title),
-            ),
-            body: EventListWidget(),
+            body: EventListWidget(title: "Event Finder"),
           );
-        }
+        } else {
         return CircularProgressIndicator();
+        }
       },
     );
   }
