@@ -98,7 +98,7 @@ class _EventListWidgetState extends State<EventListWidget> {
 
     return Container(
       decoration: BoxDecoration(
-          color: _selectedEvent != null && event.reference == _selectedEvent.reference
+          color: _selectedEvent != null && event.id == _selectedEvent.id
               ? Colors.blue
               : Colors.white),
       child: GestureDetector(
@@ -161,7 +161,7 @@ class _EventListWidgetState extends State<EventListWidget> {
     print('deleting event: $_selectedEvent');
     if (_selectedEvent != null) {
       setState(() {
-        _selectedEvent.reference.delete();
+        _eventModel.delete(_selectedEvent);
 
         var snackbar = SnackBar(content: Text("Event has been deleted."));
         Scaffold.of(context).showSnackBar(snackbar);
@@ -172,6 +172,7 @@ class _EventListWidgetState extends State<EventListWidget> {
     }
   }
 
+  // Editting the currently selected event
   Future<void> _editEvent() async {
     if (_selectedEvent != null) {
       print('selected Event: $_selectedEvent');
@@ -179,15 +180,11 @@ class _EventListWidgetState extends State<EventListWidget> {
           arguments: _selectedEvent);
 
       Event newEvent = event;
+      newEvent.reference = _selectedEvent.reference;
 
       if (event != null) {
         setState(() {
-          _selectedEvent.reference.update({
-            "name": newEvent.name,
-            "description": newEvent.description,
-            "startDateTime": newEvent.startDateTime,
-            "endDateTime": newEvent.endDateTime
-          });
+          _eventModel.update(newEvent);
 
           var snackbar = SnackBar(content: Text("Event has been edited."));
           Scaffold.of(context).showSnackBar(snackbar);
@@ -260,9 +257,7 @@ class _EventListWidgetState extends State<EventListWidget> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Error!'),
-          content: Text(
-            'Please select an event first!'
-          ),
+          content: Text('Please select an event first!'),
           actions: <Widget>[
             FlatButton(
               child: Text('Dismiss'),
