@@ -180,9 +180,9 @@ class _EventListWidgetState extends State<EventListWidget> {
           arguments: _selectedEvent);
 
       Event newEvent = event;
-      newEvent.reference = _selectedEvent.reference;
 
       if (event != null) {
+        newEvent.reference = _selectedEvent.reference;
         setState(() {
           _eventModel.update(newEvent);
 
