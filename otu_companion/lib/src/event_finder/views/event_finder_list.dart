@@ -91,7 +91,7 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   // Future function to add an event to the firestore database
   Future<void> _addEvent() async {
-    var event = await Navigator.pushNamed(context, "/addEvent");
+    var event = await Navigator.pushNamed(context, "/eventForm");
 
     if (event != null) {
       setState(() {
@@ -100,13 +100,6 @@ class _EventListWidgetState extends State<EventListWidget> {
 
       print("Adding event $event...");
     }
-  }
-
-  // Deleting a single event based on event object
-  Future<void> _deleteEvent(Event event) async {
-    setState(() {
-      _eventModel.delete(event);
-    });
   }
 
   // Building a tile representing a single event in the event list
@@ -120,11 +113,22 @@ class _EventListWidgetState extends State<EventListWidget> {
           _deleteEvent(event);
         },
       ),
-      leading: IconButton(
-        icon: Icon(Icons.edit),
-        onPressed: () {
-          _showEditDialog(context, event);
-        },
+      leading: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              _editEvent(event);
+            }
+          ),
+          IconButton(
+            icon: Icon(Icons.visibility),
+            onPressed: () {
+              _showViewDialog(context, event);
+            },
+          ),
+        ],
       ),
     );
   }
@@ -139,7 +143,20 @@ class _EventListWidgetState extends State<EventListWidget> {
     return await _eventModel.getAll();
   }
 
-  void _showEditDialog(BuildContext context, Event event) {
+  // Deleting a single event based on event object
+  Future<void> _deleteEvent(Event event) async {
+    setState(() {
+      _eventModel.delete(event);
+    });
+  }
+
+  Future<void> _editEvent(Event event) async {
+    setState(() {
+      _eventModel.update(event);
+    });
+  }
+
+  void _showViewDialog(BuildContext context, Event event) {
     showDialog<void>(
       context: context,
       barrierDismissible: true,

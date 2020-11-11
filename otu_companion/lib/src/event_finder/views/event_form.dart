@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../model/event.dart';
 
-class AddEventPage extends StatefulWidget {
-  AddEventPage({Key key, this.title}) : super(key: key);
+class EventFormPage extends StatefulWidget {
+  EventFormPage({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _AddEventPageState createState() => _AddEventPageState();
+  _EventFormPageState createState() => _EventFormPageState();
 }
 
-class _AddEventPageState extends State<AddEventPage> {
+class _EventFormPageState extends State<EventFormPage> {
   final _formKey = GlobalKey<FormState>();
 
   String _name = '';
