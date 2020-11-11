@@ -39,6 +39,7 @@ class _EventFormPageState extends State<EventFormPage> {
     print('selected event in event form: ${ModalRoute.of(context).toString()}');
 
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text(widget.title),
       ),

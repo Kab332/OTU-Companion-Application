@@ -26,10 +26,11 @@ class _EventFinderMainState extends State<EventFinderMain> {
         if (snapshot.hasData == true &&
             snapshot.connectionState == ConnectionState.done) {
           return Scaffold(
+            resizeToAvoidBottomPadding: false,
             body: EventListWidget(title: "Event Finder"),
           );
         } else {
-        return CircularProgressIndicator();
+          return CircularProgressIndicator();
         }
       },
     );

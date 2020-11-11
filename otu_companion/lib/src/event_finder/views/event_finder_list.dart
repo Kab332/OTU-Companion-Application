@@ -30,6 +30,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text(widget.title),
         actions: <Widget>[
