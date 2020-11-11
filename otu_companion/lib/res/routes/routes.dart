@@ -10,7 +10,7 @@ class Routes {
   static const homeMain = "/homeMain";
   // Event Finder
   static const eventFinderMain = "/eventFinderMain";
-  static const addEvent = "/addEvent";
+  static const eventForm = "/eventForm";
   // Classroom Finder
 
   // Others
@@ -25,7 +25,7 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) =>
                 EventFinderMain(title: 'Event Finder'));
-      case addEvent:
+      case eventForm:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
                 EventFormPage(title: 'Add Event'));
