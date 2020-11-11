@@ -38,12 +38,12 @@ class _EventFormPageState extends State<EventFormPage> {
         key: _formKey,
         child: Column(
           children: [
-            _buildNameForm(),
-            _buildDescriptionForm(),
-            _buildStartDate(),
-            _buildStartTime(),
-            _buildEndDate(),
-            _buildEndTime(),
+            _buildTextFieldForm("Event Name"),
+            _buildTextFieldForm("Description"),
+            _buildDate("Start Date"),
+            _buildTime("Start Time"),
+            _buildDate("End Date"),
+            _buildTime("End Time"),
           ],
         ),
       ),
@@ -66,14 +66,22 @@ class _EventFormPageState extends State<EventFormPage> {
     );
   }
 
-  Widget _buildNameForm() {
+  Widget _buildTextFieldForm(String type) {
+    String typeVal = "";
+
+    if (type == "Event Name" && selectedEvent != null) {
+      typeVal = selectedEvent.name;
+    } else if (type == "Description" && selectedEvent != null) {
+      typeVal = selectedEvent.description;
+    }
+
     // Event Name Input
     return TextFormField(
-      decoration: const InputDecoration(
-        labelText: 'Event Name',
+      decoration: InputDecoration(
+        labelText: type == "Event Name" ? "Event Name" : "Description",
       ),
       autovalidateMode: AutovalidateMode.always,
-      initialValue: selectedEvent != null ? selectedEvent.name : '',
+      initialValue: selectedEvent != null ? typeVal : '',
       // validation to check if empty or not 9 numbers
       validator: (String value) {
         if (value.isEmpty) {
@@ -82,65 +90,71 @@ class _EventFormPageState extends State<EventFormPage> {
         return null;
       },
       onChanged: (String newValue) {
-        _name = newValue;
-      },
-    );
-  }
-
-  Widget _buildDescriptionForm() {
-    return TextFormField(
-      decoration: const InputDecoration(
-        labelText: 'Description',
-      ),
-      initialValue: selectedEvent != null ? selectedEvent.description : '',
-      autovalidateMode: AutovalidateMode.always,
-      // validation to check if there is no grade, or if the grade is more than 3 characters
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Error: Please enter a description!';
+        if (type == "Event Name") {
+          _name = newValue;
+        } else {
+          _description = newValue;
         }
-        return null;
-      },
-      onChanged: (String newValue) {
-        _description = newValue;
       },
     );
   }
 
-  Widget _buildStartDate() {
+  Widget _buildDate(String type) {
+    DateTime _date = DateTime.now();
+    DateTime _currentSelectedDate = DateTime.now();
+
+    if (type == "Start Date") {
+      _date = _startDate;
+
+      if (selectedEvent != null) {
+        _currentSelectedDate = selectedEvent.startDateTime;
+      }
+    } else if (type == "End Date") {
+      _date = _endDate;
+
+      if (selectedEvent != null) {
+        _currentSelectedDate = selectedEvent.endDateTime;
+      }
+    }
+
     return Container(
       child: Row(
         children: [
           Text(
-            "Start Date: ",
+            type + ": ",
             style: TextStyle(color: Colors.grey[700], fontSize: 16.0),
           ),
-          Text(_startDate.day.toString() +
+          Text(_date.day.toString() +
               "/" +
-              _startDate.month.toString() +
+              _date.month.toString() +
               "/" +
-              _startDate.year.toString()),
+              _date.year.toString()),
           FlatButton(
             child: Text("Select"),
             onPressed: () {
               showDatePicker(
                       context: context,
-                      initialDate: selectedEvent != null
-                          ? selectedEvent.startDateTime
-                          : _startDate,
+                      initialDate:
+                          selectedEvent != null ? _currentSelectedDate : _date,
                       firstDate: _currentDate,
                       lastDate: DateTime(2150))
                   .then((value) {
                 setState(() {
-                  _startDate = DateTime(
-                    value != null ? value.year : _startDate.year,
-                    value != null ? value.month : _startDate.month,
-                    value != null ? value.day : _startDate.day,
-                    _startDate.hour,
-                    _startDate.minute,
+                  _date = DateTime(
+                    value != null ? value.year : _date.year,
+                    value != null ? value.month : _date.month,
+                    value != null ? value.day : _date.day,
+                    _date.hour,
+                    _date.minute,
                     0,
                   );
-                  print("_startDate: " + _startDate.toString());
+
+                  if (type == "Start Date") {
+                    _startDate = _date;
+                  } else if (type == "End Date") {
+                    _endDate = _date;
+                  }
+                  print(type + ": " + _date.toString());
                 });
               });
             },
@@ -150,110 +164,55 @@ class _EventFormPageState extends State<EventFormPage> {
     );
   }
 
-  Widget _buildStartTime() {
+  Widget _buildTime(String type) {
+    DateTime _date = DateTime.now();
+    DateTime _currentSelectedDate = DateTime.now();
+
+    if (type == "Start Time") {
+      _date = _startDate;
+
+      if (selectedEvent != null) {
+        _currentSelectedDate = selectedEvent.startDateTime;
+      }
+    } else if (type == "End Time") {
+      _date = _endDate;
+
+      if (selectedEvent != null) {
+        _currentSelectedDate = selectedEvent.endDateTime;
+      }
+    }
+
     return Container(
       child: Row(children: [
         Text(
           "Start Time: ",
           style: TextStyle(color: Colors.grey[700], fontSize: 16.0),
         ),
-        Text(_startDate.hour.toString() + ":" + _startDate.minute.toString()),
+        Text(_date.hour.toString() + ":" + _date.minute.toString()),
         FlatButton(
           child: Text("Select"),
           onPressed: () {
             showTimePicker(
               context: context,
-              initialTime: selectedEvent != null
-                  ? selectedEvent.startDateTime
-                  : _currentTime,
+              initialTime:
+                  selectedEvent != null ? _currentSelectedDate : _currentTime,
             ).then((value) {
               setState(() {
-                _startDate = DateTime(
-                  _startDate.year,
-                  _startDate.month,
-                  _startDate.day,
-                  value != null ? value.hour : _startDate.hour,
-                  value != null ? value.minute : _startDate.minute,
+                _date = DateTime(
+                  _date.year,
+                  _date.month,
+                  _date.day,
+                  value != null ? value.hour : _date.hour,
+                  value != null ? value.minute : _date.minute,
                   0,
                 );
-                print("_startDate: " + _startDate.toString());
-              });
-            });
-          },
-        ),
-      ]),
-    );
-  }
 
-  Widget _buildEndDate() {
-    return Container(
-      child: Row(
-        children: [
-          Text(
-            "End Date: ",
-            style: TextStyle(color: Colors.grey[700], fontSize: 16.0),
-          ),
-          Text(_endDate.day.toString() +
-              "/" +
-              _endDate.month.toString() +
-              "/" +
-              _endDate.year.toString()),
-          FlatButton(
-            child: Text("Select"),
-            onPressed: () {
-              showDatePicker(
-                      context: context,
-                      initialDate: selectedEvent != null
-                          ? selectedEvent.endDateTime
-                          : _endDate,
-                      firstDate: _currentDate,
-                      lastDate: DateTime(2150))
-                  .then((value) {
-                setState(() {
-                  _endDate = DateTime(
-                    value != null ? value.year : _endDate.year,
-                    value != null ? value.month : _endDate.month,
-                    value != null ? value.day : _endDate.day,
-                    _endDate.hour,
-                    _endDate.minute,
-                  );
-                  print("_endDate: " + _endDate.toString());
-                });
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEndTime() {
-    return Container(
-      child: Row(children: [
-        Text(
-          "End time: ",
-          style: TextStyle(color: Colors.grey[700], fontSize: 16.0),
-        ),
-        Text(_endDate.hour.toString() + ":" + _endDate.minute.toString()),
-        FlatButton(
-          child: Text("Select"),
-          onPressed: () {
-            showTimePicker(
-              context: context,
-              initialTime: selectedEvent != null
-                  ? selectedEvent.endDateTime
-                  : _currentTime,
-            ).then((value) {
-              setState(() {
-                _endDate = DateTime(
-                  _endDate.year,
-                  _endDate.month,
-                  _endDate.day,
-                  value != null ? value.hour : _endDate.hour,
-                  value != null ? value.minute : _endDate.minute,
-                  0,
-                );
-                print("_endDate: " + _endDate.toString());
+                if (type == "Start Time") {
+                  _startDate = _date;
+                } else {
+                  _endDate = _date;
+                }
+                print(type + ": " + _date.toString());
               });
             });
           },
