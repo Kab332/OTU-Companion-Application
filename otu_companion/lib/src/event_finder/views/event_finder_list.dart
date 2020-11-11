@@ -18,7 +18,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   List<Event> events;
   final _eventModel = EventModel();
 
-  Event _selectedEvent = new Event();
+  Event _selectedEvent;
 
   @override
   void initState() {
@@ -98,7 +98,7 @@ class _EventListWidgetState extends State<EventListWidget> {
 
     return Container(
       decoration: BoxDecoration(
-          color: event.reference == _selectedEvent.reference
+          color: _selectedEvent != null && event.reference == _selectedEvent.reference
               ? Colors.blue
               : Colors.white),
       child: GestureDetector(
@@ -158,12 +158,18 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   // Deleting a single event based on event object
   Future<void> _deleteEvent() async {
-    setState(() {
-      _selectedEvent.reference.delete();
+    print('deleting event: $_selectedEvent');
+    if (_selectedEvent != null) {
+      setState(() {
+        _selectedEvent.reference.delete();
 
-      var snackbar = SnackBar(content: Text("Event has been deleted."));
-      Scaffold.of(context).showSnackBar(snackbar);
-    });
+        var snackbar = SnackBar(content: Text("Event has been deleted."));
+        Scaffold.of(context).showSnackBar(snackbar);
+        _selectedEvent = null;
+      });
+    } else {
+      _showAlertDialog();
+    }
   }
 
   Future<void> _editEvent() async {
@@ -188,7 +194,7 @@ class _EventListWidgetState extends State<EventListWidget> {
         });
       }
     } else {
-      print('Please select an event first!');
+      _showAlertDialog();
     }
   }
 
@@ -240,6 +246,29 @@ class _EventListWidgetState extends State<EventListWidget> {
                   },
                 ),
               ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showAlertDialog() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error!'),
+          content: Text(
+            'Please select an event first!'
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Dismiss'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
           ],
         );
