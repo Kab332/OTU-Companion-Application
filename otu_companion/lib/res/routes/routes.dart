@@ -28,7 +28,7 @@ class Routes {
       case eventForm:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                EventFormPage(title: 'Add Event'));
+                EventFormPage(title: 'Event Form'));
     }
 
     return null;

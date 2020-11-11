@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 import '../model/event_model.dart';
 import '../model/event.dart';
@@ -85,27 +86,12 @@ class _EventListWidgetState extends State<EventListWidget> {
                           _selectedIndex = i;
                           _selectedEvent =
                               Event.fromMap(snapshot.data.docs[i].data());
-                          print("Selected ID: $_selectedEvent");
+                          print("Selected Event: $_selectedEvent");
                         });
                       }),
                 );
               });
         });
-  }
-
-  // Future function to add an event to the firestore database
-  Future<void> _addEvent() async {
-    var event = await Navigator.pushNamed(context, "/eventForm");
-
-    if (event != null) {
-      setState(() {
-        _eventModel.insert(event);
-        var snackbar = SnackBar(content: Text("Event has been added."));
-        Scaffold.of(context).showSnackBar(snackbar);
-      });
-
-      print("Adding event $event...");
-    }
   }
 
   // Building a tile representing a single event in the event list
@@ -125,7 +111,7 @@ class _EventListWidgetState extends State<EventListWidget> {
           IconButton(
             icon: Icon(Icons.edit),
             onPressed: () {
-              _editEvent(event);
+              _editEvent();
             }
           ),
           IconButton(
@@ -149,6 +135,21 @@ class _EventListWidgetState extends State<EventListWidget> {
     return await _eventModel.getAll();
   }
 
+    // Future function to add an event to the firestore database
+  Future<void> _addEvent() async {
+    var event = await Navigator.pushNamed(context, "/eventForm");
+
+    if (event != null) {
+      setState(() {
+        _eventModel.insert(event);
+        var snackbar = SnackBar(content: Text("Event has been added."));
+        Scaffold.of(context).showSnackBar(snackbar);
+      });
+
+      print("Adding event $event...");
+    }
+  }
+
   // Deleting a single event based on event object
   Future<void> _deleteEvent(Event event) async {
     setState(() {
@@ -158,10 +159,21 @@ class _EventListWidgetState extends State<EventListWidget> {
     });
   }
 
-  Future<void> _editEvent(Event event) async {
-    setState(() {
-      _eventModel.update(event);
-    });
+  Future<void> _editEvent() async {
+    if (_selectedEvent != null) {
+      print('selected Event: $_selectedEvent');
+      var newEvent = await Navigator.pushNamed(context, "/eventForm", arguments: _selectedEvent);
+
+      if (newEvent != null) {
+        setState(() {
+          _eventModel.insert(newEvent);
+          var snackbar = SnackBar(content: Text("Event has been edited."));
+          Scaffold.of(context).showSnackBar(snackbar);
+        });
+      }
+    } else {
+      print('Please select an event first!');
+    }
   }
 
   void _showViewDialog(BuildContext context, Event event) {

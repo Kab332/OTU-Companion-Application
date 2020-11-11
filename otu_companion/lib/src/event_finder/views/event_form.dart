@@ -21,8 +21,10 @@ class _EventFormPageState extends State<EventFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final Event selectedEvent = ModalRoute.of(context).settings.arguments;
     DateTime _currentDate = DateTime.now();
     TimeOfDay _currentTime = TimeOfDay.now();
+    print('selected event in event form: ${ModalRoute.of(context).toString()}');
 
     return Scaffold(
       appBar: AppBar(
@@ -38,7 +40,7 @@ class _EventFormPageState extends State<EventFormPage> {
                 labelText: 'Event Name',
               ),
               autovalidateMode: AutovalidateMode.always,
-              // set initial value, i noticed that the initial value is not actually the form value until it is edited,
+              initialValue: selectedEvent != null ? selectedEvent.name : '',
               // validation to check if empty or not 9 numbers
               validator: (String value) {
                 if (value.isEmpty) {
@@ -55,6 +57,7 @@ class _EventFormPageState extends State<EventFormPage> {
               decoration: const InputDecoration(
                 labelText: 'Description',
               ),
+              initialValue: selectedEvent != null ? selectedEvent.description : '',
               autovalidateMode: AutovalidateMode.always,
               // validation to check if there is no grade, or if the grade is more than 3 characters
               validator: (String value) {
@@ -85,7 +88,7 @@ class _EventFormPageState extends State<EventFormPage> {
                     onPressed: () {
                       showDatePicker(
                               context: context,
-                              initialDate: _startDate,
+                              initialDate: selectedEvent != null ? selectedEvent.startDateTime : _startDate,
                               firstDate: _currentDate,
                               lastDate: DateTime(2150))
                           .then((value) {
@@ -121,7 +124,7 @@ class _EventFormPageState extends State<EventFormPage> {
                   onPressed: () {
                     showTimePicker(
                       context: context,
-                      initialTime: _currentTime,
+                      initialTime: selectedEvent != null ? selectedEvent.startDateTime : _currentTime,
                     ).then((value) {
                       setState(() {
                         _startDate = DateTime(
@@ -157,7 +160,7 @@ class _EventFormPageState extends State<EventFormPage> {
                     onPressed: () {
                       showDatePicker(
                               context: context,
-                              initialDate: _endDate,
+                              initialDate: selectedEvent != null ? selectedEvent.endDateTime : _endDate,
                               firstDate: _currentDate,
                               lastDate: DateTime(2150))
                           .then((value) {
@@ -192,7 +195,7 @@ class _EventFormPageState extends State<EventFormPage> {
                   onPressed: () {
                     showTimePicker(
                       context: context,
-                      initialTime: _currentTime,
+                      initialTime: selectedEvent != null ? selectedEvent.endDateTime : _currentTime,
                     ).then((value) {
                       setState(() {
                         _endDate = DateTime(
