@@ -1,8 +1,15 @@
-# How to get to Event Finder
+# Event Finder
+
+## Description
+The purpose of the Event Finder is to help users find club events happening around the university. Users can add events, edit events, delete events and find events created by other users. These events will be presented to the user, and they will be   able to manage and view events at their leisure. These events also have push notifications to let the user know how close the event date is coming. 
+
+Currently, because the Event Finder is still in development, it functions more as an event planner in the sense that the user can only add, edit, or delete events and cannot “find” events from other users. Events are stored on the cloud, but are only accessible by the main user. 
+
+## How to get to Event Finder
 1. Begin by opening the OTU companion app.
 2. Click the drawers on the top left and select Event Finder.
 
-# How to interact with the Event Finder
+## How to interact with the Event Finder
 Upon navigating to the event finder, a list of events will be displayed from the Firestore in the event box. If there are no events, then the database is empty, and it is up to the user to populate it with events. Our event finder supports the following main functions
   1. Add an event
   2. View event details
