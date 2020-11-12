@@ -24,8 +24,6 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   Event _selectedEvent;
 
-  String viewType = "list";
-
   @override
   void initState() {
     super.initState();
@@ -64,34 +62,42 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   // This function returns the body of the event finder
   Widget _buildEventFinder() {
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Center(
-            child: Container(
-              height: 500.0,
-              width: 350.0,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
+    ViewModel _viewModel = ViewModel(); 
+    return FutureBuilder(
+      future: _getViews(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Center(
+                child: Container(
+                  height: 500.0,
+                  width: 350.0,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                  ),
+                  child: this.views != null && this.views[0].viewType == "list" ? _buildListView() : _buildGridView(),
+                ),
               ),
-              child: viewType == "list" ? _buildListView() : _buildGridView(),
             ),
-          ),
-        ),
-        FlatButton(
-          child: Text("Switch View"),
-          onPressed: () {
-            setState(() {
-              if (viewType == "list") {
-                viewType = "grid";
-              } else if (viewType == "grid") {
-                viewType = "list";
-              }
-            });
-          },
-        )
-      ],
+            FlatButton(
+              child: Text("Switch Views"),
+              onPressed: () {
+                setState(() {
+                  if (this.views[0].viewType == "list") {
+                    this.views[0].viewType = "grid";
+                    _viewModel.updateView(View(id: this.views[0].id, viewType: "grid"));
+                  } else if (this.views[0].viewType == "grid") {
+                    this.views[0].viewType = "list";
+                    _viewModel.updateView(View(id: this.views[0].id, viewType: "list"));
+                  }
+                });
+              },
+            )
+          ],
+        );
+      }
     );
   }
 
@@ -100,7 +106,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   Widget _buildListView() {
     EventModel _eventModel = EventModel();
     return FutureBuilder<QuerySnapshot>(
-        future: _eventModel.getAll(),
+        future: _eventModel.getAll(), 
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
             return ListView(
@@ -251,9 +257,9 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   // ViewModel to return grades for this view
   Future<List<View>> _getViews() async {
-    List<View> views = await _viewModel.getView();
+    List<View> views = await _viewModel.getViews();
     for (int i = 0; i < views.length; i++) {
-      print("Views: ${views[i].viewType}");
+      print("Views: ${views[i].toMap()}");
     }
     this.views = views;
     return views;
