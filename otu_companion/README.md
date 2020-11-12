@@ -16,6 +16,7 @@ Upon navigating to the event finder, a list of events will be displayed from the
   3. Select an event
   4. Edit an event
   5. Delete an event
+  6. Switch views
 
 ## Add an event
 To add an event, the user can click on the “+” icon on the app bar in the top right corner, fill in the required information, then press the save icon in the bottom right. Tapping the save icon should bring the user back to the main list view, with the added event
@@ -30,6 +31,9 @@ To edit an event, you will need to select the event first, otherwise an alert di
 
 ## Delete an event
 To delete an event, first select the event and then click the trash can icon on the top right. If an event is not selected when the icon is clicked then an alert will pop up warning you of your mistake.
+
+## Switch views
+To switch view from list view to grid view or vice versa, press the switch view button. The current view is stored locally and will be retrieved when the program is reopened.
 
 ## Note: 
 Notifications will show up based on the start date of the event. If the start date is within 24 hours then the notification will be sent instantly. If it is greater than 24 hours then the notification will be sent later on when there is 24 hours left until the start date.
