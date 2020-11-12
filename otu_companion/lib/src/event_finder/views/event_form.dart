@@ -38,8 +38,6 @@ class _EventFormPageState extends State<EventFormPage> {
     tz.initializeTimeZones();
     _eventNotifications.init();
 
-    print('selected event in event form: ${ModalRoute.of(context).toString()}');
-
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
@@ -77,7 +75,7 @@ class _EventFormPageState extends State<EventFormPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // handling validation here, also sending the grade back to the function that invoked this
+          // handling validation here, also sending the event back to the function that invoked this
           if (_formKey.currentState.validate()) {
             Event event = Event(
               name: _name != "" ? _name : selectedEvent.name,
@@ -101,13 +99,14 @@ class _EventFormPageState extends State<EventFormPage> {
                   later,
                   event.reference != null ? event.reference.id : null);
             } else {
-              // send the notification now
+              // otherwise send the notification now
               _eventNotifications.sendNotificationNow(
                   event.name,
                   event.description,
                   event.reference != null ? event.reference.id : null);
             }
 
+            // go back to event list
             Navigator.pop(context, event);
           }
         },
@@ -174,6 +173,8 @@ class _EventFormPageState extends State<EventFormPage> {
           _date = _endDate;
         }
     }
+
+    print('current selected date $_currentSelectedDate');
 
     return Container(
       child: Row(

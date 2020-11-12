@@ -5,17 +5,21 @@ import 'package:sqflite/sqflite.dart';
 import 'database_utilities.dart';
 import 'event.dart';
 
+// model that represents the CRUD functions, used lecture 07a_Cloud_Storage for assistance
 class EventModel {
+  // future function of that returns a QuerySnapshot to get all events from the database
   Future<QuerySnapshot> getAll() async {
     return await FirebaseFirestore.instance.collection('events').get();
   }
 
+  // future function to insert an event to the database
   Future<void> insert(Event event) async {
     CollectionReference events =
         FirebaseFirestore.instance.collection('events');
     events.add(event.toMap());
   }
 
+   // future function to update an event to the database
   Future<void> update(Event event) async {
     event.reference.update({
       'name': event.name,
@@ -25,47 +29,9 @@ class EventModel {
     });
   }
 
+   // future function to delete an event from the database
   Future<void> delete(Event event) async {
     print('deleting event $event...');
     event.reference.delete();
   }
-
-  /*
-
-  Functions to be used for local settings instead 
-
-  Future<List<Event>> getAll() async {
-    final db = await DatabaseUtilities.init();
-    final List<Map<String, dynamic>> data = await db.query('events');
-    List<Event> events = [];
-    if (data.length > 0) {
-      for (var i = 0; i < data.length; i++) {
-        events.add(Event.fromMap(data[i]));
-      }
-    }
-    return events;
-  }
-
-  Future<void> insert(Event event) async {
-    final db = await DatabaseUtilities.init();
-    db.insert(
-      'events',
-      event.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
-  Future<void> deleteEventById(int id) async {
-    final db = await DatabaseUtilities.init();
-    await db.delete(
-      'events',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-  }
-
-  Future<void> deleteAll() async {
-    final db = await DatabaseUtilities.init();
-    db.execute("DELETE FROM events");
-  }*/
 }

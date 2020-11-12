@@ -34,14 +34,17 @@ class _EventListWidgetState extends State<EventListWidget> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: <Widget>[
+          // add an event
           IconButton(
             icon: Icon(Icons.add),
             onPressed: _addEvent,
           ),
+          // edit selected event
           IconButton(
             icon: Icon(Icons.edit),
             onPressed: _editEvent,
           ),
+          // delete selected event
           IconButton(
             icon: Icon(Icons.delete),
             onPressed: _deleteEvent,
@@ -59,9 +62,8 @@ class _EventListWidgetState extends State<EventListWidget> {
           padding: EdgeInsets.all(10.0),
           child: Center(
             child: Container(
-              padding: EdgeInsets.all(10.0),
-              height: 550.0,
-              width: 300.0,
+              height: 500.0,
+              width: 350.0,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
               ),
@@ -92,16 +94,15 @@ class _EventListWidgetState extends State<EventListWidget> {
         });
   }
 
-  // NEW: bulidEvent Randy style
   Widget buildEvent(BuildContext context, DocumentSnapshot eventData) {
     final event =
         Event.fromMap(eventData.data(), reference: eventData.reference);
 
     return Container(
       decoration: BoxDecoration(
-          color: _selectedEvent != null && event.id == _selectedEvent.id
-              ? Colors.blue
-              : Colors.white),
+        border: _selectedEvent != null && event.id == _selectedEvent.id ? Border.all(
+          width: 3.0, color: Colors.blueAccent) : null,
+      ),
       child: GestureDetector(
           child: buildTile(context, event),
           onTap: () {
@@ -132,6 +133,7 @@ class _EventListWidgetState extends State<EventListWidget> {
     );
   }
 
+  // Future function of type QuerySnapshot to return all events to the event list, uses instance of eventModel to get events
   Future<QuerySnapshot> getAllEvents() async {
     _eventModel.getAll().then((value) {
       // print events for debugging purposes
@@ -142,10 +144,11 @@ class _EventListWidgetState extends State<EventListWidget> {
     return await _eventModel.getAll();
   }
 
-  // Future function to add an event to the firestore database
+  // Future function to add an event to the firestore database, also pushes a snackbar indicating if it was successful
   Future<void> _addEvent() async {
     var event = await Navigator.pushNamed(context, "/eventForm", arguments: null);
 
+    // check if event is not null, navigating back will keep it null
     if (event != null) {
       setState(() {
         _eventModel.insert(event);
@@ -157,7 +160,7 @@ class _EventListWidgetState extends State<EventListWidget> {
     }
   }
 
-  // Deleting a single event based on event object
+  // Future function to deleting a single event based on the selected event
   Future<void> _deleteEvent() async {
     print('deleting event: $_selectedEvent');
     if (_selectedEvent != null) {
@@ -169,11 +172,12 @@ class _EventListWidgetState extends State<EventListWidget> {
         _selectedEvent = null;
       });
     } else {
+      // if an event wasn't selected, show error dialog
       _showAlertDialog();
     }
   }
 
-  // Editting the currently selected event
+  // Future function that will bring up the event form with the currently selected event, shows a snackbar if event was successful
   Future<void> _editEvent() async {
     if (_selectedEvent != null) {
       print('selected Event: $_selectedEvent');
@@ -190,11 +194,13 @@ class _EventListWidgetState extends State<EventListWidget> {
           Scaffold.of(context).showSnackBar(snackbar);
         });
       }
+      // if an event wasn't selected, show error dialog
     } else {
       _showAlertDialog();
     }
   }
 
+  // function that shows a dialog that shows quick details about the event selected, pressing dismiss or clicking away will make it disappear
   void _showViewDialog(BuildContext context, Event event) {
     showDialog<void>(
       context: context,
@@ -205,24 +211,28 @@ class _EventListWidgetState extends State<EventListWidget> {
             height: 300,
             child: Column(
               children: [
+                // event name form field
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Event Name',
                   ),
                   initialValue: event.name,
                 ),
+                // event description form field
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Event Description',
                   ),
                   initialValue: event.description,
                 ),
+                // start date form field
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Start Date and Time',
                   ),
                   initialValue: event.startDateTime.toString(),
                 ),
+                // end date form field
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'End Date and Time',
@@ -250,6 +260,7 @@ class _EventListWidgetState extends State<EventListWidget> {
     );
   }
 
+  // function that shows an error dialog if the user did not select an event before clicking edit or delete
   void _showAlertDialog() {
     showDialog<void>(
       context: context,
