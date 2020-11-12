@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+// Entity class Event
 class Event {
-  int id;
+  String id;
   String name;
   String description;
   DateTime startDateTime;
-  DateTime endDateTime; 
+  DateTime endDateTime;
+  DocumentReference reference;
 
   Event({this.name, this.description, this.startDateTime, this.endDateTime});
 
@@ -11,12 +15,16 @@ class Event {
     return 'event: $id, $name, $description, ($startDateTime) ($endDateTime)';
   }
 
-  Event.fromMap(Map<String, dynamic> maps) {
-    this.id = maps['id'];
+  Event.fromMap(Map<String, dynamic> maps, {this.reference}) {
+    this.id = reference.id;
     this.name = maps['name'];
     this.description = maps['description'];
-    this.startDateTime = maps['startDateTime'];
-    this.endDateTime = maps['endDateTime'];
+    this.startDateTime = maps['startDateTime'] != null
+        ? DateTime.parse(maps['startDateTime'].toDate().toString())
+        : null;
+    this.endDateTime = maps['endDateTime'] != null
+        ? DateTime.parse(maps['endDateTime'].toDate().toString())
+        : null;
   }
 
   Map<String, dynamic> toMap() {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'event_finder/event_finder_main.dart';
 import 'res/routes/routes.dart';
 import 'res/values/theme.dart';
 
