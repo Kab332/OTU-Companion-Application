@@ -52,7 +52,7 @@ class MainSideDrawer extends StatelessWidget
   {
     return DrawerHeader(
       decoration: BoxDecoration(
-        color:  Colors.blue,
+        color:  Theme.of(context).primaryColor,
       ),
       child: Center(
         child: Column(
@@ -71,7 +71,7 @@ class MainSideDrawer extends StatelessWidget
                   fit: BoxFit.fitWidth,
                   child: Text(
                     //TODO: Add Profile Name
-                    "Leon balogne",
+                    "Leon Balogne",
                     style: TextStyle(
                       fontSize: 18
                     ),

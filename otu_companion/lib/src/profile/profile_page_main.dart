@@ -88,7 +88,7 @@ class _ProfilePageMainState extends State<ProfilePageMain>
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(
-                      color: Colors.blue
+                      color: Theme.of(context).primaryColor,
                   ),
                 ),
                 child: Center(
@@ -123,7 +123,7 @@ class _ProfilePageMainState extends State<ProfilePageMain>
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(
-                      color: Colors.blue
+                      color: Theme.of(context).primaryColor,
                   ),
                 ),
                 child: Center(
@@ -159,7 +159,7 @@ class _ProfilePageMainState extends State<ProfilePageMain>
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(
-                      color: Colors.blue
+                      color: Theme.of(context).primaryColor,
                   ),
                 ),
                 child: Center(
@@ -194,7 +194,7 @@ class _ProfilePageMainState extends State<ProfilePageMain>
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(
-                      color: Colors.blue
+                      color: Theme.of(context).primaryColor,
                   ),
                 ),
                 child: Center(

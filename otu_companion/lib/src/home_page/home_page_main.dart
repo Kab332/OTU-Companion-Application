@@ -66,11 +66,13 @@ class _HomePageMainState extends State<HomePageMain>
             ),
           ),
           Card(
-            child: SizedBox(
-              height: 200,
-              child: Container(
+            child: Container(
+              height: MediaQuery.of(context).size.height*0.22,
+              decoration: BoxDecoration(
                 color: Colors.black,
+                borderRadius: BorderRadius.circular(18),
               ),
+              child: Container(),
             ),
           ),
         ],
