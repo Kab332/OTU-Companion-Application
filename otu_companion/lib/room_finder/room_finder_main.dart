@@ -22,8 +22,8 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
 
   final classesSelected = TextEditingController();
 
-  List<DropdownMenuItem> classes;
-  List<DropdownMenuItem> times;
+  List<DropdownMenuItem> classes = new List<DropdownMenuItem>();
+  List<DropdownMenuItem> times = new List<DropdownMenuItem>();
 
   @override
   void initState() {
