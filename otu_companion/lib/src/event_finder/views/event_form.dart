@@ -148,7 +148,7 @@ class _EventFormPageState extends State<EventFormPage> {
       // Validation to check if empty or not 9 numbers
       validator: (String value) {
         if (value.isEmpty) {
-          return 'Error: Please enter an event!';
+          return 'Error: Please enter ' + type + '!';
         }
         return null;
       },
