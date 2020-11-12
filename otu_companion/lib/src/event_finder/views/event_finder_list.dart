@@ -4,6 +4,8 @@ import 'dart:async';
 
 import '../model/event_model.dart';
 import '../model/event.dart';
+import '../model/view.dart';
+import '../model/view_model.dart';
 
 class EventListWidget extends StatefulWidget {
   EventListWidget({Key key, this.title}) : super(key: key);
@@ -16,14 +18,17 @@ class EventListWidget extends StatefulWidget {
 
 class _EventListWidgetState extends State<EventListWidget> {
   List<Event> events;
+  List<View> views;
   final _eventModel = EventModel();
+  final _viewModel = ViewModel();
 
   Event _selectedEvent;
 
   @override
   void initState() {
     super.initState();
-
+    
+    _getViews();
     getAllEvents();
   }
 
@@ -206,6 +211,16 @@ class _EventListWidgetState extends State<EventListWidget> {
       _showAlertDialog();
     }
   }
+
+  // ViewModel to return grades for this view
+  Future<List<View>> _getViews() async {
+    List<View> views = await _viewModel.getView();
+    for (int i = 0; i < views.length; i++) {
+      print("Views: ${views[i].viewType}");
+    }
+    this.views = views;
+    return views;
+  } 
 
   // Function that shows a dialog that shows quick details about the event selected, pressing dismiss or clicking away will make it disappear
   void _showViewDialog(BuildContext context, Event event) {
