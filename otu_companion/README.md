@@ -1,16 +1,12 @@
-# otu_companion
+# Empty Room Finder
+A campus empty classroom finder 
 
-A OTU Companion app that helps with student's daily life on campus.
+# Purpose:
+To help students find empty classrooms for studying, club events, etc.
 
-## Getting Started
+# How to use:
+Simply select a date & time or room and it'll show either what rooms are available at that date & time or what times that room is available.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+How it works:
+A python webscraper was made to crawl through the Available Courses preview collecting the occupied class time schedules and then the data was parsed to Firestore.
+The client app reads the Firestore database and checks which rows are applicable to the search parameters.
