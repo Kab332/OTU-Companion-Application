@@ -8,11 +8,14 @@ void main() {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
+
   @override
   Widget build(BuildContext context) {
+    Themes theme = new Themes();
+    theme.mainAppTheme();
     return MaterialApp(
       title: 'OTU Companion Hub',
-      theme: Themes.mainAppTheme(),
       initialRoute: Routes.homeMain,
       onGenerateRoute: Routes.generateRoute,
     );
