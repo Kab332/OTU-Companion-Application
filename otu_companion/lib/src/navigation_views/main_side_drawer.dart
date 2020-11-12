@@ -19,7 +19,7 @@ class MainSideDrawer extends StatelessWidget
               shrinkWrap: true,
               padding: EdgeInsets.all(1),
               children: <Widget>[
-                _buildDrawerHeader(),
+                _buildDrawerHeader(context),
                 _buildHomeTile(context),
                 _buildProfileTile(context),
                 Divider(
@@ -48,38 +48,39 @@ class MainSideDrawer extends StatelessWidget
     );
   }
 
-  Widget _buildDrawerHeader()
+  Widget _buildDrawerHeader(BuildContext context)
   {
     return DrawerHeader(
       decoration: BoxDecoration(
         color:  Colors.blue,
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            alignment: Alignment.centerLeft,
-            //TODO: Add Profile Icon
-            child: CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 35,
+      child: Center(
+        child: Column(
+          children: <Widget>[
+            Container(
+              //TODO: Add Profile Icon
+              child: CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: 50,
+              ),
             ),
-          ),
-          Flexible(
-            child:Container(
-              margin: EdgeInsets.only(left:10, right:10),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                //TODO: Add Profile Name
-                "Leon balogne",
-                style: TextStyle(
-                  fontSize: 18
+            Flexible(
+              child:Container(
+                margin: EdgeInsets.only(top:8, bottom:5,left:10, right:10),
+                child: FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(
+                    //TODO: Add Profile Name
+                    "Leon balogne",
+                    style: TextStyle(
+                      fontSize: 18
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -91,6 +92,9 @@ class MainSideDrawer extends StatelessWidget
       leading: Icon(Icons.home),
       onTap: ()
       {
+        // Pop Side Menu
+        Navigator.pop(context);
+        // Pop Current Scaffold and Push Home Scaffold
         Navigator.popAndPushNamed(context, Routes.homeMain);
       },
     );
@@ -103,7 +107,10 @@ class MainSideDrawer extends StatelessWidget
       leading: Icon(Icons.account_box),
       onTap: ()
       {
+        // Pop Side Menu
         Navigator.pop(context);
+        // Pop Current Scaffold and Push Home Scaffold
+        Navigator.popAndPushNamed(context, Routes.profileMain);
       },
     );
   }
