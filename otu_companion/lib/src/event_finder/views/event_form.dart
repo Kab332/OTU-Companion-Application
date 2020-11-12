@@ -148,7 +148,7 @@ class _EventFormPageState extends State<EventFormPage> {
       // Validation to check if empty or not 9 numbers
       validator: (String value) {
         if (value.isEmpty) {
-          return 'Error: Please enter an event!';
+          return 'Error: Please enter ' + type + '!';
         }
         return null;
       },
@@ -270,7 +270,7 @@ class _EventFormPageState extends State<EventFormPage> {
           type + ": ",
           style: TextStyle(color: Colors.grey[700], fontSize: 16.0),
         ),
-        Text(_date.hour.toString() + ":" + _date.minute.toString()),
+        Text(_date.hour.toString() + ":" + minuteToString(_date.minute)),
         FlatButton(
           child: Text("Select"),
           onPressed: () {
@@ -302,5 +302,14 @@ class _EventFormPageState extends State<EventFormPage> {
         ),
       ]),
     );
+  }
+
+  // Function to convert minute to string format, will be moved to another file later
+  String minuteToString(int minute) {
+    if (minute < 10) {
+      return "0" + minute.toString();
+    } else {
+      return minute.toString();
+    }
   }
 }
