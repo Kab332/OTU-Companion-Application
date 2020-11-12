@@ -266,8 +266,8 @@ class _EventListWidgetState extends State<EventListWidget> {
                   onPressed: () {
                     Scaffold.of(context).hideCurrentSnackBar();
                   }));
-
           Scaffold.of(context).showSnackBar(snackbar);
+          _selectedEvent = null;
         });
       }
       // If an event wasn't selected, show error dialog
