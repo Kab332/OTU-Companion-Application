@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// entity class Event
+// Entity class Event
 class Event {
   String id;
   String name;

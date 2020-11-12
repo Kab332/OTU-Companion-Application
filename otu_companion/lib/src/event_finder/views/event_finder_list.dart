@@ -34,28 +34,29 @@ class _EventListWidgetState extends State<EventListWidget> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: <Widget>[
-          // add an event
+          // Add an event
           IconButton(
             icon: Icon(Icons.add),
             onPressed: _addEvent,
           ),
-          // edit selected event
+          // Edit selected event
           IconButton(
             icon: Icon(Icons.edit),
             onPressed: _editEvent,
           ),
-          // delete selected event
+          // Delete selected event
           IconButton(
             icon: Icon(Icons.delete),
             onPressed: _deleteEvent,
           ),
         ],
       ),
-      body: buildEventFinder(),
+      body: _buildEventFinder(),
     );
   }
 
-  Widget buildEventFinder() {
+  // This function returns the body of the event finder
+  Widget _buildEventFinder() {
     return Column(
       children: [
         Padding(
@@ -75,17 +76,18 @@ class _EventListWidgetState extends State<EventListWidget> {
     );
   }
 
+  /* This function returns a list of events displayed in a ListView and obtained
+     from a cloud storage */
   Widget _buildListView() {
     EventModel _eventModel = EventModel();
     return FutureBuilder<QuerySnapshot>(
         future: _eventModel.getAll(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          // NEW: Modified if statement and changed ListView.Builder to ListView
           if (snapshot.hasData) {
             return ListView(
               children: snapshot.data.docs
                   .map((DocumentSnapshot document) =>
-                      buildEvent(context, document))
+                      _buildEvent(context, document))
                   .toList(),
             );
           } else {
@@ -94,17 +96,20 @@ class _EventListWidgetState extends State<EventListWidget> {
         });
   }
 
-  Widget buildEvent(BuildContext context, DocumentSnapshot eventData) {
+  /* This function returns the container of a list tile and handles the selection
+     functionality. */
+  Widget _buildEvent(BuildContext context, DocumentSnapshot eventData) {
     final event =
         Event.fromMap(eventData.data(), reference: eventData.reference);
 
     return Container(
       decoration: BoxDecoration(
-        border: _selectedEvent != null && event.id == _selectedEvent.id ? Border.all(
-          width: 3.0, color: Colors.blueAccent) : null,
+        border: _selectedEvent != null && event.id == _selectedEvent.id
+            ? Border.all(width: 3.0, color: Colors.blueAccent)
+            : null,
       ),
       child: GestureDetector(
-          child: buildTile(context, event),
+          child: _buildTile(context, event),
           onTap: () {
             setState(() {
               _selectedEvent = event;
@@ -114,8 +119,8 @@ class _EventListWidgetState extends State<EventListWidget> {
     );
   }
 
-  // Building a tile representing a single event in the event list
-  Widget buildTile(BuildContext context, Event event) {
+  // This function returns the tile representing a single event in the event list
+  Widget _buildTile(BuildContext context, Event event) {
     return ListTile(
       title: Text(event.name),
       subtitle: Text(event.description),
@@ -136,7 +141,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   // Future function of type QuerySnapshot to return all events to the event list, uses instance of eventModel to get events
   Future<QuerySnapshot> getAllEvents() async {
     _eventModel.getAll().then((value) {
-      // print events for debugging purposes
+      // Print events for debugging purposes
       for (int i = 0; i < value.docs.length; i++) {
         print(value.docs[i].data());
       }
@@ -146,9 +151,10 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   // Future function to add an event to the firestore database, also pushes a snackbar indicating if it was successful
   Future<void> _addEvent() async {
-    var event = await Navigator.pushNamed(context, "/eventForm", arguments: null);
+    var event =
+        await Navigator.pushNamed(context, "/eventForm", arguments: null);
 
-    // check if event is not null, navigating back will keep it null
+    // Check if event is not null, navigating back will keep it null
     if (event != null) {
       setState(() {
         _eventModel.insert(event);
@@ -172,7 +178,7 @@ class _EventListWidgetState extends State<EventListWidget> {
         _selectedEvent = null;
       });
     } else {
-      // if an event wasn't selected, show error dialog
+      // If an event wasn't selected, show error dialog
       _showAlertDialog();
     }
   }
@@ -181,7 +187,8 @@ class _EventListWidgetState extends State<EventListWidget> {
   Future<void> _editEvent() async {
     if (_selectedEvent != null) {
       print('selected Event: $_selectedEvent');
-      var event = await Navigator.pushNamed(context, '/eventForm', arguments: _selectedEvent);
+      var event = await Navigator.pushNamed(context, '/eventForm',
+          arguments: _selectedEvent);
 
       Event newEvent = event;
 
@@ -194,13 +201,13 @@ class _EventListWidgetState extends State<EventListWidget> {
           Scaffold.of(context).showSnackBar(snackbar);
         });
       }
-      // if an event wasn't selected, show error dialog
+      // If an event wasn't selected, show error dialog
     } else {
       _showAlertDialog();
     }
   }
 
-  // function that shows a dialog that shows quick details about the event selected, pressing dismiss or clicking away will make it disappear
+  // Function that shows a dialog that shows quick details about the event selected, pressing dismiss or clicking away will make it disappear
   void _showViewDialog(BuildContext context, Event event) {
     showDialog<void>(
       context: context,
@@ -211,28 +218,28 @@ class _EventListWidgetState extends State<EventListWidget> {
             height: 300,
             child: Column(
               children: [
-                // event name form field
+                // Event name form field
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Event Name',
                   ),
                   initialValue: event.name,
                 ),
-                // event description form field
+                // Event description form field
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Event Description',
                   ),
                   initialValue: event.description,
                 ),
-                // start date form field
+                // Start date form field
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Start Date and Time',
                   ),
                   initialValue: event.startDateTime.toString(),
                 ),
-                // end date form field
+                // End date form field
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'End Date and Time',
@@ -260,7 +267,7 @@ class _EventListWidgetState extends State<EventListWidget> {
     );
   }
 
-  // function that shows an error dialog if the user did not select an event before clicking edit or delete
+  // Function that shows an error dialog if the user did not select an event before clicking edit or delete
   void _showAlertDialog() {
     showDialog<void>(
       context: context,

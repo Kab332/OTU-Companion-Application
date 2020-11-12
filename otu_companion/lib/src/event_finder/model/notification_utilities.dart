@@ -1,4 +1,4 @@
-// all of this code was used from Lecture 06a_Snackbars_and_Notifications/lib/notifications.dart
+// All of this code was used from Lecture 06a_Snackbars_and_Notifications/lib/notifications.dart
 // https://github.com/CSCI4100U/LectureExamples/blob/092bdda6fb3074b5aa61a7ec0d0e89cd55c67a0f/06a_Snackbars_and_Notifications/lib/main.dart
 import 'dart:io' show Platform;
 
@@ -23,7 +23,7 @@ class EventNotifications {
       _requestIOSPermission();
     }
 
-    // setup the notification plug-in
+    // Setup the notification plug-in
     var initializationSettingsAndroid =
         AndroidInitializationSettings('mipmap/ic_launcher');
     var initializationSettingsIOS = IOSInitializationSettings(
@@ -45,7 +45,7 @@ class EventNotifications {
       onSelectNotification: onSelectNotification,
     );
 
-    // setup a notification channel
+    // Setup a notification channel
     var androidChannelInfo = AndroidNotificationDetails(
       channelId,
       channelName,

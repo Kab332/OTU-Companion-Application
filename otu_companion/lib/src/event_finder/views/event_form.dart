@@ -44,6 +44,7 @@ class _EventFormPageState extends State<EventFormPage> {
         title: Text(widget.title),
       ),
       body: Container(
+        // Some UI design for the form
         height: double.infinity,
         width: double.infinity,
         margin: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
@@ -62,8 +63,8 @@ class _EventFormPageState extends State<EventFormPage> {
             padding: EdgeInsets.symmetric(horizontal: 10.0),
             child: Column(
               children: [
-                _buildTextFieldForm("Event Name"),
-                _buildTextFieldForm("Description"),
+                _buildTextFormField("Event Name"),
+                _buildTextFormField("Description"),
                 _buildDate("Start Date"),
                 _buildTime("Start Time"),
                 _buildDate("End Date"),
@@ -75,21 +76,27 @@ class _EventFormPageState extends State<EventFormPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // handling validation here, also sending the event back to the function that invoked this
+          // Handling validation here, also sending the event back to the function that invoked this
           if (_formKey.currentState.validate()) {
             Event event = Event(
               name: _name != "" ? _name : selectedEvent.name,
-              description: _description != "" ? _description : selectedEvent.description,
-              startDateTime: _startSet == false && selectedEvent != null ? selectedEvent.startDateTime : _startDate,
-              endDateTime: _endSet == false && selectedEvent != null ? selectedEvent.endDateTime : _endDate,
+              description:
+                  _description != "" ? _description : selectedEvent.description,
+              startDateTime: _startSet == false && selectedEvent != null
+                  ? selectedEvent.startDateTime
+                  : _startDate,
+              endDateTime: _endSet == false && selectedEvent != null
+                  ? selectedEvent.endDateTime
+                  : _endDate,
             );
-            // calculating the difference in milliseconds between the event start date and the time it is not
+            // Calculating the difference in milliseconds between the event start date and the time it is not
             var secondsDiff = (event.startDateTime.millisecondsSinceEpoch -
                     tz.TZDateTime.now(tz.local).millisecondsSinceEpoch) ~/
                 1000;
 
             print('seconds: $secondsDiff');
-            // if the start date is greater than one day, send a notification later,
+
+            // If the start date is greater than one day, send a notification later,
             if (secondsDiff >= 86400) {
               var later = tz.TZDateTime.now(tz.local)
                   .add(Duration(seconds: secondsDiff - 86400));
@@ -99,14 +106,14 @@ class _EventFormPageState extends State<EventFormPage> {
                   later,
                   event.reference != null ? event.reference.id : null);
             } else {
-              // otherwise send the notification now
+              // Otherwise send the notification now
               _eventNotifications.sendNotificationNow(
                   event.name,
                   event.description,
                   event.reference != null ? event.reference.id : null);
             }
 
-            // go back to event list
+            // Go back to event list
             Navigator.pop(context, event);
           }
         },
@@ -116,7 +123,12 @@ class _EventFormPageState extends State<EventFormPage> {
     );
   }
 
-  Widget _buildTextFieldForm(String type) {
+  /*  This function returns a TextFormField based on the argument provided. At 
+      the moment this function can cover the event name, description, and 
+      imageURL fields (although the imageURL component of the event class has
+      not been fully implemented yet). The label, initial value, and the value
+      changed are all based on the argument.  */
+  Widget _buildTextFormField(String type) {
     String typeVal = "";
 
     if (type == "Event Name" && selectedEvent != null) {
@@ -127,14 +139,13 @@ class _EventFormPageState extends State<EventFormPage> {
       typeVal = _imageURL;
     }
 
-    // Event Name Input
     return TextFormField(
       decoration: InputDecoration(
         labelText: type,
       ),
       autovalidateMode: AutovalidateMode.always,
       initialValue: selectedEvent != null ? typeVal : '',
-      // validation to check if empty or not 9 numbers
+      // Validation to check if empty or not 9 numbers
       validator: (String value) {
         if (value.isEmpty) {
           return 'Error: Please enter an event!';
@@ -153,25 +164,32 @@ class _EventFormPageState extends State<EventFormPage> {
     );
   }
 
-
-
+  /*  This function returns a container consisting of the date related 
+      components. The function is designed to handle both the start and
+      end dates based on the argument entered.  */
   Widget _buildDate(String type) {
     DateTime _date = DateTime.now();
 
+    // If this function is supposed to build the start date...
     if (type == "Start Date") {
-        if(selectedEvent != null && _startSet == false) {
-          _date = selectedEvent.startDateTime;
-          _startDate = _date;
-        } else {
-          _date = _startDate;
-        }
-    } else if (type == "End Date") {
-        if(selectedEvent != null && _endSet == false) {
-          _date = selectedEvent.endDateTime;
-          _endDate = _date;
-        } else {
-          _date = _endDate;
-        }
+      /* If this form is an edit request (there's a selected event), and a 
+         value for the start date has not been picked yet... */
+      if (selectedEvent != null && _startSet == false) {
+        _date = selectedEvent.startDateTime;
+        _startDate = _date;
+      } else {
+        _date = _startDate;
+      }
+    }
+    /* Otherwise if this function is supposed to build end date, similar 
+       logic to above... */
+    else if (type == "End Date") {
+      if (selectedEvent != null && _endSet == false) {
+        _date = selectedEvent.endDateTime;
+        _endDate = _date;
+      } else {
+        _date = _endDate;
+      }
     }
 
     return Container(
@@ -191,7 +209,7 @@ class _EventFormPageState extends State<EventFormPage> {
             onPressed: () {
               showDatePicker(
                       context: context,
-                      initialDate: _date,  
+                      initialDate: _date,
                       firstDate: DateTime.now(),
                       lastDate: DateTime(2150))
                   .then((value) {
@@ -204,7 +222,7 @@ class _EventFormPageState extends State<EventFormPage> {
                     _date.minute,
                     0,
                   );
-
+                  // Setting values based on whether this is a start or end date picker
                   if (type == "Start Date") {
                     _startDate = _date;
                     _startSet = true;
@@ -222,30 +240,29 @@ class _EventFormPageState extends State<EventFormPage> {
     );
   }
 
+  /* This function is similar to the previous function but is for time related
+     components instead. It handles both start and end times based on argument. */
   Widget _buildTime(String type) {
     DateTime _date = DateTime.now();
     TimeOfDay _time = TimeOfDay.now();
 
     if (type == "Start Time") {
-        if(selectedEvent != null && _startSet == false) {
-          _date = selectedEvent.startDateTime;
-          _startDate = _date;
-        } else {
-          _date = _startDate;
-        }
+      if (selectedEvent != null && _startSet == false) {
+        _date = selectedEvent.startDateTime;
+        _startDate = _date;
+      } else {
+        _date = _startDate;
+      }
     } else if (type == "End Time") {
-        if(selectedEvent != null && _endSet == false) {
-          _date = selectedEvent.endDateTime;
-          _endDate = _date;
-        } else {
-          _date = _endDate;
-        }
+      if (selectedEvent != null && _endSet == false) {
+        _date = selectedEvent.endDateTime;
+        _endDate = _date;
+      } else {
+        _date = _endDate;
+      }
     }
-      
-    _time = TimeOfDay(
-            hour: _date.hour,
-            minute: _date.minute);
 
+    _time = TimeOfDay(hour: _date.hour, minute: _date.minute);
 
     return Container(
       child: Row(children: [
@@ -259,8 +276,7 @@ class _EventFormPageState extends State<EventFormPage> {
           onPressed: () {
             showTimePicker(
               context: context,
-              initialTime:
-                  _time,
+              initialTime: _time,
             ).then((value) {
               setState(() {
                 _date = DateTime(
