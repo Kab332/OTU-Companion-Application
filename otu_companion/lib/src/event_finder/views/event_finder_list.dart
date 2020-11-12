@@ -20,6 +20,8 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   Event _selectedEvent;
 
+  String viewType = "list";
+
   @override
   void initState() {
     super.initState();
@@ -68,10 +70,22 @@ class _EventListWidgetState extends State<EventListWidget> {
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
               ),
-              child: _buildListView(),
+              child: viewType == "list" ? _buildListView() : _buildGridView(),
             ),
           ),
         ),
+        FlatButton(
+          child: Text("Switch View"),
+          onPressed: () {
+            setState(() {
+              if (viewType == "list") {
+                viewType = "grid";
+              } else if (viewType == "grid") {
+                viewType = "list";
+              }
+            });
+          },
+        )
       ],
     );
   }
@@ -85,6 +99,27 @@ class _EventListWidgetState extends State<EventListWidget> {
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
             return ListView(
+              children: snapshot.data.docs
+                  .map((DocumentSnapshot document) =>
+                      _buildEvent(context, document))
+                  .toList(),
+            );
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
+  }
+
+  /* This function returns a grid of events displayed in a GridView with 2 columns
+     and obtained from a cloud storage */
+  Widget _buildGridView() {
+    EventModel _eventModel = EventModel();
+    return FutureBuilder<QuerySnapshot>(
+        future: _eventModel.getAll(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasData) {
+            return GridView.count(
+              crossAxisCount: 2,
               children: snapshot.data.docs
                   .map((DocumentSnapshot document) =>
                       _buildEvent(context, document))
@@ -121,19 +156,21 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   // This function returns the tile representing a single event in the event list
   Widget _buildTile(BuildContext context, Event event) {
-    return ListTile(
-      title: Text(event.name),
-      subtitle: Text(event.description),
-      leading: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: Icon(Icons.visibility),
-            onPressed: () {
-              _showViewDialog(context, event);
-            },
-          ),
-        ],
+    return Card(
+      child: ListTile(
+        title: Text(event.name),
+        subtitle: Text(event.description),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(Icons.visibility),
+              onPressed: () {
+                _showViewDialog(context, event);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
