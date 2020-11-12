@@ -62,43 +62,47 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   // This function returns the body of the event finder
   Widget _buildEventFinder() {
-    ViewModel _viewModel = ViewModel(); 
+    ViewModel _viewModel = ViewModel();
     return FutureBuilder(
-      future: _getViews(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        return Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Center(
-                child: Container(
-                  height: 500.0,
-                  width: 350.0,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
+        future: _getViews(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          return Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Center(
+                  child: Container(
+                    height: 500.0,
+                    width: 350.0,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                    ),
+                    child:
+                        this.views != null && this.views[0].viewType == "list"
+                            ? _buildListView()
+                            : _buildGridView(),
                   ),
-                  child: this.views != null && this.views[0].viewType == "list" ? _buildListView() : _buildGridView(),
                 ),
               ),
-            ),
-            FlatButton(
-              child: Text("Switch Views"),
-              onPressed: () {
-                setState(() {
-                  if (this.views[0].viewType == "list") {
-                    this.views[0].viewType = "grid";
-                    _viewModel.updateView(View(id: this.views[0].id, viewType: "grid"));
-                  } else if (this.views[0].viewType == "grid") {
-                    this.views[0].viewType = "list";
-                    _viewModel.updateView(View(id: this.views[0].id, viewType: "list"));
-                  }
-                });
-              },
-            )
-          ],
-        );
-      }
-    );
+              FlatButton(
+                child: Text("Switch Views"),
+                onPressed: () {
+                  setState(() {
+                    if (this.views[0].viewType == "list") {
+                      this.views[0].viewType = "grid";
+                      _viewModel.updateView(
+                          View(id: this.views[0].id, viewType: "grid"));
+                    } else if (this.views[0].viewType == "grid") {
+                      this.views[0].viewType = "list";
+                      _viewModel.updateView(
+                          View(id: this.views[0].id, viewType: "list"));
+                    }
+                  });
+                },
+              )
+            ],
+          );
+        });
   }
 
   /* This function returns a list of events displayed in a ListView and obtained
@@ -106,7 +110,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   Widget _buildListView() {
     EventModel _eventModel = EventModel();
     return FutureBuilder<QuerySnapshot>(
-        future: _eventModel.getAll(), 
+        future: _eventModel.getAll(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
             return ListView(
@@ -206,7 +210,13 @@ class _EventListWidgetState extends State<EventListWidget> {
     if (event != null) {
       setState(() {
         _eventModel.insert(event);
-        var snackbar = SnackBar(content: Text("Event has been added."));
+        var snackbar = SnackBar(
+            content: Text("Event has been added."),
+            action: SnackBarAction(
+                label: "Dismiss",
+                onPressed: () {
+                  Scaffold.of(context).hideCurrentSnackBar();
+                }));
         Scaffold.of(context).showSnackBar(snackbar);
       });
 
@@ -220,8 +230,13 @@ class _EventListWidgetState extends State<EventListWidget> {
     if (_selectedEvent != null) {
       setState(() {
         _eventModel.delete(_selectedEvent);
-
-        var snackbar = SnackBar(content: Text("Event has been deleted."));
+        var snackbar = SnackBar(
+            content: Text("Event has been deleted."),
+            action: SnackBarAction(
+                label: "Dismiss",
+                onPressed: () {
+                  Scaffold.of(context).hideCurrentSnackBar();
+                }));
         Scaffold.of(context).showSnackBar(snackbar);
         _selectedEvent = null;
       });
@@ -244,8 +259,14 @@ class _EventListWidgetState extends State<EventListWidget> {
         newEvent.reference = _selectedEvent.reference;
         setState(() {
           _eventModel.update(newEvent);
+          var snackbar = SnackBar(
+              content: Text("Event has been edited."),
+              action: SnackBarAction(
+                  label: "Dismiss",
+                  onPressed: () {
+                    Scaffold.of(context).hideCurrentSnackBar();
+                  }));
 
-          var snackbar = SnackBar(content: Text("Event has been edited."));
           Scaffold.of(context).showSnackBar(snackbar);
         });
       }
