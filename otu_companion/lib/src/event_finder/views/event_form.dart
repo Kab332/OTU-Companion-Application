@@ -22,18 +22,19 @@ class _EventFormPageState extends State<EventFormPage> {
 
   String _name = '';
   String _description = '';
+  String _imageURL = '';
+
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now();
 
+  bool _startSet = false;
+  bool _endSet = false;
+
   Event selectedEvent;
-  DateTime _currentDate;
-  TimeOfDay _currentTime;
 
   @override
   Widget build(BuildContext context) {
     selectedEvent = widget.event != null ? widget.event : null;
-    _currentDate = DateTime.now();
-    _currentTime = TimeOfDay.now();
     tz.initializeTimeZones();
     _eventNotifications.init();
 
@@ -44,17 +45,34 @@ class _EventFormPageState extends State<EventFormPage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            _buildTextFieldForm("Event Name"),
-            _buildTextFieldForm("Description"),
-            _buildDate("Start Date"),
-            _buildTime("Start Time"),
-            _buildDate("End Date"),
-            _buildTime("End Time"),
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        margin: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(1.0)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey,
+            )
           ],
+        ),
+        child: Form(
+          key: _formKey,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.0),
+            child: Column(
+              children: [
+                _buildTextFieldForm("Event Name"),
+                _buildTextFieldForm("Description"),
+                _buildDate("Start Date"),
+                _buildTime("Start Time"),
+                _buildDate("End Date"),
+                _buildTime("End Time"),
+              ],
+            ),
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -62,10 +80,10 @@ class _EventFormPageState extends State<EventFormPage> {
           // handling validation here, also sending the grade back to the function that invoked this
           if (_formKey.currentState.validate()) {
             Event event = Event(
-              name: _name,
-              description: _description,
-              startDateTime: _startDate,
-              endDateTime: _endDate,
+              name: _name != "" ? _name : selectedEvent.name,
+              description: _description != "" ? _description : selectedEvent.description,
+              startDateTime: _startSet == false && selectedEvent != null ? selectedEvent.startDateTime : _startDate,
+              endDateTime: _endSet == false && selectedEvent != null ? selectedEvent.endDateTime : _endDate,
             );
             // calculating the difference in milliseconds between the event start date and the time it is not
             var secondsDiff = (event.startDateTime.millisecondsSinceEpoch -
@@ -106,12 +124,14 @@ class _EventFormPageState extends State<EventFormPage> {
       typeVal = selectedEvent.name;
     } else if (type == "Description" && selectedEvent != null) {
       typeVal = selectedEvent.description;
+    } else if (type == "Image URL" && selectedEvent != null) {
+      typeVal = _imageURL;
     }
 
     // Event Name Input
     return TextFormField(
       decoration: InputDecoration(
-        labelText: type == "Event Name" ? "Event Name" : "Description",
+        labelText: type,
       ),
       autovalidateMode: AutovalidateMode.always,
       initialValue: selectedEvent != null ? typeVal : '',
@@ -125,27 +145,34 @@ class _EventFormPageState extends State<EventFormPage> {
       onChanged: (String newValue) {
         if (type == "Event Name") {
           _name = newValue;
-        } else {
+        } else if (type == "Description") {
           _description = newValue;
+        } else if (type == "Image URL") {
+          _imageURL = newValue;
         }
       },
     );
   }
 
+
+
   Widget _buildDate(String type) {
     DateTime _date = DateTime.now();
-    DateTime _currentSelectedDate = DateTime.now();
 
     if (type == "Start Date") {
-      _date = _startDate;
-      if (selectedEvent != null) {
-        _currentSelectedDate = selectedEvent.startDateTime;
-      }
+        if(selectedEvent != null && _startSet == false) {
+          _date = selectedEvent.startDateTime;
+          _startDate = _date;
+        } else {
+          _date = _startDate;
+        }
     } else if (type == "End Date") {
-      _date = _endDate;
-      if (selectedEvent != null) {
-        _currentSelectedDate = selectedEvent.endDateTime;
-      }
+        if(selectedEvent != null && _endSet == false) {
+          _date = selectedEvent.endDateTime;
+          _endDate = _date;
+        } else {
+          _date = _endDate;
+        }
     }
 
     return Container(
@@ -165,9 +192,8 @@ class _EventFormPageState extends State<EventFormPage> {
             onPressed: () {
               showDatePicker(
                       context: context,
-                      initialDate:
-                          selectedEvent != null ? _currentSelectedDate : _date,
-                      firstDate: _currentDate,
+                      initialDate: _date,  
+                      firstDate: DateTime.now(),
                       lastDate: DateTime(2150))
                   .then((value) {
                 setState(() {
@@ -182,8 +208,10 @@ class _EventFormPageState extends State<EventFormPage> {
 
                   if (type == "Start Date") {
                     _startDate = _date;
+                    _startSet = true;
                   } else if (type == "End Date") {
                     _endDate = _date;
+                    _endSet = true;
                   }
                   print(type + ": " + _date.toString());
                 });
@@ -197,19 +225,28 @@ class _EventFormPageState extends State<EventFormPage> {
 
   Widget _buildTime(String type) {
     DateTime _date = DateTime.now();
-    DateTime _currentSelectedDate = DateTime.now();
+    TimeOfDay _time = TimeOfDay.now();
 
     if (type == "Start Time") {
-      _date = _startDate;
-      if (selectedEvent != null) {
-        _currentSelectedDate = selectedEvent.startDateTime;
-      }
+        if(selectedEvent != null && _startSet == false) {
+          _date = selectedEvent.startDateTime;
+          _startDate = _date;
+        } else {
+          _date = _startDate;
+        }
     } else if (type == "End Time") {
-      _date = _endDate;
-      if (selectedEvent != null) {
-        _currentSelectedDate = selectedEvent.endDateTime;
-      }
+        if(selectedEvent != null && _endSet == false) {
+          _date = selectedEvent.endDateTime;
+          _endDate = _date;
+        } else {
+          _date = _endDate;
+        }
     }
+      
+    _time = TimeOfDay(
+            hour: _date.hour,
+            minute: _date.minute);
+
 
     return Container(
       child: Row(children: [
@@ -224,7 +261,7 @@ class _EventFormPageState extends State<EventFormPage> {
             showTimePicker(
               context: context,
               initialTime:
-                  selectedEvent != null ? _currentSelectedDate : _currentTime,
+                  _time,
             ).then((value) {
               setState(() {
                 _date = DateTime(
@@ -238,8 +275,10 @@ class _EventFormPageState extends State<EventFormPage> {
 
                 if (type == "Start Time") {
                   _startDate = _date;
-                } else {
+                  _startSet = true;
+                } else if (type == "End Time") {
                   _endDate = _date;
+                  _endSet = true;
                 }
                 print(type + ": " + _date.toString());
               });
