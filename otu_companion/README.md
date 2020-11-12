@@ -1,7 +1,7 @@
 # OTU Companion
 
-> * [Event Finder](https://github.com/SethCohen/EmojiStatistics/blob/master/README.md#event-finder)
-> * [Empty Room Finder](https://github.com/SethCohen/EmojiStatistics/blob/master/README.md#empty-room-finder)
+> * [Event Finder](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/room_finder/otu_companion#event-finder)
+> * [Empty Room Finder](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/room_finder/otu_companion#empty-room-finder)
 
 # Event Finder
 
