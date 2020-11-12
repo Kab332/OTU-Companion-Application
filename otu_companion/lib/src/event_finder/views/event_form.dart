@@ -7,8 +7,9 @@ import '../model/event.dart';
 import '../model/notification_utilities.dart';
 
 class EventFormPage extends StatefulWidget {
-  EventFormPage({Key key, this.title}) : super(key: key);
+  EventFormPage({Key key, this.title, this.event}) : super(key: key);
 
+  final Event event;
   final String title;
 
   @override
@@ -30,7 +31,7 @@ class _EventFormPageState extends State<EventFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    selectedEvent = ModalRoute.of(context).settings.arguments;
+    selectedEvent = widget.event != null ? widget.event : null;
     _currentDate = DateTime.now();
     _currentTime = TimeOfDay.now();
     tz.initializeTimeZones();

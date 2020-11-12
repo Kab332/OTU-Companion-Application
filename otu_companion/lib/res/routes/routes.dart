@@ -32,9 +32,9 @@ class Routes {
             builder: (BuildContext context) =>
                 EventFinderMain(title: 'Event Finder'));
       case eventForm:
-        return MaterialPageRoute(
-            builder: (BuildContext context) =>
-                EventFormPage(title: 'Event Form'));
+          return MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  EventFormPage(title: 'Event Form', event: settings.arguments));
       case settingMain:
         return MaterialPageRoute(
             builder: (BuildContext context) => SettingMain(title: 'Settings'));

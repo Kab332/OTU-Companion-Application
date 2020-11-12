@@ -144,7 +144,7 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   // Future function to add an event to the firestore database
   Future<void> _addEvent() async {
-    var event = await Navigator.pushNamed(context, "/eventForm");
+    var event = await Navigator.pushNamed(context, "/eventForm", arguments: null);
 
     if (event != null) {
       setState(() {
@@ -177,8 +177,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   Future<void> _editEvent() async {
     if (_selectedEvent != null) {
       print('selected Event: $_selectedEvent');
-      var event = await Navigator.pushNamed(context, "/eventForm",
-          arguments: _selectedEvent);
+      var event = await Navigator.pushNamed(context, '/eventForm', arguments: _selectedEvent);
 
       Event newEvent = event;
 
