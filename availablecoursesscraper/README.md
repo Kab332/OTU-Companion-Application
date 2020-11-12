@@ -5,10 +5,14 @@ A python scrapy project that webscrapes Ontario Tech University's public Availab
 To find occupied rooms and empty rooms on campus.
 
 ## How to use:
-Simply open the project directory and run "scrapy crawl myspider" in terminal (Requires scrapy to be installed)
+Simply open the project directory and run "scrapy crawl myspider" in terminal (Requires scrapy to be installed).
 
 ## Results:
-a sqlite database containing 3 columns Time, Day, Location
+A sqlite database containing 3 columns Time, Day, Location
+
+## Notes:
+To use `cloudfirestore.py`, please look into how make your own Cloud Firestore database. Requires a `servicesAccountKey.json` and the resulting sqlite database to use.
+Simply run the .py to parse the sqlite database to cloud firestore.
 
 ## Examples:
 
