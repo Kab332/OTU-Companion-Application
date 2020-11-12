@@ -220,6 +220,7 @@ class _EventListWidgetState extends State<EventListWidget> {
               children: [
                 // Event name form field
                 TextFormField(
+                  enabled: false,
                   decoration: const InputDecoration(
                     labelText: 'Event Name',
                   ),
@@ -227,6 +228,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                 ),
                 // Event description form field
                 TextFormField(
+                  enabled: false,
                   decoration: const InputDecoration(
                     labelText: 'Event Description',
                   ),
@@ -234,6 +236,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                 ),
                 // Start date form field
                 TextFormField(
+                  enabled: false,
                   decoration: const InputDecoration(
                     labelText: 'Start Date and Time',
                   ),
@@ -241,6 +244,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                 ),
                 // End date form field
                 TextFormField(
+                  enabled: false,
                   decoration: const InputDecoration(
                     labelText: 'End Date and Time',
                   ),

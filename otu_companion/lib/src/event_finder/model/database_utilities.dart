@@ -6,7 +6,8 @@ class DatabaseUtilities {
     var database = openDatabase(
       join(await getDatabasesPath(), 'event_data.db'),
       onCreate: (db, version) {
-        db.execute("CREATE TABLE events(id INTEGER PRIMARY KEY, name TEXT, description TEXT, startDateTime TEXT, endDateTime TEXT)");
+        db.execute(
+            "CREATE TABLE events(id INTEGER PRIMARY KEY, name TEXT, description TEXT, startDateTime TEXT, endDateTime TEXT)");
       },
       version: 1,
     );
