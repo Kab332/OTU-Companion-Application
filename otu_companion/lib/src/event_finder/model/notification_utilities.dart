@@ -1,5 +1,5 @@
 // all of this code was used from Lecture 06a_Snackbars_and_Notifications/lib/notifications.dart
-// 
+// https://github.com/CSCI4100U/LectureExamples/blob/092bdda6fb3074b5aa61a7ec0d0e89cd55c67a0f/06a_Snackbars_and_Notifications/lib/main.dart
 import 'dart:io' show Platform;
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
