@@ -12,5 +12,4 @@ a sqlite database containing 3 columns Time, Day, Location
 
 ## Examples:
 
-![Screenshot1](https://i.imgur.com/oD3vIom.png)
-![Screenshot2](https://i.imgur.com/j0G7qNT.png)
+![Screenshot1](https://i.imgur.com/KqYovER.png)
