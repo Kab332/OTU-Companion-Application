@@ -28,7 +28,7 @@ class Routes
             EventFinderMain(title: 'Event Finder'));
       case roomFinderMain:
         return MaterialPageRoute(builder: (BuildContext context) =>
-            RoomFinderMain(title: 'Room Finder'));
+            RoomFinderMain(title: 'Empty Room Finder'));
     }
 
     return null;

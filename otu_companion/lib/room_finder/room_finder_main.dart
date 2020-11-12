@@ -18,6 +18,19 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
   DateFormat timeFormatter = DateFormat('HH:mm');
 
   String type = '';
+  String selectedRoom = "";
+
+  final classesSelected = TextEditingController();
+
+  List<DropdownMenuItem> classes;
+  List<DropdownMenuItem> times;
+
+  @override
+  void initState() {
+    super.initState();
+    _generateClassList();
+    _generateTimesList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,76 +45,8 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Search by Time...",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                FlatButton(
-                  textColor: Colors.blue,
-                  onPressed: () => _selectDate(context),
-                  child: Text(dateFormatter.format(selectedDate)),
-                ),
-                FlatButton(
-                  textColor: Colors.blue,
-                  onPressed: () => _selectTime(context),
-                  child: Text(
-                    selectedTime.format(context).toString(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ),
-                RaisedButton(
-                  onPressed: () {
-                    setState(() {
-                      type = 'time';
-                    });
-                  },
-                  color: Colors.blue,
-                  textColor: Colors.white,
-                  child: Text("Confirm Time"),
-                ),
-              ]),
-              Divider(),
-              Text(
-                "Search by Room...",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: SearchableDropdown.single(
-                        style: TextStyle(
-                          color: Colors.blue,
-                        ),
-                        items: classes,
-                        value: selectedRoom,
-                        hint: "e.g. UA1350",
-                        searchHint: "Select one",
-                        onChanged: (value) {
-                          setState(() {
-                            selectedRoom = value;
-                            type = 'room';
-                          });
-                        },
-                        isExpanded: true,
-                      ),
-                    ),
-                  ]),
-              Divider(),
+              _buildSearch(context),
               _buildListHeader(context, type),
-              SizedBox(
-                height: 4,
-              ),
               Expanded(child: _buildList(context, type))
             ],
           ),
@@ -132,6 +77,78 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
       setState(() {
         selectedTime = picked;
       });
+  }
+
+  Widget _buildSearch(BuildContext context) {
+    return Column(
+        children: [
+          Text(
+            "Search by Time...",
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            FlatButton(
+              textColor: Colors.blue,
+              onPressed: () => _selectDate(context),
+              child: Text(dateFormatter.format(selectedDate)),
+            ),
+            FlatButton(
+              textColor: Colors.blue,
+              onPressed: () => _selectTime(context),
+              child: Text(
+                selectedTime.format(context).toString(),
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+            RaisedButton(
+              onPressed: () {
+                setState(() {
+                  type = 'time';
+                });
+              },
+              color: Colors.blue,
+              textColor: Colors.white,
+              child: Text("Confirm Time"),
+            ),
+          ]),
+          Divider(),
+          Text(
+            "Search by Room...",
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: SearchableDropdown.single(
+                    style: TextStyle(
+                      color: Colors.blue,
+                    ),
+                    items: classes,
+                    value: selectedRoom,
+                    hint: "e.g. UA1350",
+                    searchHint: "Select one",
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRoom = value;
+                        type = 'room';
+                      });
+                    },
+                    isExpanded: true,
+                  ),
+                ),
+              ]),
+          Divider(),
+        ]);
   }
 
   Widget _buildList(BuildContext context, String type) {
@@ -198,29 +215,13 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
     }
     return Container();
   }
+
+
+  void _generateClassList(){
+    classes.add(DropdownMenuItem(child: Text("UA1350"), value: "UA1350"));
+  }
+
+  void _generateTimesList(){
+    times.add(DropdownMenuItem(child: Text("11:00 am"), value: "11:00 am"));
+  }
 }
-
-String selectedRoom = "";
-
-final classesSelected = TextEditingController();
-
-List<DropdownMenuItem> classes = [
-  DropdownMenuItem(child: Text("UA1350"), value: "UA1350"),
-  DropdownMenuItem(child: Text("UA1120"), value: "UA1120"),
-  DropdownMenuItem(child: Text("UB2080"), value: "UB2080"),
-  DropdownMenuItem(child: Text("UB4095"), value: "UB4095"),
-  DropdownMenuItem(child: Text("UB4085"), value: "UB4085"),
-  DropdownMenuItem(child: Text("test1"), value: "test1"),
-  DropdownMenuItem(child: Text("test2"), value: "test2"),
-  DropdownMenuItem(child: Text("test3"), value: "test3"),
-  DropdownMenuItem(child: Text("test4"), value: "test4"),
-  DropdownMenuItem(child: Text("test5"), value: "test5"),
-];
-
-List<DropdownMenuItem> times = [
-  DropdownMenuItem(child: Text("11:00 am"), value: "11:00 am"),
-  DropdownMenuItem(child: Text("12:30 pm"), value: "12:30 pm"),
-  DropdownMenuItem(child: Text("2:00 pm"), value: "2:00 pm"),
-  DropdownMenuItem(child: Text("3:30 pm"), value: "3:30 pm"),
-  DropdownMenuItem(child: Text("5:00 pm"), value: "5:00 pm"),
-];
