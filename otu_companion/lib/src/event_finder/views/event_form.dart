@@ -174,8 +174,6 @@ class _EventFormPageState extends State<EventFormPage> {
         }
     }
 
-    print('current selected date $_currentSelectedDate');
-
     return Container(
       child: Row(
         children: [
