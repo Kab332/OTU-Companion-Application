@@ -29,7 +29,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   @override
   void initState() {
     super.initState();
-    
+
     _getViews();
     getAllEvents();
   }
@@ -257,7 +257,7 @@ class _EventListWidgetState extends State<EventListWidget> {
     }
     this.views = views;
     return views;
-  } 
+  }
 
   // Function that shows a dialog that shows quick details about the event selected, pressing dismiss or clicking away will make it disappear
   void _showViewDialog(BuildContext context, Event event) {
