@@ -1,7 +1,62 @@
-# OTU Companion
+# OTU Companion App
+
+A companion app for OTU students.
 
 > * [Event Finder](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/room_finder/otu_companion#event-finder)
 > * [Empty Room Finder](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/room_finder/otu_companion#empty-room-finder)
+
+# How to setup the project
+
+### Requirements:
+
+- Android SDK 29 or higher
+- Use Android 10 (Q), Pixel 3a XL (Recommended)
+
+### Steps:
+
+1. Clone this repository to a location on your desktop.
+2. Setup Flutter SDK.
+3. Build the project using either Android Studios or VSCode.
+    - Dependency Error: Go to `*/otu_companion/pubspec.yaml` and run the Pub get command.
+4. Run the build.
+
+# Front Page
+
+## Login Feature (WIP, Not implemented)
+
+## Dash Board
+
+The __Dash Board__ acts as the central hub. Here the user will be able to access the many features the app will offer. Users will be shown recent news of registered events and saved empty-classrooms (WIP, skeleton-structure for now).
+
+### Side-Bar / Drawer:
+
+The Drawer attached to the dash board's AppBar will grant the user access to their __Profile__ (WIP), __Profile Menu__, __Event Finder__, __Classroom Finder__, __Guides__, __Chat System__ (WIP, not implemented, time permits) and joined __Groups and Events__ (WIP). The user will also be able to access the __Settings__ menu to configure how the app will operate (WIP, missing features before implementing): Appearance, Notification, Data Usage, Feed Back, About.
+
+### Dash Board News (WIP):
+
+Only the Skeleton structure is implemented. Waiting on __Accounts__, __Event Finder__, and __Classroom Finder__ features to implement. 
+
+To access this feature, you can click the __Side-Bar__ and click on __Home__. 
+
+You can interact with the feature by scrolling up and down.
+
+## Profile (WIP)
+
+Only the Skeleton structure is implemented. Waiting on __Accounts__ feature implementation. 
+
+The profile page will allow the user to access secured forms to change to change an aspect of their account. 
+
+To access this feature, click on the __Side-Bar__ and click __Profile__.
+
+## Groups and Events (WIP)
+
+## Settings (WIP)
+
+Only the Skeleton structure is implemented. Waiting on __Event Finder__ and __Classroom Finder__ features implementation.
+
+To Access this feature, click on the __Side-Bar__ and click __Settings__ 
+
+A menu will appear with 5 different options: __Appearance__, __Notification__, __Data Usage__, __Feed Back__, __About__.
 
 # Event Finder
 
@@ -46,13 +101,12 @@ Notifications will show up based on the start date of the event. If the start da
 # Empty Room Finder
 A campus empty classroom finder 
 
-# Purpose:
+## Purpose:
 To help students find empty classrooms for studying, club events, etc.
 
-# How to use:
+## How to use:
 Simply select a date & time or room and it'll show either what rooms are available at that date & time or what times that room is available.
 
 How it works:
 A python webscraper was made to crawl through the Available Courses preview collecting the occupied class time schedules and then the data was parsed to Firestore.
 The client app reads the Firestore database and checks which rows are applicable to the search parameters.
-
