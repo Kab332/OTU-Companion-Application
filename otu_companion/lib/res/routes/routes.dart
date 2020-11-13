@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:otu_companion/src/event_finder/event_finder_main.dart';
 import 'package:otu_companion/src/event_finder/views/event_form.dart';
-import 'package:otu_companion/room_finder/room_finder_main.dart';
 import 'package:otu_companion/src/home_page/home_page_main.dart';
 import 'package:otu_companion/src/profile/profile_page_main.dart';
 import 'package:otu_companion/src/room_finder/room_finder_main.dart';
