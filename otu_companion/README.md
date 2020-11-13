@@ -2,6 +2,9 @@
 
 A companion app for OTU students.
 
+> * [Event Finder](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/room_finder/otu_companion#event-finder)
+> * [Empty Room Finder](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/room_finder/otu_companion#empty-room-finder)
+
 # How to setup the project
 
 ### Requirements:
@@ -98,10 +101,10 @@ Notifications will show up based on the start date of the event. If the start da
 # Empty Room Finder
 A campus empty classroom finder 
 
-# Purpose:
+## Purpose:
 To help students find empty classrooms for studying, club events, etc.
 
-# How to use:
+## How to use:
 Simply select a date & time or room and it'll show either what rooms are available at that date & time or what times that room is available.
 
 How it works:

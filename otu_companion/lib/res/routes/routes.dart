@@ -4,6 +4,7 @@ import 'package:otu_companion/src/event_finder/views/event_form.dart';
 import 'package:otu_companion/room_finder/room_finder_main.dart';
 import 'package:otu_companion/src/home_page/home_page_main.dart';
 import 'package:otu_companion/src/profile/profile_page_main.dart';
+import 'package:otu_companion/src/room_finder/room_finder_main.dart';
 import 'package:otu_companion/src/settings/settings_main.dart';
 import 'package:otu_companion/src/settings/views/appearance_settings_page.dart';
 
@@ -41,6 +42,9 @@ class Routes {
           return MaterialPageRoute(
               builder: (BuildContext context) =>
                   EventFormPage(title: 'Event Form', event: settings.arguments));
+      case roomFinderMain:
+        return MaterialPageRoute(builder: (BuildContext context) =>
+            RoomFinderMain(title: 'Empty Room Finder'));
       case settingMain:
         return MaterialPageRoute(
             builder: (BuildContext context) => SettingMain(title: 'Settings'));

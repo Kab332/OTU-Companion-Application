@@ -134,7 +134,7 @@ class MainSideDrawer extends StatelessWidget
       leading: Icon(Icons.room),
       onTap: ()
       {
-        Navigator.pushNamed(context, Routes.roomFinderMain);
+        Navigator.popAndPushNamed(context, Routes.roomFinderMain);
       },
     );
   }
