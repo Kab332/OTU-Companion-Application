@@ -1,3 +1,22 @@
+# OTU Companion App
+
+A companion app for OTU students.
+
+# How to setup the project
+
+### Requirements:
+
+- Android SDK 29 or higher
+- Use Android 10 (Q), Pixel 3a XL (Recommended)
+
+### Steps:
+
+1. Clone this repository to a location on your desktop.
+2. Setup Flutter SDK.
+3. Build the project using either Android Studios or VSCode.
+    - Dependency Error: Go to `*/otu_companion/pubspec.yaml` and run the Pub get command.
+4. Run the build.
+
 # Front Page
 
 ## Login Feature (WIP, Not implemented)
