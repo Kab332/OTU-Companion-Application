@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong/latlong.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 import '../model/event.dart';
 import '../model/notification_utilities.dart';
@@ -23,6 +28,7 @@ class _EventFormPageState extends State<EventFormPage> {
   String _name = '';
   String _description = '';
   String _imageURL = '';
+  String _location = '';
 
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now();
@@ -69,6 +75,8 @@ class _EventFormPageState extends State<EventFormPage> {
                 _buildTime("Start Time"),
                 _buildDate("End Date"),
                 _buildTime("End Time"),
+                _buildTextFormField("Location"),
+                _buildLocation(),
               ],
             ),
           ),
@@ -88,6 +96,7 @@ class _EventFormPageState extends State<EventFormPage> {
               endDateTime: _endSet == false && selectedEvent != null
                   ? selectedEvent.endDateTime
                   : _endDate,
+              location: _location != "" ? _location : selectedEvent.location,
             );
             // Calculating the difference in milliseconds between the event start date and the time it is not
             var secondsDiff = (event.startDateTime.millisecondsSinceEpoch -
@@ -137,6 +146,8 @@ class _EventFormPageState extends State<EventFormPage> {
       typeVal = selectedEvent.description;
     } else if (type == "Image URL" && selectedEvent != null) {
       typeVal = _imageURL;
+    } else if (type == "Location" && selectedEvent != null) {
+      typeVal = selectedEvent.location;
     }
 
     return TextFormField(
@@ -159,6 +170,8 @@ class _EventFormPageState extends State<EventFormPage> {
           _description = newValue;
         } else if (type == "Image URL") {
           _imageURL = newValue;
+        } else if (type == "Location") {
+          _location = newValue;
         }
       },
     );
@@ -301,6 +314,41 @@ class _EventFormPageState extends State<EventFormPage> {
           },
         ),
       ]),
+    );
+  }
+
+  Widget _buildLocation() {
+    return Container(
+      padding: const EdgeInsets.only(top: 10.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(1.0)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+          )
+        ],
+      ),
+      width: 300.0,
+      height: 200.0,
+      child: FlutterMap(
+        options: MapOptions(
+          minZoom: 5.0,
+          zoom: 10.0,
+          maxZoom: 20.0,
+          center: LatLng(43.945881453428655, -78.89597700888552),
+        ),
+        layers: [
+          TileLayerOptions(
+            urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            additionalOptions: {
+              'accessToken': 'pk.eyJ1IjoibGVvbi1jaG93MSIsImEiOiJja2hyMGRteWcwNjh0MzBteXh1NXNibHY0In0.nFSqVO-aIMytp_hQWKmXXQ', 
+              'id': 'mapbox.mapbox-streets-v8'
+            },
+            subdomains: ['a','b','c'],
+          ),
+        ],
+      ),
     );
   }
 

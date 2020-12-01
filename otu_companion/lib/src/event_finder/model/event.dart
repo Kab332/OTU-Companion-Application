@@ -8,11 +8,12 @@ class Event {
   DateTime startDateTime;
   DateTime endDateTime;
   DocumentReference reference;
+  String location;
 
-  Event({this.name, this.description, this.startDateTime, this.endDateTime});
+  Event({this.name, this.description, this.startDateTime, this.endDateTime, this.location});
 
   String toString() {
-    return 'event: $id, $name, $description, ($startDateTime) ($endDateTime)';
+    return 'event: $id, $name, $description, ($startDateTime) ($endDateTime), $location';
   }
 
   Event.fromMap(Map<String, dynamic> maps, {this.reference}) {
@@ -25,6 +26,7 @@ class Event {
     this.endDateTime = maps['endDateTime'] != null
         ? DateTime.parse(maps['endDateTime'].toDate().toString())
         : null;
+    this.location = maps['location'];
   }
 
   Map<String, dynamic> toMap() {
@@ -34,6 +36,7 @@ class Event {
       'description': this.description,
       'startDateTime': this.startDateTime,
       'endDateTime': this.endDateTime,
+      'location': this.location,
     };
   }
 }
