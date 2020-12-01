@@ -329,6 +329,13 @@ class _EventListWidgetState extends State<EventListWidget> {
                   ),
                   initialValue: event.endDateTime.toString(),
                 ),
+                TextFormField(
+                  enabled: false,
+                  decoration: const InputDecoration(
+                    labelText: 'Location',
+                  ),
+                  initialValue: event.location,
+                ),
               ],
             ),
           ),

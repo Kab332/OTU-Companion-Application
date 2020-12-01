@@ -36,7 +36,19 @@ class _EventFormPageState extends State<EventFormPage> {
   bool _startSet = false;
   bool _endSet = false;
 
+  List<Marker> markers = [];
+  LatLng _centre = LatLng(43.945947115276184, -78.89606283789982);
+  var geocoder = GeocodingPlatform.instance;
+  MapController mapController = new MapController();
+
   Event selectedEvent;
+
+
+  @override 
+  void initState() {
+    super.initState();
+    getPosition();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,20 +118,22 @@ class _EventFormPageState extends State<EventFormPage> {
             print('seconds: $secondsDiff');
 
             // If the start date is greater than one day, send a notification later,
-            if (secondsDiff >= 86400) {
-              var later = tz.TZDateTime.now(tz.local)
-                  .add(Duration(seconds: secondsDiff - 86400));
-              _eventNotifications.sendNotificationLater(
-                  event.name,
-                  event.description,
-                  later,
-                  event.reference != null ? event.reference.id : null);
-            } else {
-              // Otherwise send the notification now
-              _eventNotifications.sendNotificationNow(
-                  event.name,
-                  event.description,
-                  event.reference != null ? event.reference.id : null);
+            if (secondsDiff > 0) {
+              if (secondsDiff >= 86400) {
+                var later = tz.TZDateTime.now(tz.local)
+                    .add(Duration(seconds: secondsDiff - 86400));
+                _eventNotifications.sendNotificationLater(
+                    event.name,
+                    event.description,
+                    later,
+                    event.reference != null ? event.reference.id : null);
+              } else {
+                // Otherwise send the notification now
+                _eventNotifications.sendNotificationNow(
+                    event.name,
+                    event.description,
+                    event.reference != null ? event.reference.id : null);
+              }
             }
 
             // Go back to event list
@@ -336,7 +350,8 @@ class _EventFormPageState extends State<EventFormPage> {
           minZoom: 5.0,
           zoom: 10.0,
           maxZoom: 20.0,
-          center: LatLng(43.945881453428655, -78.89597700888552),
+          //center: selectedEvent.location != null ? selectedEvent.location : _centre,
+          center: _centre,
         ),
         layers: [
           TileLayerOptions(
@@ -359,5 +374,31 @@ class _EventFormPageState extends State<EventFormPage> {
     } else {
       return minute.toString();
     }
+  }
+
+  Future<void> getPosition() async {
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    //var placemarker = await geocoder.placemarkFromCoordinates(position.latitude, position.longitude);
+    _centre = LatLng(position.latitude, position.longitude);
+    addMarker(position);
+  }
+
+  // function to add a marker on the map box 
+  void addMarker(Position position) {     
+    var marker = new Marker(
+      width: 80.0,
+      height: 80.0,
+      point: new LatLng(position.latitude, position.longitude),
+      builder: (context) => Container(
+        child: IconButton(
+          color: Colors.red,
+          icon: Icon(Icons.location_on),
+          onPressed: () {
+            print('Clicked icon!');
+          },
+        )
+      ),
+    );
+    markers.add(marker);
   }
 }
