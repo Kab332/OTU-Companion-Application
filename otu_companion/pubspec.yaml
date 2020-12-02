@@ -24,7 +24,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  provider:
   sqflite:
+  firebase_auth:
   cloud_firestore:
   firebase_core:
 
