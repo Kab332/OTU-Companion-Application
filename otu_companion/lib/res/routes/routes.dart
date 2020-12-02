@@ -6,10 +6,13 @@ import 'package:otu_companion/src/profile/profile_page_main.dart';
 import 'package:otu_companion/src/room_finder/room_finder_main.dart';
 import 'package:otu_companion/src/settings/settings_main.dart';
 import 'package:otu_companion/src/settings/views/appearance_settings_page.dart';
+import 'package:otu_companion/src/services/authentication/login_page.dart';
+import 'package:otu_companion/src/services/authentication/views/login_checker_page.dart';
 
 class Routes {
   // Login
-
+  static const loginPage = "/loginPage";
+  static const loginCheckerPage = "/loginCheckerPage";
   // Home
   static const homeMain = "/homeMain";
   // Event Finder
@@ -58,6 +61,14 @@ class Routes {
       case roomFinderMain:
         return MaterialPageRoute(builder: (BuildContext context) =>
             RoomFinderMain(title: 'Empty Room Finder'));
+      case loginPage:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                LoginPage(title: 'Login'));
+      case loginCheckerPage:
+        return MaterialPageRoute(
+          builder: (BuildContext context) =>
+              LoginCheckerPage());
     }
 
     return null;
