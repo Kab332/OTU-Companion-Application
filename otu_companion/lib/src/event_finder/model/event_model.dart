@@ -23,7 +23,8 @@ class EventModel {
       'name': event.name,
       'description': event.description,
       'startDateTime': event.startDateTime,
-      'endDateTime': event.endDateTime
+      'endDateTime': event.endDateTime,
+      'location': event.location,
     });
   }
 

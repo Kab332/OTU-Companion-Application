@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -43,18 +42,13 @@ class _EventFormPageState extends State<EventFormPage> {
 
   Event selectedEvent;
 
-
-  @override 
-  void initState() {
-    super.initState();
-    getPosition();
-  }
-
   @override
   Widget build(BuildContext context) {
     selectedEvent = widget.event != null ? widget.event : null;
     tz.initializeTimeZones();
     _eventNotifications.init();
+
+    getPosition();
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -87,7 +81,7 @@ class _EventFormPageState extends State<EventFormPage> {
                 _buildTime("Start Time"),
                 _buildDate("End Date"),
                 _buildTime("End Time"),
-                _buildTextFormField("Location"),
+                _buildLocationFormField(),
                 _buildLocation(),
               ],
             ),
@@ -108,7 +102,7 @@ class _EventFormPageState extends State<EventFormPage> {
               endDateTime: _endSet == false && selectedEvent != null
                   ? selectedEvent.endDateTime
                   : _endDate,
-              location: _location != "" ? _location : selectedEvent.location,
+              location: _location != "" ? _location : '',
             );
             // Calculating the difference in milliseconds between the event start date and the time it is not
             var secondsDiff = (event.startDateTime.millisecondsSinceEpoch -
@@ -184,8 +178,6 @@ class _EventFormPageState extends State<EventFormPage> {
           _description = newValue;
         } else if (type == "Image URL") {
           _imageURL = newValue;
-        } else if (type == "Location") {
-          _location = newValue;
         }
       },
     );
@@ -331,6 +323,27 @@ class _EventFormPageState extends State<EventFormPage> {
     );
   }
 
+  Widget _buildLocationFormField() {
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: 'Location',
+      ),
+      autovalidateMode: AutovalidateMode.always,
+      initialValue: selectedEvent != null ? selectedEvent.location : '',
+      // Validation to check if empty or not 9 numbers
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Error: Please enter the event location!';
+        }
+        return null;
+      },
+      onChanged: (String newValue) {
+        _location = newValue;
+        print(_location);
+      },
+    );
+  }
+
   Widget _buildLocation() {
     return Container(
       padding: const EdgeInsets.only(top: 10.0),
@@ -362,6 +375,9 @@ class _EventFormPageState extends State<EventFormPage> {
             },
             subdomains: ['a','b','c'],
           ),
+          new MarkerLayerOptions(
+            markers: markers, 
+          ),
         ],
       ),
     );
@@ -377,17 +393,26 @@ class _EventFormPageState extends State<EventFormPage> {
   }
 
   Future<void> getPosition() async {
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    var location;
+    if (selectedEvent != null && selectedEvent.location != null) {
+      List<Location> places = await geocoder.locationFromAddress(selectedEvent.location);
+      location = places[0];
+      _centre = LatLng(location.latitude, location.longitude);  
+      setState(() {
+        addMarker(location);
+      });
+    } else {
+      location = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      _centre = LatLng(location.latitude, location.longitude);
+    }
     //var placemarker = await geocoder.placemarkFromCoordinates(position.latitude, position.longitude);
-    _centre = LatLng(position.latitude, position.longitude);
-    addMarker(position);
   }
 
   // function to add a marker on the map box 
-  void addMarker(Position position) {     
+  void addMarker(var position) {     
     var marker = new Marker(
-      width: 80.0,
-      height: 80.0,
+      width: 70.0,
+      height: 70.0,
       point: new LatLng(position.latitude, position.longitude),
       builder: (context) => Container(
         child: IconButton(
