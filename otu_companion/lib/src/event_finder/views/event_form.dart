@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_google_places/flutter_google_places.dart' as places;
+import 'package:google_maps_webservice/places.dart' as maps;
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'dart:async';
 
 import '../model/event.dart';
 import '../model/notification_utilities.dart';
@@ -23,11 +26,13 @@ class EventFormPage extends StatefulWidget {
 class _EventFormPageState extends State<EventFormPage> {
   final _formKey = GlobalKey<FormState>();
   final _eventNotifications = EventNotifications();
+  maps.GoogleMapsPlaces _places = maps.GoogleMapsPlaces(apiKey: "API_KEY");
 
   String _name = '';
   String _description = '';
   String _imageURL = '';
   String _location = '';
+  TextEditingController _locationController;
 
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now();
@@ -108,8 +113,6 @@ class _EventFormPageState extends State<EventFormPage> {
             var secondsDiff = (event.startDateTime.millisecondsSinceEpoch -
                     tz.TZDateTime.now(tz.local).millisecondsSinceEpoch) ~/
                 1000;
-
-            print('seconds: $secondsDiff');
 
             // If the start date is greater than one day, send a notification later,
             if (secondsDiff > 0) {
@@ -339,8 +342,16 @@ class _EventFormPageState extends State<EventFormPage> {
       },
       onChanged: (String newValue) {
         _location = newValue;
-        print(_location);
       },
+      controller: _locationController,
+      /*onTap: () async {
+        // then get the Prediction selected
+        const kGoogleApiKey = "API_KEY";
+        maps.Prediction p = await places.PlacesAutocomplete.show(
+          context: context, apiKey: kGoogleApiKey,
+        );
+        displayPrediction(p);
+      },*/
     );
   }
 
@@ -392,6 +403,7 @@ class _EventFormPageState extends State<EventFormPage> {
     }
   }
 
+  // future function to get the current position from the location property of event and use it for locationFromAddress
   Future<void> getPosition() async {
     var location;
     if (selectedEvent != null && selectedEvent.location != null) {
@@ -426,4 +438,26 @@ class _EventFormPageState extends State<EventFormPage> {
     );
     markers.add(marker);
   }
+
+  // function to display a dropdown of the auto completions for address
+  /*Future<Null> displayPrediction(maps.Prediction p) async {
+    if (p != null) {
+      maps.PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
+
+      var address = detail.result.formattedAddress;
+
+      print(address);
+
+      setState(() {
+        _locationController.text = address;
+      });
+    }
+  }*/
+  
+  // Function to handle Map autocomplete error
+  /*void onError(maps.PlacesAutocompleteResponse response) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(content: Text(response.errorMessage)),
+    );
+  }*/
 }
