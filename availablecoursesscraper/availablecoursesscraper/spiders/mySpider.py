@@ -11,6 +11,7 @@
 # https://i.imgur.com/j0G7qNT.png
 
 import scrapy
+from datetime import datetime
 import sqlite3
 
 term = '201909'  # Change this value to get a different term schedule
@@ -50,10 +51,11 @@ class MySpider(scrapy.Spider):
             db_cursor = db_conn.cursor()
             db_cursor.execute("""
                             CREATE TABLE IF NOT EXISTS 'schedules' (
-                            'time' TEXT,
+                            'start_time' TEXT,
+                            'end_time' TEXT,
                             'day' TEXT,
                             'location' TEXT,
-                            UNIQUE('time', 'day', 'location')
+                            UNIQUE('start_time', 'end_time', 'day', 'location')
                             )
                             """)
             db_conn.commit()
@@ -89,6 +91,7 @@ class MySpider(scrapy.Spider):
                 # Gets time column
                 if row.xpath('td[2]//text()').extract_first() not in invalids:
                     time = str(row.xpath('td[2]//text()').extract_first())
+                    time_range = time.split(' - ')
                 # Gets day column
                 if row.xpath('td[3]//text()').extract_first() not in invalids:
                     day = str(row.xpath('td[3]//text()').extract_first())
@@ -99,8 +102,8 @@ class MySpider(scrapy.Spider):
 
                         db_cursor.execute("""
                             INSERT OR REPLACE INTO
-                            schedules('time', 'day', 'location')
-                            VALUES(?, ?, ?);""", (time, day, location))
+                            schedules('start_time', 'end_time', 'day', 'location')
+                            VALUES(?, ?, ?, ?);""", (str(datetime.strptime(time_range[0], '%I:%M %p'))[11:-3], str(datetime.strptime(time_range[1], '%I:%M %p'))[11:-3], day, location))
                         db_conn.commit()
 
         except sqlite3.Error as error:

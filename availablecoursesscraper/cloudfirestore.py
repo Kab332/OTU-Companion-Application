@@ -21,7 +21,7 @@ try:
     # Opens db and gets all rows from db
     db_conn = sqlite3.connect(db_path)
     db_cursor = db_conn.cursor()
-    db_cursor.execute("""SELECT * FROM 'schedules';""")
+    db_cursor.execute("""SELECT * FROM 'empty_schedules';""")
     rows = db_cursor.fetchall()
 except sqlite3.Error as error:
     print(error)
@@ -29,11 +29,10 @@ finally:
     db_conn.commit()
     db_cursor.close()
 
+
 for row in rows:
     # Gets time
-    times = row[0].split(' - ')
-    start_time = times[0]
-    end_time = times[1]
+    time = row[0]
 
     # Gets day
     day = row[1]
@@ -44,11 +43,11 @@ for row in rows:
     room = location[1]
 
     # Writes to Cloud Firestore
-    doc_ref = db.collection(u'roomschedules').document()
+    doc_ref = db.collection(u'emptyroomschedules').document()
     doc_ref.set({
-        u'start time': start_time,
-        u'end time': end_time,
+        u'time': time,
         u'day': day,
         u'building': building,
         u'room': room
     })
+
