@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'dart:async';
 
 import '../model/event_model.dart';
@@ -21,6 +22,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   List<View> views;
   final _eventModel = EventModel();
   final _viewModel = ViewModel();
+  var _calendarController = CalendarController();
 
   Event _selectedEvent;
 
@@ -77,10 +79,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.black),
                     ),
-                    child:
-                        this.views != null && this.views[0].viewType == "list"
-                            ? _buildListView()
-                            : _buildGridView(),
+                    child: _buildViewType(),
                   ),
                 ),
               ),
@@ -88,14 +87,18 @@ class _EventListWidgetState extends State<EventListWidget> {
                 child: Text("Switch Views"),
                 onPressed: () {
                   setState(() {
-                    if (this.views[0].viewType == "list") {
+                    if (this.views[0].viewType == "calendar") {
+                      this.views[0].viewType = "list";
+                      _viewModel.updateView(
+                          View(id: this.views[0].id, viewType: "list"));
+                    } else if (this.views[0].viewType == "list") {
                       this.views[0].viewType = "grid";
                       _viewModel.updateView(
                           View(id: this.views[0].id, viewType: "grid"));
                     } else if (this.views[0].viewType == "grid") {
-                      this.views[0].viewType = "list";
+                      this.views[0].viewType = "calendar";
                       _viewModel.updateView(
-                          View(id: this.views[0].id, viewType: "list"));
+                          View(id: this.views[0].id, viewType: "calendar"));
                     }
                   });
                 },
@@ -144,6 +147,22 @@ class _EventListWidgetState extends State<EventListWidget> {
             return CircularProgressIndicator();
           }
         });
+  }
+
+  Widget _buildCalendarView() {
+    EventModel _eventModel = EventModel();
+    return FutureBuilder<QuerySnapshot> (
+      future: _eventModel.getAll(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasData) {
+          return TableCalendar(
+           calendarController: _calendarController,
+          );
+        } else {
+          return CircularProgressIndicator();
+        }
+      }
+    );
   }
 
   /* This function returns the container of a list tile and handles the selection
@@ -377,5 +396,19 @@ class _EventListWidgetState extends State<EventListWidget> {
         );
       },
     );
+  }
+
+  Widget _buildViewType() {
+    if (this.views != null) {
+      switch (this.views[0].viewType) {
+      case 'list':
+        return _buildListView();
+      case 'grid':
+        return _buildGridView();
+      case 'calendar':
+        return _buildCalendarView();
+      }
+    }
+    return null;
   }
 }
