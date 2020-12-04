@@ -40,7 +40,8 @@ class _EventFormPageState extends State<EventFormPage> {
   bool _startSet = false;
   bool _endSet = false;
 
-  List<Marker> markers = [];
+  double _zoom = 10.0;
+  Marker marker;
   LatLng _centre = LatLng(43.945947115276184, -78.89606283789982);
   var geocoder = GeocodingPlatform.instance;
   MapController mapController = new MapController();
@@ -48,13 +49,27 @@ class _EventFormPageState extends State<EventFormPage> {
   Event selectedEvent;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+
     selectedEvent = widget.event != null ? widget.event : null;
     tz.initializeTimeZones();
     _eventNotifications.init();
 
-    getPosition();
+    if (selectedEvent != null) {
+      _locationController =
+          new TextEditingController(text: selectedEvent.location);
+      // getPosition(false);
+    } else {
+      _locationController = new TextEditingController();
+      // getPosition(true);
+    }
 
+    getPosition(false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
@@ -74,21 +89,24 @@ class _EventFormPageState extends State<EventFormPage> {
             )
           ],
         ),
-        child: Form(
-          key: _formKey,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.0),
-            child: Column(
-              children: [
-                _buildTextFormField("Event Name"),
-                _buildTextFormField("Description"),
-                _buildDate("Start Date"),
-                _buildTime("Start Time"),
-                _buildDate("End Date"),
-                _buildTime("End Time"),
-                _buildLocationFormField(),
-                _buildLocation(),
-              ],
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.0),
+              child: Column(
+                children: [
+                  _buildTextFormField("Event Name"),
+                  _buildTextFormField("Description"),
+                  _buildDate("Start Date"),
+                  _buildTime("Start Time"),
+                  _buildDate("End Date"),
+                  _buildTime("End Time"),
+                  _buildLocationFormField(),
+                  _buildLocationFormButton(),
+                  Row(children: [_buildMapButtons(), _buildLocation()]),
+                ],
+              ),
             ),
           ),
         ),
@@ -332,7 +350,7 @@ class _EventFormPageState extends State<EventFormPage> {
         labelText: 'Location',
       ),
       autovalidateMode: AutovalidateMode.always,
-      initialValue: selectedEvent != null ? selectedEvent.location : '',
+      // initialValue: selectedEvent != null ? selectedEvent.location : '',
       // Validation to check if empty or not 9 numbers
       validator: (String value) {
         if (value.isEmpty) {
@@ -355,6 +373,17 @@ class _EventFormPageState extends State<EventFormPage> {
     );
   }
 
+  Widget _buildLocationFormButton() {
+    return RaisedButton(
+      child: Text("Check location"),
+      onPressed: () {
+        if (_location != '') {
+          getPosition(false);
+        }
+      },
+    );
+  }
+
   Widget _buildLocation() {
     return Container(
       padding: const EdgeInsets.only(top: 10.0),
@@ -370,9 +399,10 @@ class _EventFormPageState extends State<EventFormPage> {
       width: 300.0,
       height: 200.0,
       child: FlutterMap(
+        mapController: mapController,
         options: MapOptions(
           minZoom: 5.0,
-          zoom: 10.0,
+          zoom: _zoom,
           maxZoom: 20.0,
           //center: selectedEvent.location != null ? selectedEvent.location : _centre,
           center: _centre,
@@ -381,16 +411,53 @@ class _EventFormPageState extends State<EventFormPage> {
           TileLayerOptions(
             urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             additionalOptions: {
-              'accessToken': 'pk.eyJ1IjoibGVvbi1jaG93MSIsImEiOiJja2hyMGRteWcwNjh0MzBteXh1NXNibHY0In0.nFSqVO-aIMytp_hQWKmXXQ', 
+              'accessToken':
+                  'pk.eyJ1IjoibGVvbi1jaG93MSIsImEiOiJja2hyMGRteWcwNjh0MzBteXh1NXNibHY0In0.nFSqVO-aIMytp_hQWKmXXQ',
               'id': 'mapbox.mapbox-streets-v8'
             },
-            subdomains: ['a','b','c'],
+            subdomains: ['a', 'b', 'c'],
           ),
           new MarkerLayerOptions(
-            markers: markers, 
+            markers: marker != null ? [marker] : [],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildMapButtons() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        IconButton(
+          icon: Icon(Icons.zoom_in),
+          onPressed: () {
+            if (_zoom < 20.0) {
+              setState(() {
+                _zoom += 1.0;
+                mapController.move(_centre, _zoom);
+              });
+            }
+          },
+        ),
+        IconButton(
+            icon: Icon(Icons.zoom_out),
+            onPressed: () {
+              if (_zoom > 5.0) {
+                setState(() {
+                  _zoom -= 1.0;
+                  mapController.move(_centre, _zoom);
+                });
+              }
+            }),
+        IconButton(
+          icon: Icon(Icons.my_location),
+          onPressed: () {
+            getPosition(true);
+          },
+        ),
+      ],
     );
   }
 
@@ -404,39 +471,68 @@ class _EventFormPageState extends State<EventFormPage> {
   }
 
   // future function to get the current position from the location property of event and use it for locationFromAddress
-  Future<void> getPosition() async {
+  Future<void> getPosition(bool current) async {
     var location;
-    if (selectedEvent != null && selectedEvent.location != null) {
-      List<Location> places = await geocoder.locationFromAddress(selectedEvent.location);
-      location = places[0];
-      _centre = LatLng(location.latitude, location.longitude);  
-      setState(() {
-        addMarker(location);
-      });
-    } else {
-      location = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    List<Placemark> places;
+
+    if (current == true) {
+      location = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
       _centre = LatLng(location.latitude, location.longitude);
+
+      places = await geocoder.placemarkFromCoordinates(
+          location.latitude, location.longitude);
+
+      _location = places[0].postalCode.toString();
+
+      setState(() {
+        updateMarker(location);
+        mapController.move(_centre, _zoom);
+
+        _locationController.value = TextEditingValue(
+          text: _location,
+          selection: TextSelection.fromPosition(
+            TextPosition(offset: _location.length),
+          ),
+        );
+      });
+    } else if (_location != '') {
+      List<Location> places = await geocoder.locationFromAddress(_location);
+      location = places[0];
+      _centre = LatLng(location.latitude, location.longitude);
+      setState(() {
+        updateMarker(location);
+        mapController.move(_centre, _zoom);
+      });
+    } else if (selectedEvent != null && selectedEvent.location != null) {
+      List<Location> places =
+          await geocoder.locationFromAddress(selectedEvent.location);
+      location = places[0];
+      _centre = LatLng(location.latitude, location.longitude);
+      setState(() {
+        updateMarker(location);
+        mapController.move(_centre, _zoom);
+      });
     }
     //var placemarker = await geocoder.placemarkFromCoordinates(position.latitude, position.longitude);
   }
 
-  // function to add a marker on the map box 
-  void addMarker(var position) {     
-    var marker = new Marker(
+  // function to add a marker on the map box
+  void updateMarker(var position) {
+    var newMarker = new Marker(
       width: 70.0,
       height: 70.0,
       point: new LatLng(position.latitude, position.longitude),
       builder: (context) => Container(
-        child: IconButton(
-          color: Colors.red,
-          icon: Icon(Icons.location_on),
-          onPressed: () {
-            print('Clicked icon!');
-          },
-        )
-      ),
+          child: IconButton(
+        color: Colors.red,
+        icon: Icon(Icons.location_on),
+        onPressed: () {
+          print('Clicked icon!');
+        },
+      )),
     );
-    markers.add(marker);
+    marker = newMarker;
   }
 
   // function to display a dropdown of the auto completions for address
@@ -453,7 +549,7 @@ class _EventFormPageState extends State<EventFormPage> {
       });
     }
   }*/
-  
+
   // Function to handle Map autocomplete error
   /*void onError(maps.PlacesAutocompleteResponse response) {
     Scaffold.of(context).showSnackBar(
