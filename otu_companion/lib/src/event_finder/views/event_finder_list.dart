@@ -25,6 +25,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   var _calendarController = CalendarController();
 
   Event _selectedEvent;
+  List<dynamic> _calendarEvents = [];
 
   @override
   void initState() {
@@ -149,22 +150,59 @@ class _EventListWidgetState extends State<EventListWidget> {
         });
   }
 
+  // This function returns a calendar of events displayed using Calendar Table Package, obtained from cloud storage
   Widget _buildCalendarView() {
     EventModel _eventModel = EventModel();
     return FutureBuilder<QuerySnapshot> (
       future: _eventModel.getAll(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasData) {
+          // function to map event dates to the respective event
           Map<DateTime,List<dynamic>> eventDateMap = getDateEventMap(snapshot);  
           print(eventDateMap);
+          // 3rd party package calendar implementation
           return TableCalendar(
+            // list of events that are mapped, places markers on the calendar
             events: eventDateMap,
             calendarController: _calendarController,
+            // onTap Day selection for the calendar 
+            onDaySelected: (day, events, holidays) {
+              setState(() {
+                // setting the calendar events for the particular day selected, used to create a list of elements to select and edit/delete
+                _calendarEvents = events;
+              });
+            },
           );
         } else {
           return CircularProgressIndicator();
         }
       }
+    );
+  }
+
+  // function that returns a widget list of all the events as buttons to select, edit and delete
+  Widget _buildCalendarButtons() {
+    return ListView(
+      shrinkWrap: true,
+      children: _calendarEvents
+        .map((event) => Container(
+              decoration: BoxDecoration(
+                border: _selectedEvent != null && event.id == _selectedEvent.id
+                ? Border.all(width: 1.0, color: Colors.blueAccent)
+                : Border.all(width: 1.0),
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              child: ListTile(
+                title: _buildTile(context, event),
+                onTap: () {
+                  setState(() {
+                    _selectedEvent = event;
+                  });
+                }
+              ),
+            ))
+        .toList(),
     );
   }
 
@@ -409,7 +447,12 @@ class _EventListWidgetState extends State<EventListWidget> {
       case 'grid':
         return _buildGridView();
       case 'calendar':
-        return _buildCalendarView();
+        return Column(
+          children: <Widget>[
+            _buildCalendarView(),
+            _buildCalendarButtons(),
+          ],
+        );
       }
     }
     return null;
@@ -421,9 +464,9 @@ class _EventListWidgetState extends State<EventListWidget> {
     for (int i = 0; i < snapshot.data.docs.length; i++) {
       var event = Event.fromMap(snapshot.data.docs[i].data(), reference: snapshot.data.docs[i].reference);
       if (eventDateMap[event.startDateTime] == null) {
-        eventDateMap[event.startDateTime] = [event.name];
+        eventDateMap[event.startDateTime] = [event];
       } else {
-        eventDateMap[event.startDateTime].add(event.name);
+        eventDateMap[event.startDateTime].add([event]);
       }
     }
     return eventDateMap;
