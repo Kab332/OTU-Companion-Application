@@ -155,8 +155,11 @@ class _EventListWidgetState extends State<EventListWidget> {
       future: _eventModel.getAll(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasData) {
+          Map<DateTime,List<dynamic>> eventDateMap = getDateEventMap(snapshot);  
+          print(eventDateMap);
           return TableCalendar(
-           calendarController: _calendarController,
+            events: eventDateMap,
+            calendarController: _calendarController,
           );
         } else {
           return CircularProgressIndicator();
@@ -410,5 +413,19 @@ class _EventListWidgetState extends State<EventListWidget> {
       }
     }
     return null;
+  }
+
+  // utility function to map the starting event date and time to the list of event names for that day
+  Map<DateTime, List<dynamic>> getDateEventMap(AsyncSnapshot snapshot) {
+    Map<DateTime, List<dynamic>> eventDateMap = {};
+    for (int i = 0; i < snapshot.data.docs.length; i++) {
+      var event = Event.fromMap(snapshot.data.docs[i].data(), reference: snapshot.data.docs[i].reference);
+      if (eventDateMap[event.startDateTime] == null) {
+        eventDateMap[event.startDateTime] = [event.name];
+      } else {
+        eventDateMap[event.startDateTime].add(event.name);
+      }
+    }
+    return eventDateMap;
   }
 }
