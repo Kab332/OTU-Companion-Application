@@ -38,6 +38,8 @@ class _EventFormPageState extends State<EventFormPage> {
   bool _startSet = false;
   bool _endSet = false;
 
+  bool locationException = true;
+
   double _zoom = 10.0;
   Marker marker;
   LatLng _centre = LatLng(43.945947115276184, -78.89606283789982);
@@ -353,6 +355,8 @@ class _EventFormPageState extends State<EventFormPage> {
       validator: (String value) {
         if (value.isEmpty) {
           return 'Error: Please enter the event location!';
+        } else if (locationException == true) {
+          return 'Error: Please click \"Check location\" to check validity!';
         }
         return null;
       },
@@ -494,6 +498,7 @@ class _EventFormPageState extends State<EventFormPage> {
             ),
           );
         });
+        locationException = false;
       } else if (_location != '') {
         List<Location> places = await geocoder.locationFromAddress(_location);
         location = places[0];
@@ -502,6 +507,7 @@ class _EventFormPageState extends State<EventFormPage> {
           updateMarker(location);
           mapController.move(_centre, _zoom);
         });
+        locationException = false;
       } else if (selectedEvent != null && selectedEvent.location != null) {
         List<Location> places =
             await geocoder.locationFromAddress(selectedEvent.location);
@@ -511,10 +517,28 @@ class _EventFormPageState extends State<EventFormPage> {
           updateMarker(location);
           mapController.move(_centre, _zoom);
         });
+        locationException = false;
       }
     } on Exception catch (exception) {
-      // TODO Add alert
-      print(exception);
+      locationException = true;
+      showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error!'),
+            content: Text(exception.toString()),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Dismiss'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
