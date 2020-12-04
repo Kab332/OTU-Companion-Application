@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_google_places/flutter_google_places.dart' as places;
 import 'package:google_maps_webservice/places.dart' as maps;
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
@@ -26,7 +25,6 @@ class EventFormPage extends StatefulWidget {
 class _EventFormPageState extends State<EventFormPage> {
   final _formKey = GlobalKey<FormState>();
   final _eventNotifications = EventNotifications();
-  maps.GoogleMapsPlaces _places = maps.GoogleMapsPlaces(apiKey: "API_KEY");
 
   String _name = '';
   String _description = '';
@@ -474,47 +472,50 @@ class _EventFormPageState extends State<EventFormPage> {
   Future<void> getPosition(bool current) async {
     var location;
     List<Placemark> places;
+    try {
+      if (current == true) {
+        location = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high);
+        _centre = LatLng(location.latitude, location.longitude);
 
-    if (current == true) {
-      location = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      _centre = LatLng(location.latitude, location.longitude);
+        places = await geocoder.placemarkFromCoordinates(
+            location.latitude, location.longitude);
 
-      places = await geocoder.placemarkFromCoordinates(
-          location.latitude, location.longitude);
+        _location = places[0].postalCode.toString();
 
-      _location = places[0].postalCode.toString();
+        setState(() {
+          updateMarker(location);
+          mapController.move(_centre, _zoom);
 
-      setState(() {
-        updateMarker(location);
-        mapController.move(_centre, _zoom);
-
-        _locationController.value = TextEditingValue(
-          text: _location,
-          selection: TextSelection.fromPosition(
-            TextPosition(offset: _location.length),
-          ),
-        );
-      });
-    } else if (_location != '') {
-      List<Location> places = await geocoder.locationFromAddress(_location);
-      location = places[0];
-      _centre = LatLng(location.latitude, location.longitude);
-      setState(() {
-        updateMarker(location);
-        mapController.move(_centre, _zoom);
-      });
-    } else if (selectedEvent != null && selectedEvent.location != null) {
-      List<Location> places =
-          await geocoder.locationFromAddress(selectedEvent.location);
-      location = places[0];
-      _centre = LatLng(location.latitude, location.longitude);
-      setState(() {
-        updateMarker(location);
-        mapController.move(_centre, _zoom);
-      });
+          _locationController.value = TextEditingValue(
+            text: _location,
+            selection: TextSelection.fromPosition(
+              TextPosition(offset: _location.length),
+            ),
+          );
+        });
+      } else if (_location != '') {
+        List<Location> places = await geocoder.locationFromAddress(_location);
+        location = places[0];
+        _centre = LatLng(location.latitude, location.longitude);
+        setState(() {
+          updateMarker(location);
+          mapController.move(_centre, _zoom);
+        });
+      } else if (selectedEvent != null && selectedEvent.location != null) {
+        List<Location> places =
+            await geocoder.locationFromAddress(selectedEvent.location);
+        location = places[0];
+        _centre = LatLng(location.latitude, location.longitude);
+        setState(() {
+          updateMarker(location);
+          mapController.move(_centre, _zoom);
+        });
+      }
+    } on Exception catch (exception) {
+      // TODO Add alert
+      print(exception);
     }
-    //var placemarker = await geocoder.placemarkFromCoordinates(position.latitude, position.longitude);
   }
 
   // function to add a marker on the map box
