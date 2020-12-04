@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'dart:async';
 
@@ -23,6 +24,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   final _eventModel = EventModel();
   final _viewModel = ViewModel();
   var _calendarController = CalendarController();
+  final _scrollController = ScrollController();
 
   Event _selectedEvent;
   List<dynamic> _calendarEvents = [];
@@ -169,6 +171,7 @@ class _EventListWidgetState extends State<EventListWidget> {
             onDaySelected: (day, events, holidays) {
               setState(() {
                 // setting the calendar events for the particular day selected, used to create a list of elements to select and edit/delete
+                print('events for the day: $events');
                 _calendarEvents = events;
               });
             },
@@ -182,7 +185,10 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   // function that returns a widget list of all the events as buttons to select, edit and delete
   Widget _buildCalendarButtons() {
-    return ListView(
+    return Scrollbar(
+      isAlwaysShown: true,
+      controller: _scrollController,
+      child: ListView(
       shrinkWrap: true,
       children: _calendarEvents
         .map((event) => Container(
@@ -203,6 +209,7 @@ class _EventListWidgetState extends State<EventListWidget> {
               ),
             ))
         .toList(),
+      ),
     );
   }
 
@@ -439,6 +446,7 @@ class _EventListWidgetState extends State<EventListWidget> {
     );
   }
 
+  // function to assess which current view it is and displays that user to the user
   Widget _buildViewType() {
     if (this.views != null) {
       switch (this.views[0].viewType) {
@@ -450,7 +458,9 @@ class _EventListWidgetState extends State<EventListWidget> {
         return Column(
           children: <Widget>[
             _buildCalendarView(),
-            _buildCalendarButtons(),
+            Expanded(
+              child: _buildCalendarButtons(),
+            ),
           ],
         );
       }
@@ -463,12 +473,14 @@ class _EventListWidgetState extends State<EventListWidget> {
     Map<DateTime, List<dynamic>> eventDateMap = {};
     for (int i = 0; i < snapshot.data.docs.length; i++) {
       var event = Event.fromMap(snapshot.data.docs[i].data(), reference: snapshot.data.docs[i].reference);
-      if (eventDateMap[event.startDateTime] == null) {
-        eventDateMap[event.startDateTime] = [event];
+      DateTime currentDate = DateTime(event.startDateTime.year, event.startDateTime.month, event.startDateTime.day, 0, 0);
+      if (eventDateMap[currentDate] == null) {
+        eventDateMap[currentDate] = [event];
       } else {
-        eventDateMap[event.startDateTime].add([event]);
+        eventDateMap[currentDate].add(event);
       }
     }
+    print('eventDateMap: $eventDateMap');
     return eventDateMap;
   }
 }
