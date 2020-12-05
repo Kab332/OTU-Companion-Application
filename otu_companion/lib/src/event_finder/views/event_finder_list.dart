@@ -24,7 +24,6 @@ class _EventListWidgetState extends State<EventListWidget> {
   final _eventModel = EventModel();
   final _viewModel = ViewModel();
   var _calendarController = CalendarController();
-  final _scrollController = ScrollController();
 
   Event _selectedEvent;
   List<dynamic> _calendarEvents = [];
@@ -159,9 +158,8 @@ class _EventListWidgetState extends State<EventListWidget> {
       future: _eventModel.getAll(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasData) {
-          // function to map event dates to the respective event
+          // function to map events to their respective date 
           Map<DateTime,List<dynamic>> eventDateMap = getDateEventMap(snapshot);  
-          print(eventDateMap);
           // 3rd party package calendar implementation
           return TableCalendar(
             // list of events that are mapped, places markers on the calendar
@@ -170,8 +168,7 @@ class _EventListWidgetState extends State<EventListWidget> {
             // onTap Day selection for the calendar 
             onDaySelected: (day, events, holidays) {
               setState(() {
-                // setting the calendar events for the particular day selected, used to create a list of elements to select and edit/delete
-                print('events for the day: $events');
+                // setting the calendar events for the particular day selected, used to create a scrollable list of elements to select and edit/delete
                 _calendarEvents = events;
               });
             },
@@ -186,29 +183,27 @@ class _EventListWidgetState extends State<EventListWidget> {
   // function that returns a widget list of all the events as buttons to select, edit and delete
   Widget _buildCalendarButtons() {
     return Scrollbar(
-      isAlwaysShown: true,
-      controller: _scrollController,
       child: ListView(
-      shrinkWrap: true,
-      children: _calendarEvents
-        .map((event) => Container(
-              decoration: BoxDecoration(
-                border: _selectedEvent != null && event.id == _selectedEvent.id
-                ? Border.all(width: 1.0, color: Colors.blueAccent)
-                : Border.all(width: 1.0),
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              child: ListTile(
-                title: _buildTile(context, event),
-                onTap: () {
-                  setState(() {
-                    _selectedEvent = event;
-                  });
+        shrinkWrap: true,
+        children: _calendarEvents
+          .map((event) => Container(
+            decoration: BoxDecoration(
+              border: _selectedEvent != null && event.id == _selectedEvent.id
+              ? Border.all(width: 3.0, color: Colors.blue)
+              : Border.all(width: 1.0),
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            child: ListTile(
+              title: _buildTile(context, event),
+              onTap: () {
+                setState(() {
+                  _selectedEvent = event;
                 }
-              ),
-            ))
-        .toList(),
+              );
+            }
+          ),
+        )).toList(),
       ),
     );
   }
@@ -305,6 +300,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                   Scaffold.of(context).hideCurrentSnackBar();
                 }));
         Scaffold.of(context).showSnackBar(snackbar);
+        _calendarController.setSelectedDay(DateTime.now(), isProgrammatic: true, animate: true, runCallback: true);
         _selectedEvent = null;
       });
     } else {
@@ -334,9 +330,13 @@ class _EventListWidgetState extends State<EventListWidget> {
                     Scaffold.of(context).hideCurrentSnackBar();
                   }));
           Scaffold.of(context).showSnackBar(snackbar);
+          _calendarController.setSelectedDay(newEvent.startDateTime, isProgrammatic: true, animate: true, runCallback: true);
           _selectedEvent = null;
         });
       }
+      setState(() {
+        
+      });
       // If an event wasn't selected, show error dialog
     } else {
       _showAlertDialog();
