@@ -15,7 +15,7 @@ class LoginCheckerPage extends StatelessWidget {
       return HomePageMain(title: "Dash board",);
     }
     else {
-      return LoginPage(title: "Login",);
+      return LoginPage();
     }
   }
 }

@@ -31,6 +31,7 @@ dependencies:
   firebase_auth:
   cloud_firestore:
   firebase_core:
+  cached_network_image:
 
   flutter_local_notifications:
 
@@ -52,6 +53,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - lib/res/images/icons/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

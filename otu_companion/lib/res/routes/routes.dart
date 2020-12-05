@@ -3,16 +3,22 @@ import 'package:otu_companion/src/event_finder/event_finder_main.dart';
 import 'package:otu_companion/src/event_finder/views/event_form.dart';
 import 'package:otu_companion/src/home_page/home_page_main.dart';
 import 'package:otu_companion/src/profile/profile_page_main.dart';
+import 'package:otu_companion/src/profile/views/change_email_page.dart';
+import 'package:otu_companion/src/profile/views/change_name_page.dart';
+import 'package:otu_companion/src/profile/views/change_password_page.dart';
+import 'package:otu_companion/src/profile/views/change_picture_page.dart';
 import 'package:otu_companion/src/room_finder/room_finder_main.dart';
 import 'package:otu_companion/src/settings/settings_main.dart';
 import 'package:otu_companion/src/settings/views/appearance_settings_page.dart';
 import 'package:otu_companion/src/services/authentication/login_page.dart';
 import 'package:otu_companion/src/services/authentication/views/login_checker_page.dart';
+import 'package:otu_companion/src/services/authentication/views/sign_up_page.dart';
 
 class Routes {
   // Login
   static const loginPage = "/loginPage";
   static const loginCheckerPage = "/loginCheckerPage";
+  static const signUpPage = "/signUpPage";
   // Home
   static const homeMain = "/homeMain";
   // Event Finder
@@ -27,6 +33,10 @@ class Routes {
 
   // Profile
   static const profileMain = "/profileMain";
+  static const changeNamePage = "/changeNamePage";
+  static const changeEmailPage = "/changeEmailPage";
+  static const changePicturePage = "/changePicturePage";
+  static const changePasswordPage = "/changePasswordPage";
 
   // Others
 
@@ -61,14 +71,34 @@ class Routes {
       case roomFinderMain:
         return MaterialPageRoute(builder: (BuildContext context) =>
             RoomFinderMain(title: 'Empty Room Finder'));
+      case changeNamePage:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                ChangeNamePage(title: "Change Name"));
+      case changeEmailPage:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                ChangeEmailPage(title: "Change Email"));
+      case changePasswordPage:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                ChangePasswordPage(title: "Change Password"));
+      case changePicturePage:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                ChangePicturePage(title: "Change Picture"));
       case loginPage:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                LoginPage(title: 'Login'));
+                LoginPage());
       case loginCheckerPage:
         return MaterialPageRoute(
           builder: (BuildContext context) =>
               LoginCheckerPage());
+      case signUpPage:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+              SignUpPage(title: "Account Creation"));
     }
 
     return null;

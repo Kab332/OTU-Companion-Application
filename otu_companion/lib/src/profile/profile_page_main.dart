@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:otu_companion/src/navigation_views/main_side_drawer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:otu_companion/res/routes/routes.dart';
 
 class ProfilePageMain extends StatefulWidget
 {
@@ -14,9 +18,13 @@ class ProfilePageMain extends StatefulWidget
 
 class _ProfilePageMainState extends State<ProfilePageMain>
 {
+  User _user;
+
   @override
   Widget build(BuildContext context)
   {
+    _user = Provider.of<User>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -28,6 +36,7 @@ class _ProfilePageMainState extends State<ProfilePageMain>
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             _buildInfoContainer(context),
+            Divider(thickness: 5,height: 1,),
             _buildChangeNameButton(context),
             _buildChangeEmailButton(context),
             _buildChangePictureButton(context),
@@ -41,28 +50,58 @@ class _ProfilePageMainState extends State<ProfilePageMain>
   Widget _buildInfoContainer(BuildContext context)
   {
     return Container(
-      height: MediaQuery.of(context).size.height/4,
-      margin: EdgeInsets.only(top:15,bottom:25),
+      height: MediaQuery.of(context).size.height*0.25,
+      margin: EdgeInsets.only(top:15,bottom:5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(bottom:15),
-            child:CircleAvatar(
-              backgroundColor: Colors.black,
-              radius: 55,
+          if(_user.photoURL != null)...[
+            Padding(
+              padding: EdgeInsets.only(bottom:15),
+              child: CachedNetworkImage(
+                imageUrl: _user.photoURL,
+                progressIndicatorBuilder:(context, url, downloadProgress)
+                {
+                  return CircularProgressIndicator(
+                      value: downloadProgress.progress
+                  );
+                },
+                errorWidget: (context, url, error)
+                {
+                  return CircleAvatar(
+                    backgroundColor: Colors.black,
+                    radius: 75,
+                  );
+                },
+                imageBuilder: (context, imageProvider)
+                {
+                  return CircleAvatar(
+                    backgroundImage: imageProvider,
+                    radius: 75,
+                  );
+                },
+              ),
             ),
-          ),
+          ],
+          if(_user.photoURL == null)...[
+            Padding(
+              padding: EdgeInsets.only(bottom:15),
+              child: CircleAvatar(
+                backgroundColor: Colors.black,
+                radius: 75,
+              ),
+            ),
+          ],
           Text(
-            "Leon Balogne",
+            _user.displayName,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
           Text(
-            "Email@gmail.com",
+            _user.email,
             style: TextStyle(
               fontSize: 14,
             ),
@@ -76,7 +115,7 @@ class _ProfilePageMainState extends State<ProfilePageMain>
   {
     return InkWell(
       onTap: () {
-
+        Navigator.pushNamed(context, Routes.changeNamePage);
       },
       child:Container(
         child: Column(
@@ -111,7 +150,7 @@ class _ProfilePageMainState extends State<ProfilePageMain>
   {
     return InkWell(
       onTap: () {
-
+        Navigator.pushNamed(context, Routes.changeEmailPage);
       },
       child:Container(
         child: Column(
@@ -147,7 +186,7 @@ class _ProfilePageMainState extends State<ProfilePageMain>
   {
     return InkWell(
       onTap: () {
-
+        Navigator.pushNamed(context, Routes.changePicturePage);
       },
       child:Container(
         child: Column(
@@ -182,7 +221,7 @@ class _ProfilePageMainState extends State<ProfilePageMain>
   {
     return InkWell(
       onTap: () {
-
+        Navigator.pushNamed(context, Routes.changePasswordPage);
       },
       child:Container(
         child: Column(

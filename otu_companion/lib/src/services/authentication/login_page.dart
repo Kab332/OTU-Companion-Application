@@ -4,9 +4,7 @@ import 'package:otu_companion/res/routes/routes.dart';
 
 class LoginPage extends StatefulWidget
 {
-  LoginPage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  LoginPage({Key key}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -29,38 +27,92 @@ class _LoginPageState extends State<LoginPage>
   @override
   Widget build(BuildContext context)
   {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            //Logo
-            Text("Welcome Back To OTU Companion App!"),
+    return SafeArea(
+      child:Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Center(
+          child: Column(
+            children: <Widget>[
+              //Logo - Header
+              Container(
+                height: MediaQuery.of(context).size.height * 0.22,
+                child: Text(
+                  "Welcome Back To OTU Companion App! YEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
 
-            // Form Inputs
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  _buildEmailField(),
-                  _buildPasswordField(),
+              Divider(
+                height: 30,
+                thickness: 0,
+              ),
+
+              // Form Inputs
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.1,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child:_buildEmailField(),
+                    ),
+                    Divider(
+                      height: 10,
+                      thickness: 0,
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.1,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child: _buildPasswordField(),
+                    ),
+                  ],
+                ),
+              ),
+
+              Divider(
+                height: 20,
+                thickness: 0,
+              ),
+
+              // Buttons
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  _buildSignUpButton(context),
+                  _buildLoginWithEmailButton(context),
                 ],
               ),
-            ),
 
-            // Buttons
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                _buildLoginWithEmailButton(context),
-                _buildSignUpButton(context),
-                _buildLoginWithGoogleButton(context),
-              ],
-            ),
-          ],
+              Divider(
+                height: 50,
+                thickness: 0,
+              ),
+
+              // Other Login Options Button
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  _buildLoginWithGoogleButton(context),
+                  Divider(
+                    height: 20,
+                    thickness: 0,
+                  ),
+                  _buildLoginWithFacebookButton(context),
+                  Divider(
+                    height: 20,
+                    thickness: 0,
+                  ),
+                  _buildLoginWithTwitterButton(context),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -71,6 +123,9 @@ class _LoginPageState extends State<LoginPage>
     return TextFormField(
       decoration: const InputDecoration(
         labelText: "Email",
+        icon: Icon(Icons.email),
+        hintText:"Enter Email Address",
+        border: const OutlineInputBorder(),
       ),
       controller: _email,
       validator: (String value) {
@@ -88,7 +143,10 @@ class _LoginPageState extends State<LoginPage>
       obscureText: true,
       obscuringCharacter: "*",
       decoration: const InputDecoration(
-        labelText: "Password",
+          labelText: "Password",
+          icon: Icon(Icons.lock),
+          hintText:"Enter Password",
+          border: const OutlineInputBorder(),
       ),
       controller: _password,
       validator: (String value) {
@@ -103,6 +161,7 @@ class _LoginPageState extends State<LoginPage>
   Widget _buildLoginWithEmailButton(BuildContext context)
   {
     return InkWell(
+      splashColor: Colors.white,
       onTap: () {
         if (_formKey.currentState.validate()) {
           _formKey.currentState.save();
@@ -123,11 +182,12 @@ class _LoginPageState extends State<LoginPage>
         child: Column(
           children: <Widget>[
             Container(
-                height: MediaQuery.of(context).size.height/11,
-                width: MediaQuery.of(context).size.width/1.25,
+                height: MediaQuery.of(context).size.height* 0.1,
+                width: MediaQuery.of(context).size.width * 0.45,
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(50),
                   border: Border.all(
                     color: Theme.of(context).primaryColor,
                   ),
@@ -136,6 +196,7 @@ class _LoginPageState extends State<LoginPage>
                   child: Text(
                     "Login",
                     style: TextStyle(
+                      color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -152,39 +213,27 @@ class _LoginPageState extends State<LoginPage>
   {
     return InkWell(
       onTap: () {
-        if (_formKey.currentState.validate()) {
-          _formKey.currentState.save();
-          _authenticationService.signUpWithEmailAndPassword(
-            email: _email.text,
-            password: _password.text,
-          ).then((verifying){
-            _verification = verifying;
-          }
-          ).whenComplete((){
-            if (_verification) {
-              print(_verification);
-              Navigator.pushReplacementNamed(context, Routes.homeMain);
-            }
-          });
-        }
+        Navigator.pushNamed(context, Routes.signUpPage);
       },
       child:Container(
         child: Column(
           children: <Widget>[
             Container(
-                height: MediaQuery.of(context).size.height/11,
-                width: MediaQuery.of(context).size.width/1.25,
+                height: MediaQuery.of(context).size.height*0.1,
+                width: MediaQuery.of(context).size.width*0.45,
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(50),
                   border: Border.all(
                     color: Theme.of(context).primaryColor,
                   ),
                 ),
                 child: Center(
                   child: Text(
-                    "Sign Up",
+                    "Create Account",
                     style: TextStyle(
+                      color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -207,24 +256,124 @@ class _LoginPageState extends State<LoginPage>
         child: Column(
           children: <Widget>[
             Container(
-                height: MediaQuery.of(context).size.height/11,
-                width: MediaQuery.of(context).size.width/1.25,
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(
-                    color: Theme.of(context).primaryColor,
-                  ),
+              height: MediaQuery.of(context).size.height*0.08,
+              width: MediaQuery.of(context).size.width/1.25,
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
                 ),
-                child: Center(
-                  child: Text(
-                    "Login With Google",
+              ),
+              child: Stack(
+                children:<Widget>[
+                  Row(
+                    children: <Widget>[
+                      Image.asset('lib/res/images/icons/google_logo.png'),
+                    ],
+                  ),
+                  Center(
+                    child: Text(
+                    "Sign In With Google",
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginWithFacebookButton(BuildContext context)
+  {
+    return InkWell(
+      onTap: () {
+
+      },
+      child:Container(
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height*0.08,
+              width: MediaQuery.of(context).size.width/1.25,
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Color(0xFF1877f2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child:  Stack(
+                children:<Widget>[
+                  Row(
+                    children: <Widget>[
+                      Image.asset('lib/res/images/icons/facebook_logo.png'),
+                    ],
+                  ),
+                  Center(
+                    child: Text(
+                      "Sign In With Facebook",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginWithTwitterButton(BuildContext context)
+  {
+    return InkWell(
+      onTap: () {
+
+      },
+      child:Container(
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height*0.08,
+              width: MediaQuery.of(context).size.width/1.25,
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Color(0xff1DA1F2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Stack(
+                children:<Widget>[
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(right:18),
+                        child: Image.asset(
+                          'lib/res/images/icons/twitter_logo.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Center(
+                    child: Text(
+                      "Sign In With Twitter",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             )
           ],
         ),
