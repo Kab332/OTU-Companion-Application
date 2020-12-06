@@ -85,22 +85,29 @@ class _EventListWidgetState extends State<EventListWidget> {
                   ),
                 ),
               ),
+              Container(
+                child: this.views[0].viewType == null ? CircularProgressIndicator() : Text("Current View: ${this.views[0].viewType}"),
+              ),
               FlatButton(
                 child: Text("Switch Views"),
                 onPressed: () {
                   setState(() {
-                    if (this.views[0].viewType == "calendar") {
-                      this.views[0].viewType = "list";
+                    if (this.views[0].viewType == "Calendar") {
+                      this.views[0].viewType = "List";
                       _viewModel.updateView(
-                          View(id: this.views[0].id, viewType: "list"));
-                    } else if (this.views[0].viewType == "list") {
-                      this.views[0].viewType = "grid";
+                          View(id: this.views[0].id, viewType: "List"));
+                    } else if (this.views[0].viewType == "List") {
+                      this.views[0].viewType = "Grid";
                       _viewModel.updateView(
-                          View(id: this.views[0].id, viewType: "grid"));
-                    } else if (this.views[0].viewType == "grid") {
-                      this.views[0].viewType = "calendar";
+                          View(id: this.views[0].id, viewType: "Grid"));
+                    } else if (this.views[0].viewType == 'Grid') {
+                      this.views[0].viewType = 'Table';
                       _viewModel.updateView(
-                          View(id: this.views[0].id, viewType: "calendar"));
+                          View(id: this.views[0].id, viewType: "Table"));
+                    } else if (this.views[0].viewType == "Table") {
+                      this.views[0].viewType = "Calendar";
+                      _viewModel.updateView(
+                          View(id: this.views[0].id, viewType: "Calendar"));
                     }
                   });
                 },
@@ -144,6 +151,66 @@ class _EventListWidgetState extends State<EventListWidget> {
                   .map((DocumentSnapshot document) =>
                       _buildEvent(context, document))
                   .toList(),
+            );
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
+  }
+
+  /* This function returns a list of events displayed in a DataTable and obtained
+     from a cloud storage */
+  Widget _buildTableView() {
+    EventModel _eventModel = EventModel();
+    return FutureBuilder<QuerySnapshot>(
+        future: _eventModel.getAll(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasData) {
+            return Container(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    showBottomBorder: true,
+                    dataRowHeight: 100.0,
+                    columns: <DataColumn>[
+                      DataColumn(
+                        label: Text('Event Name'),
+                      ),
+                      DataColumn(
+                        label: Text('Description'),
+                      ),
+                      DataColumn(
+                        label: Text('Start Date'),
+                      ),
+                      DataColumn(
+                        label: Text('End Date'),
+                      ),
+                      DataColumn(
+                        label: Text('Location'),
+                      ),
+                    ],
+                    rows: snapshot.data.docs.
+                      map((document) => DataRow(
+                      cells: <DataCell>[
+                        DataCell(Text(Event.fromMap(document.data(), reference: document.reference).name)), 
+                        DataCell(
+                          Container(
+                            width: 200.0,
+                            child: Text(
+                              Event.fromMap(document.data(), reference: document.reference).description
+                            )
+                          )
+                        ),
+                        DataCell(Text(Event.fromMap(document.data(), reference: document.reference).startDateTime.toLocal().toString())),
+                        DataCell(Text(Event.fromMap(document.data(), reference: document.reference).endDateTime.toLocal().toString())),
+                        DataCell(Text(Event.fromMap(document.data(), reference: document.reference).location)), 
+                      ], 
+                    )).toList(),
+                  ),
+                ),
+              ),
             );
           } else {
             return CircularProgressIndicator();
@@ -450,11 +517,11 @@ class _EventListWidgetState extends State<EventListWidget> {
   Widget _buildViewType() {
     if (this.views != null) {
       switch (this.views[0].viewType) {
-      case 'list':
+      case 'List':
         return _buildListView();
-      case 'grid':
+      case 'Grid':
         return _buildGridView();
-      case 'calendar':
+      case 'Calendar':
         return Column(
           children: <Widget>[
             _buildCalendarView(),
@@ -463,6 +530,8 @@ class _EventListWidgetState extends State<EventListWidget> {
             ),
           ],
         );
+      case 'Table': 
+        return _buildTableView();
       }
     }
     return null;

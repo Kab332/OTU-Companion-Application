@@ -9,7 +9,7 @@ class DatabaseUtilities {
         db.execute("CREATE TABLE event_views(id INTEGER PRIMARY KEY, viewType TEXT)");
         return db.insert(
           'event_views', // table name
-          {'id': 1, 'viewType': "calendar"}, // Map values
+          {'id': 1, 'viewType': "Calendar"}, // Map values
           conflictAlgorithm: ConflictAlgorithm.replace // conflict algorithm if ID already exists in table
         );
       },
