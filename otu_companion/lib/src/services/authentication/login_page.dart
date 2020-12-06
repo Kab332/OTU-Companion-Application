@@ -35,12 +35,14 @@ class _LoginPageState extends State<LoginPage>
             children: <Widget>[
               //Logo - Header
               Container(
-                height: MediaQuery.of(context).size.height * 0.22,
-                child: Text(
-                  "Welcome Back To OTU Companion App! YEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
+                height: MediaQuery.of(context).size.height * 0.29,
+                child: Center(
+                  child:Text(
+                    "Welcome Back To OTU Companion App!",
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -94,20 +96,11 @@ class _LoginPageState extends State<LoginPage>
               ),
 
               // Other Login Options Button
-              Column(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   _buildLoginWithGoogleButton(context),
-                  Divider(
-                    height: 20,
-                    thickness: 0,
-                  ),
-                  _buildLoginWithFacebookButton(context),
-                  Divider(
-                    height: 20,
-                    thickness: 0,
-                  ),
                   _buildLoginWithTwitterButton(context),
                 ],
               ),
@@ -220,7 +213,7 @@ class _LoginPageState extends State<LoginPage>
           children: <Widget>[
             Container(
                 height: MediaQuery.of(context).size.height*0.1,
-                width: MediaQuery.of(context).size.width*0.45,
+                width: MediaQuery.of(context).size.width* 0.45,
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
@@ -257,7 +250,7 @@ class _LoginPageState extends State<LoginPage>
           children: <Widget>[
             Container(
               height: MediaQuery.of(context).size.height*0.08,
-              width: MediaQuery.of(context).size.width/1.25,
+              width: MediaQuery.of(context).size.width*0.45,
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
@@ -273,7 +266,7 @@ class _LoginPageState extends State<LoginPage>
                   ),
                   Center(
                     child: Text(
-                    "Sign In With Google",
+                    "Google",
                     style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -289,6 +282,7 @@ class _LoginPageState extends State<LoginPage>
     );
   }
 
+  /*
   Widget _buildLoginWithFacebookButton(BuildContext context)
   {
     return InkWell(
@@ -300,7 +294,7 @@ class _LoginPageState extends State<LoginPage>
           children: <Widget>[
             Container(
               height: MediaQuery.of(context).size.height*0.08,
-              width: MediaQuery.of(context).size.width/1.25,
+              width: MediaQuery.of(context).size.width*0.3,
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Color(0xFF1877f2),
@@ -315,7 +309,7 @@ class _LoginPageState extends State<LoginPage>
                   ),
                   Center(
                     child: Text(
-                      "Sign In With Facebook",
+                      "Facebook",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -331,6 +325,7 @@ class _LoginPageState extends State<LoginPage>
       ),
     );
   }
+   */
 
   Widget _buildLoginWithTwitterButton(BuildContext context)
   {
@@ -343,7 +338,7 @@ class _LoginPageState extends State<LoginPage>
           children: <Widget>[
             Container(
               height: MediaQuery.of(context).size.height*0.08,
-              width: MediaQuery.of(context).size.width/1.25,
+              width: MediaQuery.of(context).size.width*0.45,
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Color(0xff1DA1F2),
@@ -364,7 +359,7 @@ class _LoginPageState extends State<LoginPage>
                   ),
                   Center(
                     child: Text(
-                      "Sign In With Twitter",
+                      "Twitter",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,

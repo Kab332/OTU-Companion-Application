@@ -76,7 +76,7 @@ class _MainSideDrawerState extends State<MainSideDrawer>
           children: <Widget>[
             Column(
               children: <Widget>[
-                if(_user.photoURL != null)...[
+                if(_user != null && _user.photoURL != null)...[
                   CachedNetworkImage(
                     imageUrl: _user.photoURL,
                     progressIndicatorBuilder:(context, url, downloadProgress)
@@ -101,7 +101,7 @@ class _MainSideDrawerState extends State<MainSideDrawer>
                     },
                   ),
                 ],
-                if(_user.photoURL == null)...[
+                if(_user != null && _user.photoURL == null)...[
                   CircleAvatar(
                     backgroundColor: Colors.white,
                     radius: 50,
@@ -114,12 +114,27 @@ class _MainSideDrawerState extends State<MainSideDrawer>
                 margin: EdgeInsets.only(top:8, bottom:5,left:10, right:10),
                 child: FittedBox(
                   fit: BoxFit.fitWidth,
-                  child: Text(
-                    //TODO: Add Profile Name
-                    _user.displayName,
-                    style: TextStyle(
-                      fontSize: 18
-                    ),
+                  child: Column(
+                    children: <Widget>[
+                      if(_user != null && _user.displayName != null)...[
+                        Text(
+                          //TODO: Add Profile Name
+                          _user.displayName,
+                          style: TextStyle(
+                            fontSize: 18
+                          ),
+                        ),
+                      ],
+                      if( _user != null && _user.displayName == null)...[
+                        Text(
+                          //TODO: Add Profile Name
+                          "???",
+                          style: TextStyle(
+                              fontSize: 18
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               ),
@@ -167,9 +182,9 @@ class _MainSideDrawerState extends State<MainSideDrawer>
       leading: Icon(Icons.exit_to_app),
       onTap: ()
       {
-        _authenticationService.signOut();
         // Pop everything to login page
-        Navigator.popAndPushNamed(context, Routes.loginPage);
+        Navigator.pushReplacementNamed(context, Routes.loginPage);
+        _authenticationService.signOut();
       },
     );
   }

@@ -38,7 +38,9 @@ class AuthenticationService
             id: user.user.uid,
           );
         }
-      );
+      ).then((context){
+        signOut();
+      });
       return true;
     }
     on FirebaseAuthException catch(e)

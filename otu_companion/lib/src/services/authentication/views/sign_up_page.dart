@@ -212,10 +212,9 @@ class _SignUpPageState extends State<SignUpPage>
             lastName: _lastName.text
           ).then((verifying){
             _verification = verifying;
-          }
-          ).whenComplete((){
+          }).whenComplete((){
             if (_verification) {
-              Navigator.pushReplacementNamed(context, Routes.homeMain);
+              Navigator.pushReplacementNamed(context, Routes.loginCheckerPage);
             }
           });
         }
