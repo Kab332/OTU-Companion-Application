@@ -193,11 +193,6 @@ class _EventListWidgetState extends State<EventListWidget> {
                     ],
                     rows: snapshot.data.docs.
                       map((document) => DataRow(
-                      color: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-                        if (states.contains(MaterialState.selected))
-                          return Theme.of(context).colorScheme.primary.withOpacity(0.9);
-                        return null;  // Use the default value.
-                      }),
                       cells: <DataCell>[
                         DataCell(
                           Text(
