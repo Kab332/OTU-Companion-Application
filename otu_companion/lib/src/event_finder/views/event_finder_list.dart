@@ -382,6 +382,36 @@ class _EventListWidgetState extends State<EventListWidget> {
       child: ListTile(
         title: Text(event.name),
         subtitle: Text(event.description),
+        leading: IconButton(
+            icon: user.uid == event.createdBy
+                ? Icon(
+                    Icons.person,
+                  )
+                : userView == true
+                    ? Icon(
+                        Icons.cancel,
+                      )
+                    : event.participants.contains(user.uid)
+                        ? Icon(Icons.people)
+                        : Icon(Icons.add),
+            onPressed: () {
+              if (user.uid == event.createdBy) {
+                print("This is your event");
+              } else if (userView == true) {
+                print("Remove from list");
+                setState(() {
+                  _eventModel.removeParticipant(event, user.uid);
+                });
+              } else if (event.participants.contains(user.uid)) {
+                print("You are already in this event");
+              } else {
+                print("Add to list");
+                print(event);
+                setState(() {
+                  _eventModel.addParticipant(event, user.uid);
+                });
+              }
+            }),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -418,6 +448,7 @@ class _EventListWidgetState extends State<EventListWidget> {
     // Check if event is not null, navigating back will keep it null
     if (event != null) {
       event.createdBy = user.uid;
+      event.participants = [user.uid];
       setState(() {
         _eventModel.insert(event);
         var snackbar = SnackBar(

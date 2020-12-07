@@ -14,7 +14,7 @@ class EventModel {
   Future<QuerySnapshot> getUserEvents(String uid) async {
     return await FirebaseFirestore.instance
         .collection('events')
-        .where('createdBy', isEqualTo: uid)
+        .where('participants', arrayContains: uid)
         .get();
   }
 
@@ -36,9 +36,23 @@ class EventModel {
     });
   }
 
+  // Future function to add participant to participants list
+  Future<void> addParticipant(Event event, String uid) async {
+    print('adding participant $uid... to ' + event.participants.toString());
+    event.participants.add(uid);
+    event.reference.update({'participants': event.participants});
+  }
+
   // Future function to delete an event from the database
   Future<void> delete(Event event) async {
     print('deleting event $event...');
     event.reference.delete();
+  }
+
+  // Future function to remove participant from participants list
+  Future<void> removeParticipant(Event event, String uid) async {
+    print('removing participant $uid...');
+    event.participants.remove(uid);
+    event.reference.update({'participants': event.participants});
   }
 }
