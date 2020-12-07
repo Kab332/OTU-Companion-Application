@@ -53,7 +53,12 @@ class _EventListWidgetState extends State<EventListWidget> {
         title: Text(widget.title),
         // If we're in the user view, then these buttons aren't shown
         actions: userView == true
-            ? <Widget>[]
+            ? <Widget>[
+                IconButton(
+                  icon: Icon(Icons.insert_chart, color: Colors.white),
+                  onPressed: _checkStats,
+                ),
+              ]
             : <Widget>[
                 // Add an event
                 IconButton(
@@ -82,9 +87,105 @@ class _EventListWidgetState extends State<EventListWidget> {
                             : () {
                                 _deleteEvent();
                               }),
+                // Go to the stat page
+                IconButton(
+                  icon: Icon(Icons.insert_chart, color: Colors.white),
+                  onPressed: _checkStats,
+                ),
               ],
       ),
-      body: _buildEventFinder(),
+      body: Container(
+        child: Column(children: [
+          Row(children: [
+            Expanded(
+                child: FlatButton(
+                  color: userView == true ? Colors.blue : Colors.grey,
+                  child: Text("Joined Events"),
+                  onPressed: () {
+                    setState(() {
+                      userView = true;
+                    });
+                  },
+                ),
+                flex: 2),
+            Expanded(
+                child: FlatButton(
+                  color: userView == false ? Colors.blue : Colors.grey,
+                  child: Text("All Events"),
+                  onPressed: () {
+                    setState(() {
+                      userView = false;
+                    });
+                  },
+                ),
+                flex: 2),
+          ]),
+          Row(children: [
+            Expanded(
+                child: FlatButton(
+                  color: this.views != null && this.views[0].viewType == "Grid"
+                      ? Colors.blue
+                      : Colors.grey,
+                  child: Text("Grid"),
+                  onPressed: () {
+                    setState(() {
+                      this.views[0].viewType = "Grid";
+                      _viewModel.updateView(
+                          View(id: this.views[0].id, viewType: "Grid"));
+                    });
+                  },
+                ),
+                flex: 2),
+            Expanded(
+                child: FlatButton(
+                  color:
+                      this.views != null && this.views[0].viewType == "Calendar"
+                          ? Colors.blue
+                          : Colors.grey,
+                  child: Text("Calendar"),
+                  onPressed: () {
+                    setState(() {
+                      this.views[0].viewType = "Calendar";
+                      _viewModel.updateView(
+                          View(id: this.views[0].id, viewType: "Calendar"));
+                    });
+                  },
+                ),
+                flex: 2),
+            Expanded(
+                child: FlatButton(
+                  color: this.views != null && this.views[0].viewType == "List"
+                      ? Colors.blue
+                      : Colors.grey,
+                  child: Text("List"),
+                  onPressed: () {
+                    setState(() {
+                      this.views[0].viewType = "List";
+                      _viewModel.updateView(
+                          View(id: this.views[0].id, viewType: "List"));
+                    });
+                  },
+                ),
+                flex: 2),
+            Expanded(
+                child: FlatButton(
+                  color: this.views != null && this.views[0].viewType == 'Table'
+                      ? Colors.blue
+                      : Colors.grey,
+                  child: Text("Table"),
+                  onPressed: () {
+                    setState(() {
+                      this.views[0].viewType = 'Table';
+                      _viewModel.updateView(
+                          View(id: this.views[0].id, viewType: "Table"));
+                    });
+                  },
+                ),
+                flex: 2),
+          ]),
+          _buildEventFinder()
+        ]),
+      ),
     );
   }
 
@@ -109,45 +210,35 @@ class _EventListWidgetState extends State<EventListWidget> {
                   ),
                 ),
               ),
-              Container(
-                child: this.views == null
-                    ? CircularProgressIndicator()
-                    : Text("Current View: ${this.views[0].viewType}"),
-              ),
-              FlatButton(
-                child: Text("Switch Views"),
-                onPressed: () {
-                  setState(() {
-                    if (this.views[0].viewType == "Calendar") {
-                      this.views[0].viewType = "List";
-                      _viewModel.updateView(
-                          View(id: this.views[0].id, viewType: "List"));
-                    } else if (this.views[0].viewType == "List") {
-                      this.views[0].viewType = "Grid";
-                      _viewModel.updateView(
-                          View(id: this.views[0].id, viewType: "Grid"));
-                    } else if (this.views[0].viewType == 'Grid') {
-                      this.views[0].viewType = 'Table';
-                      _viewModel.updateView(
-                          View(id: this.views[0].id, viewType: "Table"));
-                    } else if (this.views[0].viewType == "Table") {
-                      this.views[0].viewType = "Calendar";
-                      _viewModel.updateView(
-                          View(id: this.views[0].id, viewType: "Calendar"));
-                    }
-                  });
-                },
-              ),
-              FlatButton(
-                child: userView == true
-                    ? Text("View all Events")
-                    : Text("View joined events"),
-                onPressed: () {
-                  setState(() {
-                    userView = !userView;
-                  });
-                },
-              ),
+              // Container(
+              //   child: this.views == null
+              //       ? CircularProgressIndicator()
+              //       : Text("Current View: ${this.views[0].viewType}"),
+              // ),
+              // FlatButton(
+              //   child: Text("Switch Views"),
+              //   onPressed: () {
+              //     setState(() {
+              //       if (this.views[0].viewType == "Calendar") {
+              //         this.views[0].viewType = "List";
+              //         _viewModel.updateView(
+              //             View(id: this.views[0].id, viewType: "List"));
+              //       } else if (this.views[0].viewType == "List") {
+              //         this.views[0].viewType = "Grid";
+              //         _viewModel.updateView(
+              //             View(id: this.views[0].id, viewType: "Grid"));
+              //       } else if (this.views[0].viewType == 'Grid') {
+              //         this.views[0].viewType = 'Table';
+              //         _viewModel.updateView(
+              //             View(id: this.views[0].id, viewType: "Table"));
+              //       } else if (this.views[0].viewType == "Table") {
+              //         this.views[0].viewType = "Calendar";
+              //         _viewModel.updateView(
+              //             View(id: this.views[0].id, viewType: "Calendar"));
+              //       }
+              //     });
+              //   },
+              // ),
             ],
           );
         });
@@ -540,7 +631,15 @@ class _EventListWidgetState extends State<EventListWidget> {
     for (int i = 0; i < views.length; i++) {
       print("Views: ${views[i].toMap()}");
     }
-    this.views = views;
+
+    if (this.views == null) {
+      setState(() {
+        this.views = views;
+      });
+    } else {
+      this.views = views;
+    }
+
     return views;
   }
 
@@ -677,5 +776,13 @@ class _EventListWidgetState extends State<EventListWidget> {
     }
     print('eventDateMap: $eventDateMap');
     return eventDateMap;
+  }
+
+  void _checkStats() {
+    if (userView == true) {
+      Navigator.pushNamed(context, "/eventStats", arguments: user.uid);
+    } else {
+      Navigator.pushNamed(context, "/eventStats", arguments: null);
+    }
   }
 }
