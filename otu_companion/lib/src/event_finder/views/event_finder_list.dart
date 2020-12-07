@@ -60,16 +60,28 @@ class _EventListWidgetState extends State<EventListWidget> {
                   icon: Icon(Icons.add),
                   onPressed: _addEvent,
                 ),
-                // Edit selected event
+                /* Edit selected event, disabled if no event is selected or this
+                   event was not created by the user */
                 IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: _editEvent,
-                ),
-                // Delete selected event
+                    icon: Icon(Icons.edit),
+                    onPressed: _selectedEvent == null
+                        ? null
+                        : _selectedEvent.createdBy != user.uid
+                            ? null
+                            : () {
+                                _editEvent();
+                              }),
+                /* Delete selected event, disabled if no event is selected or this
+                   event was not created by the user */
                 IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: _deleteEvent,
-                ),
+                    icon: Icon(Icons.delete),
+                    onPressed: _selectedEvent == null
+                        ? null
+                        : _selectedEvent.createdBy != user.uid
+                            ? null
+                            : () {
+                                _deleteEvent();
+                              }),
               ],
       ),
       body: _buildEventFinder(),
