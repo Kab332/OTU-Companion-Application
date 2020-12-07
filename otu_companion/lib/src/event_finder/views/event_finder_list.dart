@@ -9,6 +9,9 @@ import '../model/event.dart';
 import '../model/view.dart';
 import '../model/view_model.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+
 class EventListWidget extends StatefulWidget {
   EventListWidget({Key key, this.title}) : super(key: key);
 
@@ -19,7 +22,7 @@ class EventListWidget extends StatefulWidget {
 }
 
 class _EventListWidgetState extends State<EventListWidget> {
-  List<Event> events;
+  // List<Event> events;
   List<View> views;
   final _eventModel = EventModel();
   final _viewModel = ViewModel();
@@ -28,37 +31,46 @@ class _EventListWidgetState extends State<EventListWidget> {
   Event _selectedEvent;
   List<dynamic> _calendarEvents = [];
 
+  bool userView = true;
+
+  User user;
+
   @override
   void initState() {
     super.initState();
 
     _getViews();
-    getAllEvents();
+    // getAllEvents();
   }
 
   @override
   Widget build(BuildContext context) {
+    user = Provider.of<User>(context);
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text(widget.title),
-        actions: <Widget>[
-          // Add an event
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: _addEvent,
-          ),
-          // Edit selected event
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: _editEvent,
-          ),
-          // Delete selected event
-          IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: _deleteEvent,
-          ),
-        ],
+        // If we're in the user view, then these buttons aren't shown
+        actions: userView == true
+            ? <Widget>[]
+            : <Widget>[
+                // Add an event
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: _addEvent,
+                ),
+                // Edit selected event
+                IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: _editEvent,
+                ),
+                // Delete selected event
+                IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: _deleteEvent,
+                ),
+              ],
       ),
       body: _buildEventFinder(),
     );
@@ -86,7 +98,9 @@ class _EventListWidgetState extends State<EventListWidget> {
                 ),
               ),
               Container(
-                child: this.views == null ? CircularProgressIndicator() : Text("Current View: ${this.views[0].viewType}"),
+                child: this.views == null
+                    ? CircularProgressIndicator()
+                    : Text("Current View: ${this.views[0].viewType}"),
               ),
               FlatButton(
                 child: Text("Switch Views"),
@@ -111,7 +125,17 @@ class _EventListWidgetState extends State<EventListWidget> {
                     }
                   });
                 },
-              )
+              ),
+              FlatButton(
+                child: userView == true
+                    ? Text("View all Events")
+                    : Text("View joined events"),
+                onPressed: () {
+                  setState(() {
+                    userView = !userView;
+                  });
+                },
+              ),
             ],
           );
         });
@@ -122,7 +146,9 @@ class _EventListWidgetState extends State<EventListWidget> {
   Widget _buildListView() {
     EventModel _eventModel = EventModel();
     return FutureBuilder<QuerySnapshot>(
-        future: _eventModel.getAll(),
+        future: userView == true
+            ? _eventModel.getUserEvents(user.uid)
+            : _eventModel.getAll(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
             return ListView(
@@ -142,7 +168,9 @@ class _EventListWidgetState extends State<EventListWidget> {
   Widget _buildGridView() {
     EventModel _eventModel = EventModel();
     return FutureBuilder<QuerySnapshot>(
-        future: _eventModel.getAll(),
+        future: userView == true
+            ? _eventModel.getUserEvents(user.uid)
+            : _eventModel.getAll(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
             return GridView.count(
@@ -163,7 +191,9 @@ class _EventListWidgetState extends State<EventListWidget> {
   Widget _buildTableView() {
     EventModel _eventModel = EventModel();
     return FutureBuilder<QuerySnapshot>(
-        future: _eventModel.getAll(),
+        future: userView == true
+            ? _eventModel.getUserEvents(user.uid)
+            : _eventModel.getAll(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
             return Container(
@@ -191,54 +221,68 @@ class _EventListWidgetState extends State<EventListWidget> {
                         label: Text('Location'),
                       ),
                     ],
-                    rows: snapshot.data.docs.
-                      map((document) => DataRow(
-                      cells: <DataCell>[
-                        DataCell(
-                          Text(
-                            Event.fromMap(document.data(), reference: document.reference).name
-                          ), 
-                          onTap: () {
-                            _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
-                          },
-                        ), 
-                        DataCell(
-                          Container(
-                            width: 200.0,
-                            child: Text(
-                              Event.fromMap(document.data(), reference: document.reference).description
-                            )
-                          ),
-                          onTap: () {
-                            _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
-                          },
-                        ),
-                        DataCell(
-                          Text(
-                            Event.fromMap(document.data(), reference: document.reference).startDateTime.toLocal().toString()
-                          ),
-                          onTap: () {
-                            _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
-                          },
-                        ),
-                        DataCell(
-                          Text(
-                            Event.fromMap(document.data(), reference: document.reference).endDateTime.toLocal().toString()
-                          ),
-                          onTap: () {
-                            _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
-                          },
-                        ),
-                        DataCell(
-                          Text(
-                            Event.fromMap(document.data(), reference: document.reference).location
-                          ),
-                          onTap: () {
-                            _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
-                          },
-                        ), 
-                      ], 
-                    )).toList(),
+                    rows: snapshot.data.docs
+                        .map((document) => DataRow(
+                              cells: <DataCell>[
+                                DataCell(
+                                  Text(Event.fromMap(document.data(),
+                                          reference: document.reference)
+                                      .name),
+                                  onTap: () {
+                                    _selectedEvent = Event.fromMap(
+                                        document.data(),
+                                        reference: document.reference);
+                                  },
+                                ),
+                                DataCell(
+                                  Container(
+                                      width: 200.0,
+                                      child: Text(Event.fromMap(document.data(),
+                                              reference: document.reference)
+                                          .description)),
+                                  onTap: () {
+                                    _selectedEvent = Event.fromMap(
+                                        document.data(),
+                                        reference: document.reference);
+                                  },
+                                ),
+                                DataCell(
+                                  Text(Event.fromMap(document.data(),
+                                          reference: document.reference)
+                                      .startDateTime
+                                      .toLocal()
+                                      .toString()),
+                                  onTap: () {
+                                    _selectedEvent = Event.fromMap(
+                                        document.data(),
+                                        reference: document.reference);
+                                  },
+                                ),
+                                DataCell(
+                                  Text(Event.fromMap(document.data(),
+                                          reference: document.reference)
+                                      .endDateTime
+                                      .toLocal()
+                                      .toString()),
+                                  onTap: () {
+                                    _selectedEvent = Event.fromMap(
+                                        document.data(),
+                                        reference: document.reference);
+                                  },
+                                ),
+                                DataCell(
+                                  Text(Event.fromMap(document.data(),
+                                          reference: document.reference)
+                                      .location),
+                                  onTap: () {
+                                    _selectedEvent = Event.fromMap(
+                                        document.data(),
+                                        reference: document.reference);
+                                  },
+                                ),
+                              ],
+                            ))
+                        .toList(),
                   ),
                 ),
               ),
@@ -252,30 +296,32 @@ class _EventListWidgetState extends State<EventListWidget> {
   // This function returns a calendar of events displayed using Calendar Table Package, obtained from cloud storage
   Widget _buildCalendarView() {
     EventModel _eventModel = EventModel();
-    return FutureBuilder<QuerySnapshot> (
-      future: _eventModel.getAll(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasData) {
-          // function to map events to their respective date 
-          Map<DateTime,List<dynamic>> eventDateMap = getDateEventMap(snapshot);  
-          // 3rd party package calendar implementation
-          return TableCalendar(
-            // list of events that are mapped, places markers on the calendar
-            events: eventDateMap,
-            calendarController: _calendarController,
-            // onTap Day selection for the calendar 
-            onDaySelected: (day, events, holidays) {
-              setState(() {
-                // setting the calendar events for the particular day selected, used to create a scrollable list of elements to select and edit/delete
-                _calendarEvents = events;
-              });
-            },
-          );
-        } else {
-          return CircularProgressIndicator();
-        }
-      }
-    );
+    return FutureBuilder<QuerySnapshot>(
+        future: userView == true
+            ? _eventModel.getUserEvents(user.uid)
+            : _eventModel.getAll(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasData) {
+            // function to map events to their respective date
+            Map<DateTime, List<dynamic>> eventDateMap =
+                getDateEventMap(snapshot);
+            // 3rd party package calendar implementation
+            return TableCalendar(
+              // list of events that are mapped, places markers on the calendar
+              events: eventDateMap,
+              calendarController: _calendarController,
+              // onTap Day selection for the calendar
+              onDaySelected: (day, events, holidays) {
+                setState(() {
+                  // setting the calendar events for the particular day selected, used to create a scrollable list of elements to select and edit/delete
+                  _calendarEvents = events;
+                });
+              },
+            );
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
   }
 
   // function that returns a widget list of all the events as buttons to select, edit and delete
@@ -284,24 +330,25 @@ class _EventListWidgetState extends State<EventListWidget> {
       child: ListView(
         shrinkWrap: true,
         children: _calendarEvents
-          .map((event) => Container(
-            decoration: BoxDecoration(
-              border: _selectedEvent != null && event.id == _selectedEvent.id
-              ? Border.all(width: 3.0, color: Colors.blue)
-              : Border.all(width: 1.0),
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-            child: ListTile(
-              title: _buildTile(context, event),
-              onTap: () {
-                setState(() {
-                  _selectedEvent = event;
-                }
-              );
-            }
-          ),
-        )).toList(),
+            .map((event) => Container(
+                  decoration: BoxDecoration(
+                    border:
+                        _selectedEvent != null && event.id == _selectedEvent.id
+                            ? Border.all(width: 3.0, color: Colors.blue)
+                            : Border.all(width: 1.0),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 8.0, vertical: 4.0),
+                  child: ListTile(
+                      title: _buildTile(context, event),
+                      onTap: () {
+                        setState(() {
+                          _selectedEvent = event;
+                        });
+                      }),
+                ))
+            .toList(),
       ),
     );
   }
@@ -363,11 +410,14 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   // Future function to add an event to the firestore database, also pushes a snackbar indicating if it was successful
   Future<void> _addEvent() async {
-    var event =
+    var result =
         await Navigator.pushNamed(context, "/eventForm", arguments: null);
+
+    Event event = result;
 
     // Check if event is not null, navigating back will keep it null
     if (event != null) {
+      event.createdBy = user.uid;
       setState(() {
         _eventModel.insert(event);
         var snackbar = SnackBar(
@@ -398,7 +448,8 @@ class _EventListWidgetState extends State<EventListWidget> {
                   Scaffold.of(context).hideCurrentSnackBar();
                 }));
         Scaffold.of(context).showSnackBar(snackbar);
-        _calendarController.setSelectedDay(DateTime.now(), isProgrammatic: true, animate: true, runCallback: true);
+        _calendarController.setSelectedDay(DateTime.now(),
+            isProgrammatic: true, animate: true, runCallback: true);
         _selectedEvent = null;
       });
     } else {
@@ -428,13 +479,12 @@ class _EventListWidgetState extends State<EventListWidget> {
                     Scaffold.of(context).hideCurrentSnackBar();
                   }));
           Scaffold.of(context).showSnackBar(snackbar);
-          _calendarController.setSelectedDay(newEvent.startDateTime, isProgrammatic: true, animate: true, runCallback: true);
+          _calendarController.setSelectedDay(newEvent.startDateTime,
+              isProgrammatic: true, animate: true, runCallback: true);
           _selectedEvent = null;
         });
       }
-      setState(() {
-        
-      });
+      setState(() {});
       // If an event wasn't selected, show error dialog
     } else {
       _showAlertDialog();
@@ -548,21 +598,21 @@ class _EventListWidgetState extends State<EventListWidget> {
   Widget _buildViewType() {
     if (this.views != null) {
       switch (this.views[0].viewType) {
-      case 'List':
-        return _buildListView();
-      case 'Grid':
-        return _buildGridView();
-      case 'Calendar':
-        return Column(
-          children: <Widget>[
-            _buildCalendarView(),
-            Expanded(
-              child: _buildCalendarButtons(),
-            ),
-          ],
-        );
-      case 'Table': 
-        return _buildTableView();
+        case 'List':
+          return _buildListView();
+        case 'Grid':
+          return _buildGridView();
+        case 'Calendar':
+          return Column(
+            children: <Widget>[
+              _buildCalendarView(),
+              Expanded(
+                child: _buildCalendarButtons(),
+              ),
+            ],
+          );
+        case 'Table':
+          return _buildTableView();
       }
     }
     return null;
@@ -572,8 +622,10 @@ class _EventListWidgetState extends State<EventListWidget> {
   Map<DateTime, List<dynamic>> getDateEventMap(AsyncSnapshot snapshot) {
     Map<DateTime, List<dynamic>> eventDateMap = {};
     for (int i = 0; i < snapshot.data.docs.length; i++) {
-      var event = Event.fromMap(snapshot.data.docs[i].data(), reference: snapshot.data.docs[i].reference);
-      DateTime currentDate = DateTime(event.startDateTime.year, event.startDateTime.month, event.startDateTime.day, 0, 0);
+      var event = Event.fromMap(snapshot.data.docs[i].data(),
+          reference: snapshot.data.docs[i].reference);
+      DateTime currentDate = DateTime(event.startDateTime.year,
+          event.startDateTime.month, event.startDateTime.day, 0, 0);
       if (eventDateMap[currentDate] == null) {
         eventDateMap[currentDate] = [event];
       } else {

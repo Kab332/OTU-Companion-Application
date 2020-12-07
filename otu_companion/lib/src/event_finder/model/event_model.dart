@@ -10,6 +10,14 @@ class EventModel {
     return await FirebaseFirestore.instance.collection('events').get();
   }
 
+  // Future function for getting all events the user is in (temporarily gets the ones they created)
+  Future<QuerySnapshot> getUserEvents(String uid) async {
+    return await FirebaseFirestore.instance
+        .collection('events')
+        .where('createdBy', isEqualTo: uid)
+        .get();
+  }
+
   // Future function to insert an event to the database
   Future<void> insert(Event event) async {
     CollectionReference events =
