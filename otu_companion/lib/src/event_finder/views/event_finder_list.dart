@@ -27,6 +27,7 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   Event _selectedEvent;
   List<dynamic> _calendarEvents = [];
+  String _selectedColumn;
 
   @override
   void initState() {
@@ -193,13 +194,23 @@ class _EventListWidgetState extends State<EventListWidget> {
                     ],
                     rows: snapshot.data.docs.
                       map((document) => DataRow(
+                      selected: _selectedColumn == document.id,
+                      onSelectChanged: (val) {
+                        setState(() {
+                          _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
+                          _selectedColumn = document.id;
+                        });
+                      },
                       cells: <DataCell>[
                         DataCell(
                           Text(
                             Event.fromMap(document.data(), reference: document.reference).name
                           ), 
                           onTap: () {
-                            _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
+                            setState(() {
+                              _selectedColumn = document.id;
+                              _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
+                            });
                           },
                         ), 
                         DataCell(
