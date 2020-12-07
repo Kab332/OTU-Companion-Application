@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:otu_companion/src/event_finder/event_finder_main.dart';
 import 'package:otu_companion/src/event_finder/views/event_form.dart';
+import 'package:otu_companion/src/event_finder/views/event_stats.dart';
 import 'package:otu_companion/src/home_page/home_page_main.dart';
 import 'package:otu_companion/src/profile/profile_page_main.dart';
 import 'package:otu_companion/src/profile/views/change_email_page.dart';
@@ -24,6 +25,7 @@ class Routes {
   // Event Finder
   static const eventFinderMain = "/eventFinderMain";
   static const eventForm = "/eventForm";
+  static const eventStats = "/eventStats";
   // Classroom Finder
   static const roomFinderMain = "/roomFinderMain";
 
@@ -51,12 +53,19 @@ class Routes {
             builder: (BuildContext context) =>
                 EventFinderMain(title: 'Event Finder'));
       case eventForm:
-          return MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  EventFormPage(title: 'Event Form', event: settings.arguments));
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                EventFormPage(title: 'Event Form', event: settings.arguments));
+      case eventStats:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => EventStats(
+                  title: 'Event Stats',
+                  userID: settings.arguments,
+                ));
       case roomFinderMain:
-        return MaterialPageRoute(builder: (BuildContext context) =>
-            RoomFinderMain(title: 'Empty Room Finder'));
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                RoomFinderMain(title: 'Empty Room Finder'));
       case settingMain:
         return MaterialPageRoute(
             builder: (BuildContext context) => SettingMain(title: 'Settings'));
@@ -69,8 +78,9 @@ class Routes {
             builder: (BuildContext context) =>
                 ProfilePageMain(title: 'Profile'));
       case roomFinderMain:
-        return MaterialPageRoute(builder: (BuildContext context) =>
-            RoomFinderMain(title: 'Empty Room Finder'));
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                RoomFinderMain(title: 'Empty Room Finder'));
       case changeNamePage:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
@@ -89,16 +99,14 @@ class Routes {
                 ChangePicturePage(title: "Change Picture"));
       case loginPage:
         return MaterialPageRoute(
-            builder: (BuildContext context) =>
-                LoginPage());
+            builder: (BuildContext context) => LoginPage());
       case loginCheckerPage:
         return MaterialPageRoute(
-          builder: (BuildContext context) =>
-              LoginCheckerPage());
+            builder: (BuildContext context) => LoginCheckerPage());
       case signUpPage:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-              SignUpPage(title: "Account Creation"));
+                SignUpPage(title: "Account Creation"));
     }
 
     return null;

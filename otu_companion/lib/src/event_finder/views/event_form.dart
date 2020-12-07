@@ -250,8 +250,7 @@ class _EventFormPageState extends State<EventFormPage> {
               showDatePicker(
                       context: context,
                       initialDate: _date,
-                      firstDate:
-                          type == "End Date" ? _startDate : DateTime(2020),
+                      firstDate: DateTime(2020),
                       lastDate: DateTime(2150))
                   .then((value) {
                 setState(() {

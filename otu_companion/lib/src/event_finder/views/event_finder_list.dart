@@ -9,6 +9,9 @@ import '../model/event.dart';
 import '../model/view.dart';
 import '../model/view_model.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+
 class EventListWidget extends StatefulWidget {
   EventListWidget({Key key, this.title}) : super(key: key);
 
@@ -19,7 +22,7 @@ class EventListWidget extends StatefulWidget {
 }
 
 class _EventListWidgetState extends State<EventListWidget> {
-  List<Event> events;
+  // List<Event> events;
   List<View> views;
   final _eventModel = EventModel();
   final _viewModel = ViewModel();
@@ -29,39 +32,161 @@ class _EventListWidgetState extends State<EventListWidget> {
   List<dynamic> _calendarEvents = [];
   String _selectedColumn;
 
+  bool userView = true;
+
+  User user;
+
   @override
   void initState() {
     super.initState();
 
     _getViews();
-    getAllEvents();
+    // getAllEvents();
   }
 
   @override
   Widget build(BuildContext context) {
+    user = Provider.of<User>(context);
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text(widget.title),
-        actions: <Widget>[
-          // Add an event
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: _addEvent,
-          ),
-          // Edit selected event
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: _editEvent,
-          ),
-          // Delete selected event
-          IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: _deleteEvent,
-          ),
-        ],
+        // If we're in the user view, then these buttons aren't shown
+        actions: userView == true
+            ? <Widget>[
+                IconButton(
+                  icon: Icon(Icons.insert_chart, color: Colors.white),
+                  onPressed: _checkStats,
+                ),
+              ]
+            : <Widget>[
+                // Add an event
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: _addEvent,
+                ),
+                /* Edit selected event, disabled if no event is selected or this
+                   event was not created by the user */
+                IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: _selectedEvent == null
+                        ? null
+                        : _selectedEvent.createdBy != user.uid
+                            ? null
+                            : () {
+                                _editEvent();
+                              }),
+                /* Delete selected event, disabled if no event is selected or this
+                   event was not created by the user */
+                IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: _selectedEvent == null
+                        ? null
+                        : _selectedEvent.createdBy != user.uid
+                            ? null
+                            : () {
+                                _deleteEvent();
+                              }),
+                // Go to the stat page
+                IconButton(
+                  icon: Icon(Icons.insert_chart, color: Colors.white),
+                  onPressed: _checkStats,
+                ),
+              ],
       ),
-      body: _buildEventFinder(),
+      body: Container(
+        child: Column(children: [
+          Row(children: [
+            Expanded(
+                child: FlatButton(
+                  color: userView == true ? Colors.blue : Colors.grey,
+                  child: Text("Joined Events"),
+                  onPressed: () {
+                    setState(() {
+                      userView = true;
+                    });
+                  },
+                ),
+                flex: 2),
+            Expanded(
+                child: FlatButton(
+                  color: userView == false ? Colors.blue : Colors.grey,
+                  child: Text("All Events"),
+                  onPressed: () {
+                    setState(() {
+                      userView = false;
+                    });
+                  },
+                ),
+                flex: 2),
+          ]),
+          Row(children: [
+            Expanded(
+                child: FlatButton(
+                  color: this.views != null && this.views[0].viewType == "Grid"
+                      ? Colors.blue
+                      : Colors.grey,
+                  child: Text("Grid"),
+                  onPressed: () {
+                    setState(() {
+                      this.views[0].viewType = "Grid";
+                      _viewModel.updateView(
+                          View(id: this.views[0].id, viewType: "Grid"));
+                    });
+                  },
+                ),
+                flex: 2),
+            Expanded(
+                child: FlatButton(
+                  color:
+                      this.views != null && this.views[0].viewType == "Calendar"
+                          ? Colors.blue
+                          : Colors.grey,
+                  child: Text("Calendar"),
+                  onPressed: () {
+                    setState(() {
+                      this.views[0].viewType = "Calendar";
+                      _viewModel.updateView(
+                          View(id: this.views[0].id, viewType: "Calendar"));
+                    });
+                  },
+                ),
+                flex: 2),
+            Expanded(
+                child: FlatButton(
+                  color: this.views != null && this.views[0].viewType == "List"
+                      ? Colors.blue
+                      : Colors.grey,
+                  child: Text("List"),
+                  onPressed: () {
+                    setState(() {
+                      this.views[0].viewType = "List";
+                      _viewModel.updateView(
+                          View(id: this.views[0].id, viewType: "List"));
+                    });
+                  },
+                ),
+                flex: 2),
+            Expanded(
+                child: FlatButton(
+                  color: this.views != null && this.views[0].viewType == 'Table'
+                      ? Colors.blue
+                      : Colors.grey,
+                  child: Text("Table"),
+                  onPressed: () {
+                    setState(() {
+                      this.views[0].viewType = 'Table';
+                      _viewModel.updateView(
+                          View(id: this.views[0].id, viewType: "Table"));
+                    });
+                  },
+                ),
+                flex: 2),
+          ]),
+          _buildEventFinder()
+        ]),
+      ),
     );
   }
 
@@ -86,33 +211,35 @@ class _EventListWidgetState extends State<EventListWidget> {
                   ),
                 ),
               ),
-              Container(
-                child: this.views == null ? CircularProgressIndicator() : Text("Current View: ${this.views[0].viewType}"),
-              ),
-              FlatButton(
-                child: Text("Switch Views"),
-                onPressed: () {
-                  setState(() {
-                    if (this.views[0].viewType == "Calendar") {
-                      this.views[0].viewType = "List";
-                      _viewModel.updateView(
-                          View(id: this.views[0].id, viewType: "List"));
-                    } else if (this.views[0].viewType == "List") {
-                      this.views[0].viewType = "Grid";
-                      _viewModel.updateView(
-                          View(id: this.views[0].id, viewType: "Grid"));
-                    } else if (this.views[0].viewType == 'Grid') {
-                      this.views[0].viewType = 'Table';
-                      _viewModel.updateView(
-                          View(id: this.views[0].id, viewType: "Table"));
-                    } else if (this.views[0].viewType == "Table") {
-                      this.views[0].viewType = "Calendar";
-                      _viewModel.updateView(
-                          View(id: this.views[0].id, viewType: "Calendar"));
-                    }
-                  });
-                },
-              )
+              // Container(
+              //   child: this.views == null
+              //       ? CircularProgressIndicator()
+              //       : Text("Current View: ${this.views[0].viewType}"),
+              // ),
+              // FlatButton(
+              //   child: Text("Switch Views"),
+              //   onPressed: () {
+              //     setState(() {
+              //       if (this.views[0].viewType == "Calendar") {
+              //         this.views[0].viewType = "List";
+              //         _viewModel.updateView(
+              //             View(id: this.views[0].id, viewType: "List"));
+              //       } else if (this.views[0].viewType == "List") {
+              //         this.views[0].viewType = "Grid";
+              //         _viewModel.updateView(
+              //             View(id: this.views[0].id, viewType: "Grid"));
+              //       } else if (this.views[0].viewType == 'Grid') {
+              //         this.views[0].viewType = 'Table';
+              //         _viewModel.updateView(
+              //             View(id: this.views[0].id, viewType: "Table"));
+              //       } else if (this.views[0].viewType == "Table") {
+              //         this.views[0].viewType = "Calendar";
+              //         _viewModel.updateView(
+              //             View(id: this.views[0].id, viewType: "Calendar"));
+              //       }
+              //     });
+              //   },
+              // ),
             ],
           );
         });
@@ -123,7 +250,9 @@ class _EventListWidgetState extends State<EventListWidget> {
   Widget _buildListView() {
     EventModel _eventModel = EventModel();
     return FutureBuilder<QuerySnapshot>(
-        future: _eventModel.getAll(),
+        future: userView == true
+            ? _eventModel.getUserEvents(user.uid)
+            : _eventModel.getAll(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
             return ListView(
@@ -143,7 +272,9 @@ class _EventListWidgetState extends State<EventListWidget> {
   Widget _buildGridView() {
     EventModel _eventModel = EventModel();
     return FutureBuilder<QuerySnapshot>(
-        future: _eventModel.getAll(),
+        future: userView == true
+            ? _eventModel.getUserEvents(user.uid)
+            : _eventModel.getAll(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
             return GridView.count(
@@ -164,7 +295,9 @@ class _EventListWidgetState extends State<EventListWidget> {
   Widget _buildTableView() {
     EventModel _eventModel = EventModel();
     return FutureBuilder<QuerySnapshot>(
-        future: _eventModel.getAll(),
+        future: userView == true
+            ? _eventModel.getUserEvents(user.uid)
+            : _eventModel.getAll(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
             return Container(
@@ -263,30 +396,32 @@ class _EventListWidgetState extends State<EventListWidget> {
   // This function returns a calendar of events displayed using Calendar Table Package, obtained from cloud storage
   Widget _buildCalendarView() {
     EventModel _eventModel = EventModel();
-    return FutureBuilder<QuerySnapshot> (
-      future: _eventModel.getAll(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasData) {
-          // function to map events to their respective date 
-          Map<DateTime,List<dynamic>> eventDateMap = getDateEventMap(snapshot);  
-          // 3rd party package calendar implementation
-          return TableCalendar(
-            // list of events that are mapped, places markers on the calendar
-            events: eventDateMap,
-            calendarController: _calendarController,
-            // onTap Day selection for the calendar 
-            onDaySelected: (day, events, holidays) {
-              setState(() {
-                // setting the calendar events for the particular day selected, used to create a scrollable list of elements to select and edit/delete
-                _calendarEvents = events;
-              });
-            },
-          );
-        } else {
-          return CircularProgressIndicator();
-        }
-      }
-    );
+    return FutureBuilder<QuerySnapshot>(
+        future: userView == true
+            ? _eventModel.getUserEvents(user.uid)
+            : _eventModel.getAll(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasData) {
+            // function to map events to their respective date
+            Map<DateTime, List<dynamic>> eventDateMap =
+                getDateEventMap(snapshot);
+            // 3rd party package calendar implementation
+            return TableCalendar(
+              // list of events that are mapped, places markers on the calendar
+              events: eventDateMap,
+              calendarController: _calendarController,
+              // onTap Day selection for the calendar
+              onDaySelected: (day, events, holidays) {
+                setState(() {
+                  // setting the calendar events for the particular day selected, used to create a scrollable list of elements to select and edit/delete
+                  _calendarEvents = events;
+                });
+              },
+            );
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
   }
 
   // function that returns a widget list of all the events as buttons to select, edit and delete
@@ -295,24 +430,25 @@ class _EventListWidgetState extends State<EventListWidget> {
       child: ListView(
         shrinkWrap: true,
         children: _calendarEvents
-          .map((event) => Container(
-            decoration: BoxDecoration(
-              border: _selectedEvent != null && event.id == _selectedEvent.id
-              ? Border.all(width: 3.0, color: Colors.blue)
-              : Border.all(width: 1.0),
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-            child: ListTile(
-              title: _buildTile(context, event),
-              onTap: () {
-                setState(() {
-                  _selectedEvent = event;
-                }
-              );
-            }
-          ),
-        )).toList(),
+            .map((event) => Container(
+                  decoration: BoxDecoration(
+                    border:
+                        _selectedEvent != null && event.id == _selectedEvent.id
+                            ? Border.all(width: 3.0, color: Colors.blue)
+                            : Border.all(width: 1.0),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 8.0, vertical: 4.0),
+                  child: ListTile(
+                      title: _buildTile(context, event),
+                      onTap: () {
+                        setState(() {
+                          _selectedEvent = event;
+                        });
+                      }),
+                ))
+            .toList(),
       ),
     );
   }
@@ -346,6 +482,41 @@ class _EventListWidgetState extends State<EventListWidget> {
       child: ListTile(
         title: Text(event.name),
         subtitle: Text(event.description),
+        leading: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: user.uid == event.createdBy
+                  ? Icon(
+                      Icons.person,
+                    )
+                  : userView == true
+                      ? Icon(
+                          Icons.cancel,
+                        )
+                      : event.participants.contains(user.uid)
+                          ? Icon(Icons.people)
+                          : Icon(Icons.add),
+              onPressed: () {
+                if (user.uid == event.createdBy) {
+                  print("This is your event");
+                } else if (userView == true) {
+                  print("Remove from list");
+                  setState(() {
+                    _eventModel.removeParticipant(event, user.uid);
+                  });
+                } else if (event.participants.contains(user.uid)) {
+                  print("You are already in this event");
+                } else {
+                  print("Add to list");
+                  print(event);
+                  setState(() {
+                    _eventModel.addParticipant(event, user.uid);
+                  });
+                }
+              }),
+          ],
+        ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -374,11 +545,15 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   // Future function to add an event to the firestore database, also pushes a snackbar indicating if it was successful
   Future<void> _addEvent() async {
-    var event =
+    var result =
         await Navigator.pushNamed(context, "/eventForm", arguments: null);
+
+    Event event = result;
 
     // Check if event is not null, navigating back will keep it null
     if (event != null) {
+      event.createdBy = user.uid;
+      event.participants = [user.uid];
       setState(() {
         _eventModel.insert(event);
         var snackbar = SnackBar(
@@ -409,7 +584,8 @@ class _EventListWidgetState extends State<EventListWidget> {
                   Scaffold.of(context).hideCurrentSnackBar();
                 }));
         Scaffold.of(context).showSnackBar(snackbar);
-        _calendarController.setSelectedDay(DateTime.now(), isProgrammatic: true, animate: true, runCallback: true);
+        _calendarController.setSelectedDay(DateTime.now(),
+            isProgrammatic: true, animate: true, runCallback: true);
         _selectedEvent = null;
       });
     } else {
@@ -439,13 +615,12 @@ class _EventListWidgetState extends State<EventListWidget> {
                     Scaffold.of(context).hideCurrentSnackBar();
                   }));
           Scaffold.of(context).showSnackBar(snackbar);
-          _calendarController.setSelectedDay(newEvent.startDateTime, isProgrammatic: true, animate: true, runCallback: true);
+          _calendarController.setSelectedDay(newEvent.startDateTime,
+              isProgrammatic: true, animate: true, runCallback: true);
           _selectedEvent = null;
         });
       }
-      setState(() {
-        
-      });
+      setState(() {});
       // If an event wasn't selected, show error dialog
     } else {
       _showAlertDialog();
@@ -458,7 +633,15 @@ class _EventListWidgetState extends State<EventListWidget> {
     for (int i = 0; i < views.length; i++) {
       print("Views: ${views[i].toMap()}");
     }
-    this.views = views;
+
+    if (this.views == null) {
+      setState(() {
+        this.views = views;
+      });
+    } else {
+      this.views = views;
+    }
+
     return views;
   }
 
@@ -559,21 +742,21 @@ class _EventListWidgetState extends State<EventListWidget> {
   Widget _buildViewType() {
     if (this.views != null) {
       switch (this.views[0].viewType) {
-      case 'List':
-        return _buildListView();
-      case 'Grid':
-        return _buildGridView();
-      case 'Calendar':
-        return Column(
-          children: <Widget>[
-            _buildCalendarView(),
-            Expanded(
-              child: _buildCalendarButtons(),
-            ),
-          ],
-        );
-      case 'Table': 
-        return _buildTableView();
+        case 'List':
+          return _buildListView();
+        case 'Grid':
+          return _buildGridView();
+        case 'Calendar':
+          return Column(
+            children: <Widget>[
+              _buildCalendarView(),
+              Expanded(
+                child: _buildCalendarButtons(),
+              ),
+            ],
+          );
+        case 'Table':
+          return _buildTableView();
       }
     }
     return null;
@@ -583,8 +766,10 @@ class _EventListWidgetState extends State<EventListWidget> {
   Map<DateTime, List<dynamic>> getDateEventMap(AsyncSnapshot snapshot) {
     Map<DateTime, List<dynamic>> eventDateMap = {};
     for (int i = 0; i < snapshot.data.docs.length; i++) {
-      var event = Event.fromMap(snapshot.data.docs[i].data(), reference: snapshot.data.docs[i].reference);
-      DateTime currentDate = DateTime(event.startDateTime.year, event.startDateTime.month, event.startDateTime.day, 0, 0);
+      var event = Event.fromMap(snapshot.data.docs[i].data(),
+          reference: snapshot.data.docs[i].reference);
+      DateTime currentDate = DateTime(event.startDateTime.year,
+          event.startDateTime.month, event.startDateTime.day, 0, 0);
       if (eventDateMap[currentDate] == null) {
         eventDateMap[currentDate] = [event];
       } else {
@@ -593,5 +778,13 @@ class _EventListWidgetState extends State<EventListWidget> {
     }
     print('eventDateMap: $eventDateMap');
     return eventDateMap;
+  }
+
+  void _checkStats() {
+    if (userView == true) {
+      Navigator.pushNamed(context, "/eventStats", arguments: user.uid);
+    } else {
+      Navigator.pushNamed(context, "/eventStats", arguments: null);
+    }
   }
 }
