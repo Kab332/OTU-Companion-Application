@@ -1,21 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Room {
-  Room({this.start_time, this.end_time, this.day, this.building, this.room});
+  Room({this.building, this.day, this.room, this.time});
 
-  String start_time;
-  String end_time;
-  String day;
+  int id;
   String building;
+  String day;
   String room;
+  String time;
   DocumentReference reference;
 
   Room.fromMap(Map<String, dynamic> map, {this.reference}) {
-    this.start_time = map['start time'];
-    this.end_time = map['end time'];
-    this.day = map['day'];
     this.building = map['building'];
+    this.day = map['day'];
     this.room = map['room'];
+    this.time = map['time'];
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'building': this.building,
+      'day': this.day,
+      'room': this.room,
+      'time': this.time,
+    };
+  }
+
+
+  String toString() {
+    return '\n\Room{id: $id, building: $building, day: $day, room: $room, time: $time}';
   }
 }
 

@@ -29,7 +29,7 @@ finally:
     db_conn.commit()
     db_cursor.close()
 
-
+row_count = 0
 for row in rows:
     # Gets time
     time = row[0]
@@ -43,11 +43,17 @@ for row in rows:
     room = location[1]
 
     # Writes to Cloud Firestore
-    doc_ref = db.collection(u'emptyroomschedules').document()
+    doc_ref = db.collection(u'rooms').document()
     doc_ref.set({
         u'time': time,
         u'day': day,
         u'building': building,
         u'room': room
     })
+
+    print(time, day, building, room)
+    print(row_count)
+    row_count += 1
+    if row_count == 500:
+        break
 
