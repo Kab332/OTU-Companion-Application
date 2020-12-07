@@ -86,7 +86,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                 ),
               ),
               Container(
-                child: this.views[0].viewType == null ? CircularProgressIndicator() : Text("Current View: ${this.views[0].viewType}"),
+                child: this.views == null ? CircularProgressIndicator() : Text("Current View: ${this.views[0].viewType}"),
               ),
               FlatButton(
                 child: Text("Switch Views"),
@@ -193,19 +193,55 @@ class _EventListWidgetState extends State<EventListWidget> {
                     ],
                     rows: snapshot.data.docs.
                       map((document) => DataRow(
+                      color: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                        if (states.contains(MaterialState.selected))
+                          return Theme.of(context).colorScheme.primary.withOpacity(0.9);
+                        return null;  // Use the default value.
+                      }),
                       cells: <DataCell>[
-                        DataCell(Text(Event.fromMap(document.data(), reference: document.reference).name)), 
+                        DataCell(
+                          Text(
+                            Event.fromMap(document.data(), reference: document.reference).name
+                          ), 
+                          onTap: () {
+                            _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
+                          },
+                        ), 
                         DataCell(
                           Container(
                             width: 200.0,
                             child: Text(
                               Event.fromMap(document.data(), reference: document.reference).description
                             )
-                          )
+                          ),
+                          onTap: () {
+                            _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
+                          },
                         ),
-                        DataCell(Text(Event.fromMap(document.data(), reference: document.reference).startDateTime.toLocal().toString())),
-                        DataCell(Text(Event.fromMap(document.data(), reference: document.reference).endDateTime.toLocal().toString())),
-                        DataCell(Text(Event.fromMap(document.data(), reference: document.reference).location)), 
+                        DataCell(
+                          Text(
+                            Event.fromMap(document.data(), reference: document.reference).startDateTime.toLocal().toString()
+                          ),
+                          onTap: () {
+                            _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
+                          },
+                        ),
+                        DataCell(
+                          Text(
+                            Event.fromMap(document.data(), reference: document.reference).endDateTime.toLocal().toString()
+                          ),
+                          onTap: () {
+                            _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
+                          },
+                        ),
+                        DataCell(
+                          Text(
+                            Event.fromMap(document.data(), reference: document.reference).location
+                          ),
+                          onTap: () {
+                            _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
+                          },
+                        ), 
                       ], 
                     )).toList(),
                   ),
