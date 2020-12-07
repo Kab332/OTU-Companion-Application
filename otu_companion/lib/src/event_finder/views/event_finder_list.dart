@@ -306,9 +306,16 @@ class _EventListWidgetState extends State<EventListWidget> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: DataTable(
+                    showCheckboxColumn: userView == false,
                     showBottomBorder: true,
                     dataRowHeight: 100.0,
                     columns: <DataColumn>[
+                      DataColumn(
+                        label: userView == true ? Text('Leave Event?') : Text('Created By'),
+                      ),
+                      DataColumn(
+                        label: Text('View Details'),
+                      ),
                       DataColumn(
                         label: Text('Event Name'),
                       ),
@@ -327,7 +334,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                     ],
                     rows: snapshot.data.docs.
                       map((document) => DataRow(
-                      selected: _selectedColumn == document.id,
+                      selected: userView == false && _selectedColumn == document.id,
                       onSelectChanged: (val) {
                         setState(() {
                           _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
@@ -335,6 +342,49 @@ class _EventListWidgetState extends State<EventListWidget> {
                         });
                       },
                       cells: <DataCell>[
+                        // join or leave event button
+                        DataCell(
+                        IconButton(
+                          icon: user.uid == Event.fromMap(document.data(), reference: document.reference).createdBy
+                              ? Icon(
+                                  Icons.person,
+                                )
+                              : userView == true
+                                  ? Icon(
+                                      Icons.cancel,
+                                    )
+                                  : Event.fromMap(document.data(), reference: document.reference).participants.contains(user.uid)
+                                      ? Icon(Icons.people)
+                                      : Icon(Icons.add),
+                          onPressed: () {
+                            if (user.uid == Event.fromMap(document.data(), reference: document.reference).createdBy) {
+                              print("This is your event");
+                            } else if (userView == true) {
+                              print("Remove from list");
+                              setState(() {
+                                _eventModel.removeParticipant(Event.fromMap(document.data(), reference: document.reference), user.uid);
+                              });
+                            } else if (Event.fromMap(document.data(), reference: document.reference).participants.contains(user.uid)) {
+                              print("You are already in this event");
+                            } else {
+                              print("Add to list");
+                              print(Event.fromMap(document.data(), reference: document.reference));
+                              setState(() {
+                                _eventModel.addParticipant(Event.fromMap(document.data(), reference: document.reference), user.uid);
+                              });
+                            }
+                          }),
+                        ),
+                        // view icon
+                        DataCell(
+                          IconButton(
+                            icon: Icon(Icons.visibility),
+                            onPressed: () {
+                              _showViewDialog(context, Event.fromMap(document.data(), reference: document.reference));
+                            },
+                          ),
+                        ), 
+                        // event name 
                         DataCell(
                           Text(
                             Event.fromMap(document.data(), reference: document.reference).name
@@ -346,6 +396,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                             });
                           },
                         ), 
+                        // event description
                         DataCell(
                           Container(
                             width: 200.0,
@@ -357,6 +408,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                             _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
                           },
                         ),
+                        // event start date
                         DataCell(
                           Text(
                             Event.fromMap(document.data(), reference: document.reference).startDateTime.toLocal().toString()
@@ -365,6 +417,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                             _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
                           },
                         ),
+                        // event end date
                         DataCell(
                           Text(
                             Event.fromMap(document.data(), reference: document.reference).endDateTime.toLocal().toString()
@@ -373,6 +426,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                             _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
                           },
                         ),
+                        // event location
                         DataCell(
                           Text(
                             Event.fromMap(document.data(), reference: document.reference).location
