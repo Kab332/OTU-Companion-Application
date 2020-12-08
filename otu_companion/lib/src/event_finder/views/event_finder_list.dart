@@ -6,6 +6,9 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'dart:async';
 
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong/latlong.dart';
+
 import '../model/event_model.dart';
 import '../model/event.dart';
 import '../model/view.dart';
@@ -36,6 +39,8 @@ class _EventListWidgetState extends State<EventListWidget> {
   List<dynamic> _calendarEvents = [];
   DateTime _selectedDate = DateTime.now();
   String _selectedColumn;
+
+  LatLng _centre = LatLng(43.945947115276184, -78.89606283789982);
 
   bool userView = true;
 
@@ -357,18 +362,24 @@ class _EventListWidgetState extends State<EventListWidget> {
                                                   .createdBy
                                           ? Icon(
                                               Icons.person,
+                                              color: Colors.blue,
                                             )
                                           : userView == true
                                               ? Icon(
                                                   Icons.cancel,
+                                                  color: Colors.red,
                                                 )
                                               : Event.fromMap(document.data(),
                                                           reference: document
                                                               .reference)
                                                       .participants
                                                       .contains(user.uid)
-                                                  ? Icon(Icons.people)
-                                                  : Icon(Icons.add),
+                                                  ? Icon(
+                                                      Icons.people,
+                                                      color: Colors.blue,
+                                                    )
+                                                  : Icon(Icons.add,
+                                                      color: Colors.green),
                                       onPressed: () {
                                         _manageEvent(Event.fromMap(
                                             document.data(),
@@ -565,14 +576,19 @@ class _EventListWidgetState extends State<EventListWidget> {
                 icon: user.uid == event.createdBy
                     ? Icon(
                         Icons.person,
+                        color: Colors.blue,
                       )
                     : userView == true
                         ? Icon(
                             Icons.cancel,
+                            color: Colors.red,
                           )
                         : event.participants.contains(user.uid)
-                            ? Icon(Icons.people)
-                            : Icon(Icons.add),
+                            ? Icon(
+                                Icons.people,
+                                color: Colors.blue,
+                              )
+                            : Icon(Icons.add, color: Colors.green),
                 onPressed: () {
                   _manageEvent(event);
                 }),
@@ -714,13 +730,15 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   // Function that shows a dialog that shows quick details about the event selected, pressing dismiss or clicking away will make it disappear
   void _showViewDialog(BuildContext context, Event event) {
+    _centre = LatLng(event.geoPoint.latitude, event.geoPoint.longitude);
     showDialog<void>(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
           content: Container(
-            height: 300,
+            height: MediaQuery.of(context).size.height * 0.7,
+            width: MediaQuery.of(context).size.width * 0.7,
             child: Column(
               children: [
                 // Event name form field
@@ -761,6 +779,47 @@ class _EventListWidgetState extends State<EventListWidget> {
                     labelText: 'Location',
                   ),
                   initialValue: event.location,
+                ),
+                Expanded(
+                  child: FlutterMap(
+                    options: MapOptions(
+                      minZoom: 5.0,
+                      zoom: 10.0,
+                      maxZoom: 20.0,
+                      //center: selectedEvent.location != null ? selectedEvent.location : _centre,
+                      center: _centre,
+                    ),
+                    layers: [
+                      TileLayerOptions(
+                        urlTemplate:
+                            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        additionalOptions: {
+                          'accessToken':
+                              'pk.eyJ1IjoibGVvbi1jaG93MSIsImEiOiJja2hyMGRteWcwNjh0MzBteXh1NXNibHY0In0.nFSqVO-aIMytp_hQWKmXXQ',
+                          'id': 'mapbox.mapbox-streets-v8'
+                        },
+                        subdomains: ['a', 'b', 'c'],
+                      ),
+                      new MarkerLayerOptions(
+                        markers: [
+                          Marker(
+                            width: 70.0,
+                            height: 70.0,
+                            point: _centre,
+                            builder: (context) => Container(
+                                child: IconButton(
+                              color: Colors.red,
+                              icon: Icon(Icons.location_on),
+                              onPressed: () {
+                                print('Clicked icon!');
+                              },
+                            )),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  flex: 2,
                 ),
               ],
             ),
@@ -857,22 +916,70 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   void _manageEvent(Event event) {
     if (user.uid == event.createdBy) {
-      print("This is your event");
+      showDialog<void>(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Your Event"),
+              content: Text("You created this event."),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Dismiss'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
     } else if (userView == true) {
       print("Remove from list");
       setState(() {
         _calendarEvents.remove(event);
         event.participants.remove(user.uid);
         _eventModel.update(event);
+        var snackbar = SnackBar(
+            content: Text("You have left the event."),
+            action: SnackBarAction(
+                label: "Dismiss",
+                onPressed: () {
+                  Scaffold.of(context).hideCurrentSnackBar();
+                }));
+        Scaffold.of(context).showSnackBar(snackbar);
       });
     } else if (event.participants.contains(user.uid)) {
-      print("You are already in this event");
+      showDialog<void>(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Joined Event"),
+              content: Text("You are in this event."),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Dismiss'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
     } else {
       print("Add to list");
       print(event);
       setState(() {
         event.participants.add(user.uid);
         _eventModel.update(event);
+        var snackbar = SnackBar(
+            content: Text("You have joined the event."),
+            action: SnackBarAction(
+                label: "Dismiss",
+                onPressed: () {
+                  Scaffold.of(context).hideCurrentSnackBar();
+                }));
+        Scaffold.of(context).showSnackBar(snackbar);
         sendNotification(event);
       });
     }
