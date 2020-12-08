@@ -61,8 +61,6 @@ class AuthenticationService
     try
     {
       await _firebaseAuth.currentUser.updateProfile(displayName: name, photoURL: imageURL);
-      await _firebaseAuth.currentUser.reload();
-      return null;
     }
     on FirebaseAuthException catch(e)
     {
@@ -75,8 +73,6 @@ class AuthenticationService
     try
     {
       _firebaseAuth.currentUser.updateProfile(photoURL: imageURL);
-      await _firebaseAuth.currentUser.reload();
-      return null;
     }
     on FirebaseAuthException catch(e)
     {
@@ -89,8 +85,6 @@ class AuthenticationService
     try
     {
       _firebaseAuth.currentUser.updateProfile(displayName: name);
-      await _firebaseAuth.currentUser.reload();
-      return null;
     }
     on FirebaseAuthException catch(e)
     {
@@ -103,8 +97,6 @@ class AuthenticationService
     try
     {
       await _firebaseAuth.currentUser.verifyBeforeUpdateEmail(email);
-      await _firebaseAuth.currentUser.reload();
-      return null;
     }
     on FirebaseAuthException catch(e)
     {
@@ -116,9 +108,7 @@ class AuthenticationService
   {
     try
     {
-      await _firebaseAuth.sendPasswordResetEmail();
-      await _firebaseAuth.currentUser.reload();
-      return null;
+      await _firebaseAuth.sendPasswordResetEmail(email: _firebaseAuth.currentUser.email);
     }
     on FirebaseAuthException catch(e)
     {
@@ -131,8 +121,6 @@ class AuthenticationService
     try
     {
       await _firebaseAuth.signOut();
-      await _firebaseAuth.currentUser.reload();
-      return null;
     }
     on FirebaseAuthException catch(e)
     {
