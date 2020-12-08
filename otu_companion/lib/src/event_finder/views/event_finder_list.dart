@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:otu_companion/src/event_finder/model/notification_utilities.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import 'dart:async';
 
 import '../model/event_model.dart';
@@ -27,6 +30,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   final _eventModel = EventModel();
   final _viewModel = ViewModel();
   var _calendarController = CalendarController();
+  final _eventNotifications = EventNotifications();
 
   Event _selectedEvent;
   List<dynamic> _calendarEvents = [];
@@ -39,6 +43,8 @@ class _EventListWidgetState extends State<EventListWidget> {
   @override
   void initState() {
     super.initState();
+    tz.initializeTimeZones();
+    _eventNotifications.init();
 
     _getViews();
     // getAllEvents();
@@ -311,7 +317,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                     dataRowHeight: 100.0,
                     columns: <DataColumn>[
                       DataColumn(
-                        label: userView == true ? Text('Leave Event?') : Text('Created By'),
+                        label: userView == true ? Text('Leave Event?') : Text('Join Event?'),
                       ),
                       DataColumn(
                         label: Text('View Details'),
@@ -357,22 +363,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                                       ? Icon(Icons.people)
                                       : Icon(Icons.add),
                           onPressed: () {
-                            if (user.uid == Event.fromMap(document.data(), reference: document.reference).createdBy) {
-                              print("This is your event");
-                            } else if (userView == true) {
-                              print("Remove from list");
-                              setState(() {
-                                _eventModel.removeParticipant(Event.fromMap(document.data(), reference: document.reference), user.uid);
-                              });
-                            } else if (Event.fromMap(document.data(), reference: document.reference).participants.contains(user.uid)) {
-                              print("You are already in this event");
-                            } else {
-                              print("Add to list");
-                              print(Event.fromMap(document.data(), reference: document.reference));
-                              setState(() {
-                                _eventModel.addParticipant(Event.fromMap(document.data(), reference: document.reference), user.uid);
-                              });
-                            }
+                            _manageEvent(Event.fromMap(document.data(), reference: document.reference));
                           }),
                         ),
                         // view icon
@@ -552,22 +543,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                           ? Icon(Icons.people)
                           : Icon(Icons.add),
               onPressed: () {
-                if (user.uid == event.createdBy) {
-                  print("This is your event");
-                } else if (userView == true) {
-                  print("Remove from list");
-                  setState(() {
-                    _eventModel.removeParticipant(event, user.uid);
-                  });
-                } else if (event.participants.contains(user.uid)) {
-                  print("You are already in this event");
-                } else {
-                  print("Add to list");
-                  print(event);
-                  setState(() {
-                    _eventModel.addParticipant(event, user.uid);
-                  });
-                }
+                _manageEvent(event);
               }),
           ],
         ),
@@ -841,4 +817,50 @@ class _EventListWidgetState extends State<EventListWidget> {
       Navigator.pushNamed(context, "/eventStats", arguments: null);
     }
   }
+
+  void _manageEvent(Event event) {
+    if (user.uid == event.createdBy) {
+      print("This is your event");
+    } else if (userView == true) {
+      print("Remove from list");
+      setState(() {
+        _eventModel.removeParticipant(event, user.uid);
+      });
+    } else if (event.participants.contains(user.uid)) {
+      print("You are already in this event");
+    } else {
+      print("Add to list");
+      print(event);
+      setState(() {
+        _eventModel.addParticipant(event, user.uid);
+        sendNotification(event);
+      });
+    }
+  }
+
+  void sendNotification(Event event) {
+    var secondsDiff = (event.startDateTime.millisecondsSinceEpoch -
+        tz.TZDateTime.now(tz.local).millisecondsSinceEpoch) ~/
+        1000;
+
+    // If the start date is greater than one day, send a notification later,
+    if (secondsDiff > 0) {
+      if (secondsDiff >= 86400) {
+        var later = tz.TZDateTime.now(tz.local)
+            .add(Duration(seconds: secondsDiff - 86400));
+        _eventNotifications.sendNotificationLater(
+            event.name,
+            event.description,
+            later,
+            event.reference != null ? event.reference.id : null);
+      } else {
+        // Otherwise send the notification now
+        _eventNotifications.sendNotificationNow(
+            event.name,
+            event.description,
+            event.reference != null ? event.reference.id : null);
+      }
+    }
+  }
 }
+
