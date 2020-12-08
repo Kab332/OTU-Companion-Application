@@ -1,24 +1,30 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:otu_companion/src/services/firebase_database_service.dart';
 
 class AuthenticationService
 {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  Future<bool> signInWithEmailAndPassword({String email, String password}) async
+  User getCurrentUser()
+  {
+    _firebaseAuth.currentUser.reload();
+    return _firebaseAuth.currentUser;
+  }
+
+  Future<String> signInWithEmailAndPassword({String email, String password}) async
   {
     try
     {
       await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
-      return true;
     }
     on FirebaseAuthException catch(e)
     {
-      return false;
+      return e.message;
     }
   }
 
-  Future<bool> signUpWithEmailAndPassword({
+  Future<String> signUpWithEmailAndPassword({
     String email,
     String password,
     String firstName,
@@ -29,48 +35,108 @@ class AuthenticationService
     {
       await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password).then(
         (user){
-          user.user.updateProfile(
-            displayName: firstName + " " + lastName,
-            photoURL: "",
-          );
-          FirebaseDatabaseService.createNewUserProfile(
-            name: firstName + " " + lastName,
-            id: user.user.uid,
-          );
+          if (user != null)
+          {
+            user.user.updateProfile(
+              displayName: firstName + " " + lastName,
+              photoURL: "",
+            );
+
+            FirebaseDatabaseService.createNewUserProfile(
+              name: firstName + " " + lastName,
+              id: user.user.uid,
+            );
+          }
         }
-      ).then((context){
-        signOut();
-      });
-      return true;
+      );
     }
     on FirebaseAuthException catch(e)
     {
-      return false;
+      return e.message;
     }
   }
 
-  Future<void> updateImageURL(String imageURL) async
+  Future<String> updateProfile({String name, String imageURL, BuildContext context}) async
   {
-    _firebaseAuth.currentUser.updateProfile(photoURL: imageURL);
+    try
+    {
+      await _firebaseAuth.currentUser.updateProfile(displayName: name, photoURL: imageURL);
+      await _firebaseAuth.currentUser.reload();
+      return null;
+    }
+    on FirebaseAuthException catch(e)
+    {
+      return e.message;
+    }
   }
 
-  Future<void> updateName(String name) async
+  Future<String> updateImageURL(String imageURL) async
   {
-    _firebaseAuth.currentUser.updateProfile(displayName: name);
+    try
+    {
+      _firebaseAuth.currentUser.updateProfile(photoURL: imageURL);
+      await _firebaseAuth.currentUser.reload();
+      return null;
+    }
+    on FirebaseAuthException catch(e)
+    {
+      return e.message;
+    }
   }
 
-  Future<void> updateEmailAddress(String email) async
+  Future<String> updateName(String name) async
   {
-    _firebaseAuth.currentUser.updateEmail(email);
+    try
+    {
+      _firebaseAuth.currentUser.updateProfile(displayName: name);
+      await _firebaseAuth.currentUser.reload();
+      return null;
+    }
+    on FirebaseAuthException catch(e)
+    {
+      return e.message;
+    }
   }
 
-  Future<void> updatePassword(String password) async
+  Future<String> updateEmailAddress(String email) async
   {
-    _firebaseAuth.currentUser.updatePassword(password);
+    try
+    {
+      await _firebaseAuth.currentUser.verifyBeforeUpdateEmail(email);
+      await _firebaseAuth.currentUser.reload();
+      return null;
+    }
+    on FirebaseAuthException catch(e)
+    {
+      return e.message;
+    }
   }
 
-  Future<void> signOut() async
+  Future<String> updatePassword() async
   {
-    await _firebaseAuth.signOut();
+    try
+    {
+      await _firebaseAuth.sendPasswordResetEmail();
+      await _firebaseAuth.currentUser.reload();
+      return null;
+    }
+    on FirebaseAuthException catch(e)
+    {
+      return e.message;
+    }
+  }
+
+  Future<String> signOut() async
+  {
+    try
+    {
+      await _firebaseAuth.signOut();
+      await _firebaseAuth.currentUser.reload();
+      return null;
+    }
+    on FirebaseAuthException catch(e)
+    {
+      return e.message;
+    }
   }
 }

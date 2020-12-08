@@ -2,17 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:otu_companion/src/services/authentication/model/authentication_service.dart';
 
-class ChangeEmailPage extends StatefulWidget
+class LinkProfilePage extends StatefulWidget
 {
-  ChangeEmailPage({Key key, this.title}) : super(key: key);
+  LinkProfilePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _ChangeEmailPageState createState() => _ChangeEmailPageState();
+  _LinkProfilePageState createState() => _LinkProfilePageState();
 }
 
-class _ChangeEmailPageState extends State<ChangeEmailPage>
+class _LinkProfilePageState extends State<LinkProfilePage>
 {
   @override
   Widget build(BuildContext context)

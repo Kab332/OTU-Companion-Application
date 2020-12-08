@@ -13,11 +13,13 @@ class LoginPage extends StatefulWidget
 class _LoginPageState extends State<LoginPage>
 {
   final _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   AuthenticationService _authenticationService = AuthenticationService();
 
   final _email = TextEditingController();
   final _password = TextEditingController();
-  bool _verification = false;
+  String _errorMessage;
+  bool _disableButton;
 
   @override
   void initState() {
@@ -29,22 +31,34 @@ class _LoginPageState extends State<LoginPage>
   {
     return SafeArea(
       child:Scaffold(
+        key: _scaffoldKey,
         resizeToAvoidBottomInset: false,
         body: Center(
           child: Column(
             children: <Widget>[
               //Logo - Header
-              Container(
-                height: MediaQuery.of(context).size.height * 0.29,
-                child: Center(
-                  child:Text(
-                    "Welcome Back To OTU Companion App!",
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.29,
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    child: Image.asset('lib/res/images/logo.png'),
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.29,
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: Center(
+                      child:Text(
+                        "Welcome Back To The Companion App!",
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
 
               Divider(
@@ -156,18 +170,26 @@ class _LoginPageState extends State<LoginPage>
     return InkWell(
       splashColor: Colors.white,
       onTap: () {
-        if (_formKey.currentState.validate()) {
+        if (_formKey.currentState.validate() && _disableButton != true) {
+          _disableButton = true;
           _formKey.currentState.save();
           _authenticationService.signInWithEmailAndPassword(
             email: _email.text,
             password: _password.text,
           ).then((verifying){
-            _verification = verifying;
+            _errorMessage = verifying;
           }
           ).whenComplete((){
-            if (_verification) {
+            var snackbar;
+            if (_errorMessage == null) {
               Navigator.pushReplacementNamed(context, Routes.homeMain);
+              snackbar = SnackBar(content: Text("Welcome Back!"));
             }
+            else {
+              snackbar = SnackBar(content: Text(_errorMessage));
+            }
+            _scaffoldKey.currentState.showSnackBar(snackbar);
+            _disableButton = false;
           });
         }
       },
