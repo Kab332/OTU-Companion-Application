@@ -10,6 +10,7 @@ class Event {
   DateTime endDateTime;
   DocumentReference reference;
   String location;
+  GeoPoint geoPoint;
   List<String> participants;
 
   Event(
@@ -19,10 +20,11 @@ class Event {
       this.startDateTime,
       this.endDateTime,
       this.location,
+      this.geoPoint,
       this.participants});
 
   String toString() {
-    return 'event: $id, $name, $description, $createdBy, ($startDateTime) ($endDateTime), $location, $participants';
+    return 'event: $id, $name, $description, $createdBy, ($startDateTime) ($endDateTime), $location, $geoPoint, $participants';
   }
 
   Event.fromMap(Map<String, dynamic> maps, {this.reference}) {
@@ -37,7 +39,7 @@ class Event {
         ? DateTime.parse(maps['endDateTime'].toDate().toString())
         : null;
     this.location = maps['location'];
-
+    this.geoPoint = maps['geoPoint'];
     if (maps['participants'] != null) {
       this.participants = maps['participants'].cast<String>();
     }
@@ -52,6 +54,7 @@ class Event {
       'startDateTime': this.startDateTime,
       'endDateTime': this.endDateTime,
       'location': this.location,
+      'geoPoint': this.geoPoint,
       'participants': this.participants
     };
   }

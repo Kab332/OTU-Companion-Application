@@ -33,6 +33,7 @@ class EventModel {
       'startDateTime': event.startDateTime,
       'endDateTime': event.endDateTime,
       'location': event.location,
+      'geoPoint': event.geoPoint,
     });
   }
 

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:otu_companion/src/event_finder/model/notification_utilities.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -13,7 +12,7 @@ import '../model/view.dart';
 import '../model/view_model.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:provider/provider.dart';
+import 'package:otu_companion/src/services/authentication/model/authentication_service.dart';
 
 class EventListWidget extends StatefulWidget {
   EventListWidget({Key key, this.title}) : super(key: key);
@@ -29,6 +28,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   List<View> views;
   final _eventModel = EventModel();
   final _viewModel = ViewModel();
+  AuthenticationService _authenticationService = AuthenticationService();
   var _calendarController = CalendarController();
   final _eventNotifications = EventNotifications();
 
@@ -52,7 +52,7 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    user = Provider.of<User>(context);
+    user = _authenticationService.getCurrentUser();
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -637,7 +637,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                   Scaffold.of(context).hideCurrentSnackBar();
                 }));
         Scaffold.of(context).showSnackBar(snackbar);
-        _calendarController.setSelectedDay(DateTime.now(),
+        _calendarController.setSelectedDay(_selectedEvent.startDateTime,
             isProgrammatic: true, animate: true, runCallback: true);
         _selectedEvent = null;
       });

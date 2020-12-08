@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:timezone/data/latest.dart' as tz;
@@ -29,6 +30,7 @@ class _EventFormPageState extends State<EventFormPage> {
   String _description = '';
   String _imageURL = '';
   String _location = '';
+  GeoPoint _geoPoint;
   TextEditingController _locationController;
 
   DateTime _startDate = DateTime.now();
@@ -125,6 +127,7 @@ class _EventFormPageState extends State<EventFormPage> {
                   ? selectedEvent.endDateTime
                   : _endDate,
               location: _location != "" ? _location : '',
+              geoPoint: _geoPoint != null ? _geoPoint : GeoPoint(0, 0),
             );
             // Calculating the difference in milliseconds between the event start date and the time it is not
             var secondsDiff = (event.startDateTime.millisecondsSinceEpoch -
@@ -485,6 +488,7 @@ class _EventFormPageState extends State<EventFormPage> {
             location.latitude, location.longitude);
 
         _location = places[0].postalCode.toString();
+        _geoPoint = GeoPoint(_centre.latitude, _centre.longitude);
 
         setState(() {
           updateMarker(location);
@@ -502,6 +506,7 @@ class _EventFormPageState extends State<EventFormPage> {
         List<Location> places = await geocoder.locationFromAddress(_location);
         location = places[0];
         _centre = LatLng(location.latitude, location.longitude);
+        _geoPoint = GeoPoint(_centre.latitude, _centre.longitude);
         setState(() {
           updateMarker(location);
           mapController.move(_centre, _zoom);
@@ -512,6 +517,7 @@ class _EventFormPageState extends State<EventFormPage> {
             await geocoder.locationFromAddress(selectedEvent.location);
         location = places[0];
         _centre = LatLng(location.latitude, location.longitude);
+        _geoPoint = GeoPoint(_centre.latitude, _centre.longitude);
         setState(() {
           updateMarker(location);
           mapController.move(_centre, _zoom);
