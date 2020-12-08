@@ -103,150 +103,141 @@ class _EventListWidgetState extends State<EventListWidget> {
       ),
       body: Container(
         child: Column(children: [
-          Row(children: [
-            Expanded(
-                child: FlatButton(
-                  color: userView == true ? Colors.blue : Colors.grey,
-                  child: Text("Joined Events"),
-                  onPressed: () {
-                    setState(() {
-                      userView = true;
-                    });
-                  },
-                ),
-                flex: 2),
-            Expanded(
-                child: FlatButton(
-                  color: userView == false ? Colors.blue : Colors.grey,
-                  child: Text("All Events"),
-                  onPressed: () {
-                    setState(() {
-                      userView = false;
-                    });
-                  },
-                ),
-                flex: 2),
+          Column(children: [
+            _buildEventButtons(),
+            _buildViewButtons(),
           ]),
-          Row(children: [
-            Expanded(
-                child: FlatButton(
-                  color: this.views != null && this.views[0].viewType == "Grid"
-                      ? Colors.blue
-                      : Colors.grey,
-                  child: Text("Grid"),
-                  onPressed: () {
-                    setState(() {
-                      this.views[0].viewType = "Grid";
-                      _viewModel.updateView(
-                          View(id: this.views[0].id, viewType: "Grid"));
-                    });
-                  },
-                ),
-                flex: 2),
-            Expanded(
-                child: FlatButton(
-                  color:
-                      this.views != null && this.views[0].viewType == "Calendar"
-                          ? Colors.blue
-                          : Colors.grey,
-                  child: Text("Calendar"),
-                  onPressed: () {
-                    setState(() {
-                      this.views[0].viewType = "Calendar";
-                      _viewModel.updateView(
-                          View(id: this.views[0].id, viewType: "Calendar"));
-                    });
-                  },
-                ),
-                flex: 2),
-            Expanded(
-                child: FlatButton(
-                  color: this.views != null && this.views[0].viewType == "List"
-                      ? Colors.blue
-                      : Colors.grey,
-                  child: Text("List"),
-                  onPressed: () {
-                    setState(() {
-                      this.views[0].viewType = "List";
-                      _viewModel.updateView(
-                          View(id: this.views[0].id, viewType: "List"));
-                    });
-                  },
-                ),
-                flex: 2),
-            Expanded(
-                child: FlatButton(
-                  color: this.views != null && this.views[0].viewType == 'Table'
-                      ? Colors.blue
-                      : Colors.grey,
-                  child: Text("Table"),
-                  onPressed: () {
-                    setState(() {
-                      this.views[0].viewType = 'Table';
-                      _viewModel.updateView(
-                          View(id: this.views[0].id, viewType: "Table"));
-                    });
-                  },
-                ),
-                flex: 2),
-          ]),
-          _buildEventFinder()
+          Expanded(child: _buildEventFinder(), flex: 2),
         ]),
       ),
     );
   }
 
+  Widget _buildEventButtons() {
+    return Row(children: [
+      Expanded(
+          child: RaisedButton(
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(0.0)),
+            color: userView == true ? Colors.blue : Colors.grey[350],
+            child: Text("Joined Events"),
+            onPressed: () {
+              setState(() {
+                userView = true;
+              });
+            },
+          ),
+          flex: 2),
+      Expanded(
+          child: RaisedButton(
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(0.0)),
+            color: userView == false ? Colors.blue : Colors.grey[350],
+            child: Text("All Events"),
+            onPressed: () {
+              setState(() {
+                userView = false;
+              });
+            },
+          ),
+          flex: 2),
+    ]);
+  }
+
+  Widget _buildViewButtons() {
+    return Row(children: [
+      // Expanded(
+      //     child: FlatButton(
+      //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      //       shape: new RoundedRectangleBorder(
+      //           borderRadius: new BorderRadius.circular(0.0)),
+      //       color: this.views != null && this.views[0].viewType == "Grid"
+      //           ? Colors.blue
+      //           : Colors.grey[350],
+      //       child: Text("Grid"),
+      //       onPressed: () {
+      //         setState(() {
+      //           this.views[0].viewType = "Grid";
+      //           _viewModel.updateView(
+      //               View(id: this.views[0].id, viewType: "Grid"));
+      //         });
+      //       },
+      //     ),
+      //     flex: 2),
+      Expanded(
+          child: RaisedButton(
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(0.0)),
+            color: this.views != null && this.views[0].viewType == "Calendar"
+                ? Colors.blue
+                : Colors.grey[350],
+            child: Text("Calendar"),
+            onPressed: () {
+              setState(() {
+                this.views[0].viewType = "Calendar";
+                _viewModel.updateView(
+                    View(id: this.views[0].id, viewType: "Calendar"));
+              });
+            },
+          ),
+          flex: 2),
+      Expanded(
+          child: RaisedButton(
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(0.0)),
+            color: this.views != null && this.views[0].viewType == "List"
+                ? Colors.blue
+                : Colors.grey[350],
+            child: Text("List"),
+            onPressed: () {
+              setState(() {
+                this.views[0].viewType = "List";
+                _viewModel
+                    .updateView(View(id: this.views[0].id, viewType: "List"));
+              });
+            },
+          ),
+          flex: 2),
+      Expanded(
+          child: RaisedButton(
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(0.0)),
+            color: this.views != null && this.views[0].viewType == 'Table'
+                ? Colors.blue
+                : Colors.grey[350],
+            child: Text("Table"),
+            onPressed: () {
+              setState(() {
+                this.views[0].viewType = 'Table';
+                _viewModel
+                    .updateView(View(id: this.views[0].id, viewType: "Table"));
+              });
+            },
+          ),
+          flex: 2),
+    ]);
+  }
+
   // This function returns the body of the event finder
   Widget _buildEventFinder() {
-    ViewModel _viewModel = ViewModel();
     return FutureBuilder(
         future: _getViews(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          return Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Center(
-                  child: Container(
-                    height: 500.0,
-                    width: 350.0,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                    ),
-                    child: _buildViewType(),
-                  ),
-                ),
+          return Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Container(
+              height: double.infinity,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
               ),
-              // Container(
-              //   child: this.views == null
-              //       ? CircularProgressIndicator()
-              //       : Text("Current View: ${this.views[0].viewType}"),
-              // ),
-              // FlatButton(
-              //   child: Text("Switch Views"),
-              //   onPressed: () {
-              //     setState(() {
-              //       if (this.views[0].viewType == "Calendar") {
-              //         this.views[0].viewType = "List";
-              //         _viewModel.updateView(
-              //             View(id: this.views[0].id, viewType: "List"));
-              //       } else if (this.views[0].viewType == "List") {
-              //         this.views[0].viewType = "Grid";
-              //         _viewModel.updateView(
-              //             View(id: this.views[0].id, viewType: "Grid"));
-              //       } else if (this.views[0].viewType == 'Grid') {
-              //         this.views[0].viewType = 'Table';
-              //         _viewModel.updateView(
-              //             View(id: this.views[0].id, viewType: "Table"));
-              //       } else if (this.views[0].viewType == "Table") {
-              //         this.views[0].viewType = "Calendar";
-              //         _viewModel.updateView(
-              //             View(id: this.views[0].id, viewType: "Calendar"));
-              //       }
-              //     });
-              //   },
-              // ),
-            ],
+              child: _buildViewType(),
+            ),
           );
         });
   }
@@ -317,7 +308,9 @@ class _EventListWidgetState extends State<EventListWidget> {
                     dataRowHeight: 100.0,
                     columns: <DataColumn>[
                       DataColumn(
-                        label: userView == true ? Text('Leave Event?') : Text('Join Event?'),
+                        label: userView == true
+                            ? Text('Leave Event?')
+                            : Text('Join Event?'),
                       ),
                       DataColumn(
                         label: Text('View Details'),
@@ -338,96 +331,126 @@ class _EventListWidgetState extends State<EventListWidget> {
                         label: Text('Location'),
                       ),
                     ],
-                    rows: snapshot.data.docs.
-                      map((document) => DataRow(
-                      selected: userView == false && _selectedColumn == document.id,
-                      onSelectChanged: (val) {
-                        setState(() {
-                          _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
-                          _selectedColumn = document.id;
-                        });
-                      },
-                      cells: <DataCell>[
-                        // join or leave event button
-                        DataCell(
-                        IconButton(
-                          icon: user.uid == Event.fromMap(document.data(), reference: document.reference).createdBy
-                              ? Icon(
-                                  Icons.person,
-                                )
-                              : userView == true
-                                  ? Icon(
-                                      Icons.cancel,
-                                    )
-                                  : Event.fromMap(document.data(), reference: document.reference).participants.contains(user.uid)
-                                      ? Icon(Icons.people)
-                                      : Icon(Icons.add),
-                          onPressed: () {
-                            _manageEvent(Event.fromMap(document.data(), reference: document.reference));
-                          }),
-                        ),
-                        // view icon
-                        DataCell(
-                          IconButton(
-                            icon: Icon(Icons.visibility),
-                            onPressed: () {
-                              _showViewDialog(context, Event.fromMap(document.data(), reference: document.reference));
-                            },
-                          ),
-                        ), 
-                        // event name 
-                        DataCell(
-                          Text(
-                            Event.fromMap(document.data(), reference: document.reference).name
-                          ), 
-                          onTap: () {
-                            setState(() {
-                              _selectedColumn = document.id;
-                              _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
-                            });
-                          },
-                        ), 
-                        // event description
-                        DataCell(
-                          Container(
-                            width: 200.0,
-                            child: Text(
-                              Event.fromMap(document.data(), reference: document.reference).description
-                            )
-                          ),
-                          onTap: () {
-                            _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
-                          },
-                        ),
-                        // event start date
-                        DataCell(
-                          Text(
-                            Event.fromMap(document.data(), reference: document.reference).startDateTime.toLocal().toString()
-                          ),
-                          onTap: () {
-                            _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
-                          },
-                        ),
-                        // event end date
-                        DataCell(
-                          Text(
-                            Event.fromMap(document.data(), reference: document.reference).endDateTime.toLocal().toString()
-                          ),
-                          onTap: () {
-                            _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
-                          },
-                        ),
-                        // event location
-                        DataCell(
-                          Text(
-                            Event.fromMap(document.data(), reference: document.reference).location
-                          ),
-                          onTap: () {
-                            _selectedEvent = Event.fromMap(document.data(), reference: document.reference);
-                          },
-                        ), 
-                      ], 
-                    )).toList(),
+                    rows: snapshot.data.docs
+                        .map((document) => DataRow(
+                              selected: userView == false &&
+                                  _selectedColumn == document.id,
+                              onSelectChanged: (val) {
+                                setState(() {
+                                  _selectedEvent = Event.fromMap(
+                                      document.data(),
+                                      reference: document.reference);
+                                  _selectedColumn = document.id;
+                                });
+                              },
+                              cells: <DataCell>[
+                                // join or leave event button
+                                DataCell(
+                                  IconButton(
+                                      icon: user.uid ==
+                                              Event.fromMap(document.data(),
+                                                      reference:
+                                                          document.reference)
+                                                  .createdBy
+                                          ? Icon(
+                                              Icons.person,
+                                            )
+                                          : userView == true
+                                              ? Icon(
+                                                  Icons.cancel,
+                                                )
+                                              : Event.fromMap(document.data(),
+                                                          reference: document
+                                                              .reference)
+                                                      .participants
+                                                      .contains(user.uid)
+                                                  ? Icon(Icons.people)
+                                                  : Icon(Icons.add),
+                                      onPressed: () {
+                                        _manageEvent(Event.fromMap(
+                                            document.data(),
+                                            reference: document.reference));
+                                      }),
+                                ),
+                                // view icon
+                                DataCell(
+                                  IconButton(
+                                    icon: Icon(Icons.visibility),
+                                    onPressed: () {
+                                      _showViewDialog(
+                                          context,
+                                          Event.fromMap(document.data(),
+                                              reference: document.reference));
+                                    },
+                                  ),
+                                ),
+                                // event name
+                                DataCell(
+                                  Text(Event.fromMap(document.data(),
+                                          reference: document.reference)
+                                      .name),
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedColumn = document.id;
+                                      _selectedEvent = Event.fromMap(
+                                          document.data(),
+                                          reference: document.reference);
+                                    });
+                                  },
+                                ),
+                                // event description
+                                DataCell(
+                                  Container(
+                                      width: 200.0,
+                                      child: Text(Event.fromMap(document.data(),
+                                              reference: document.reference)
+                                          .description)),
+                                  onTap: () {
+                                    _selectedEvent = Event.fromMap(
+                                        document.data(),
+                                        reference: document.reference);
+                                  },
+                                ),
+                                // event start date
+                                DataCell(
+                                  Text(Event.fromMap(document.data(),
+                                          reference: document.reference)
+                                      .startDateTime
+                                      .toLocal()
+                                      .toString()),
+                                  onTap: () {
+                                    _selectedEvent = Event.fromMap(
+                                        document.data(),
+                                        reference: document.reference);
+                                  },
+                                ),
+                                // event end date
+                                DataCell(
+                                  Text(Event.fromMap(document.data(),
+                                          reference: document.reference)
+                                      .endDateTime
+                                      .toLocal()
+                                      .toString()),
+                                  onTap: () {
+                                    _selectedEvent = Event.fromMap(
+                                        document.data(),
+                                        reference: document.reference);
+                                  },
+                                ),
+                                // event location
+                                DataCell(
+                                  Text(Event.fromMap(document.data(),
+                                          reference: document.reference)
+                                      .location),
+                                  onTap: () {
+                                    _selectedEvent = Event.fromMap(
+                                        document.data(),
+                                        reference: document.reference);
+                                  },
+                                ),
+                              ],
+                            ))
+                        .toList(),
                   ),
                 ),
               ),
@@ -531,20 +554,20 @@ class _EventListWidgetState extends State<EventListWidget> {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: user.uid == event.createdBy
-                  ? Icon(
-                      Icons.person,
-                    )
-                  : userView == true
-                      ? Icon(
-                          Icons.cancel,
-                        )
-                      : event.participants.contains(user.uid)
-                          ? Icon(Icons.people)
-                          : Icon(Icons.add),
-              onPressed: () {
-                _manageEvent(event);
-              }),
+                icon: user.uid == event.createdBy
+                    ? Icon(
+                        Icons.person,
+                      )
+                    : userView == true
+                        ? Icon(
+                            Icons.cancel,
+                          )
+                        : event.participants.contains(user.uid)
+                            ? Icon(Icons.people)
+                            : Icon(Icons.add),
+                onPressed: () {
+                  _manageEvent(event);
+                }),
           ],
         ),
         trailing: Row(
@@ -840,7 +863,7 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   void sendNotification(Event event) {
     var secondsDiff = (event.startDateTime.millisecondsSinceEpoch -
-        tz.TZDateTime.now(tz.local).millisecondsSinceEpoch) ~/
+            tz.TZDateTime.now(tz.local).millisecondsSinceEpoch) ~/
         1000;
 
     // If the start date is greater than one day, send a notification later,
@@ -848,19 +871,13 @@ class _EventListWidgetState extends State<EventListWidget> {
       if (secondsDiff >= 86400) {
         var later = tz.TZDateTime.now(tz.local)
             .add(Duration(seconds: secondsDiff - 86400));
-        _eventNotifications.sendNotificationLater(
-            event.name,
-            event.description,
-            later,
-            event.reference != null ? event.reference.id : null);
+        _eventNotifications.sendNotificationLater(event.name, event.description,
+            later, event.reference != null ? event.reference.id : null);
       } else {
         // Otherwise send the notification now
-        _eventNotifications.sendNotificationNow(
-            event.name,
-            event.description,
+        _eventNotifications.sendNotificationNow(event.name, event.description,
             event.reference != null ? event.reference.id : null);
       }
     }
   }
 }
-
