@@ -34,6 +34,7 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   Event _selectedEvent;
   List<dynamic> _calendarEvents = [];
+  DateTime _selectedDate = DateTime.now();
   String _selectedColumn;
 
   bool userView = true;
@@ -125,6 +126,7 @@ class _EventListWidgetState extends State<EventListWidget> {
             onPressed: () {
               setState(() {
                 userView = true;
+                _calendarEvents.clear();
               });
             },
           ),
@@ -139,6 +141,7 @@ class _EventListWidgetState extends State<EventListWidget> {
             onPressed: () {
               setState(() {
                 userView = false;
+                _calendarEvents.clear();
               });
             },
           ),
@@ -481,8 +484,13 @@ class _EventListWidgetState extends State<EventListWidget> {
               // onTap Day selection for the calendar
               onDaySelected: (day, events, holidays) {
                 setState(() {
+                  // If we have an event picked and we change to another day, the selected event is deselected
+                  if (compareDates(day, _selectedDate) == false) {
+                    _selectedEvent = null;
+                  }
                   // setting the calendar events for the particular day selected, used to create a scrollable list of elements to select and edit/delete
                   _calendarEvents = events;
+                  _selectedDate = day;
                 });
               },
             );
@@ -617,6 +625,9 @@ class _EventListWidgetState extends State<EventListWidget> {
                   Scaffold.of(context).hideCurrentSnackBar();
                 }));
         Scaffold.of(context).showSnackBar(snackbar);
+        if (compareDates(_selectedDate, event.startDateTime)) {
+          _calendarEvents.add(event);
+        }
       });
 
       print("Adding event $event...");
@@ -637,8 +648,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                   Scaffold.of(context).hideCurrentSnackBar();
                 }));
         Scaffold.of(context).showSnackBar(snackbar);
-        _calendarController.setSelectedDay(_selectedEvent.startDateTime,
-            isProgrammatic: true, animate: true, runCallback: true);
+        _calendarEvents.remove(_selectedEvent);
         _selectedEvent = null;
       });
     } else {
@@ -657,6 +667,8 @@ class _EventListWidgetState extends State<EventListWidget> {
       Event newEvent = event;
 
       if (event != null) {
+        newEvent.createdBy = _selectedEvent.createdBy;
+        newEvent.participants = _selectedEvent.participants;
         newEvent.reference = _selectedEvent.reference;
         setState(() {
           _eventModel.update(newEvent);
@@ -668,12 +680,14 @@ class _EventListWidgetState extends State<EventListWidget> {
                     Scaffold.of(context).hideCurrentSnackBar();
                   }));
           Scaffold.of(context).showSnackBar(snackbar);
-          _calendarController.setSelectedDay(newEvent.startDateTime,
-              isProgrammatic: true, animate: true, runCallback: true);
+
+          if (compareDates(_selectedDate, _selectedEvent.startDateTime)) {
+            _calendarEvents[_calendarEvents.indexOf(_selectedEvent)] = newEvent;
+          }
+
           _selectedEvent = null;
         });
       }
-      setState(() {});
       // If an event wasn't selected, show error dialog
     } else {
       _showAlertDialog();
@@ -847,7 +861,9 @@ class _EventListWidgetState extends State<EventListWidget> {
     } else if (userView == true) {
       print("Remove from list");
       setState(() {
-        _eventModel.removeParticipant(event, user.uid);
+        _calendarEvents.remove(event);
+        event.participants.remove(user.uid);
+        _eventModel.update(event);
       });
     } else if (event.participants.contains(user.uid)) {
       print("You are already in this event");
@@ -855,7 +871,8 @@ class _EventListWidgetState extends State<EventListWidget> {
       print("Add to list");
       print(event);
       setState(() {
-        _eventModel.addParticipant(event, user.uid);
+        event.participants.add(user.uid);
+        _eventModel.update(event);
         sendNotification(event);
       });
     }
@@ -878,6 +895,16 @@ class _EventListWidgetState extends State<EventListWidget> {
         _eventNotifications.sendNotificationNow(event.name, event.description,
             event.reference != null ? event.reference.id : null);
       }
+    }
+  }
+
+  bool compareDates(DateTime date1, DateTime date2) {
+    if (date1.day == date2.day &&
+        date1.month == date2.month &&
+        date1.year == date2.year) {
+      return true;
+    } else {
+      return false;
     }
   }
 }

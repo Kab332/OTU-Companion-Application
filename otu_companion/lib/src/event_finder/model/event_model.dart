@@ -34,6 +34,7 @@ class EventModel {
       'endDateTime': event.endDateTime,
       'location': event.location,
       'geoPoint': event.geoPoint,
+      'participants': event.participants,
     });
   }
 

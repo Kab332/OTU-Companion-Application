@@ -516,6 +516,7 @@ class _EventFormPageState extends State<EventFormPage> {
         List<Location> places =
             await geocoder.locationFromAddress(selectedEvent.location);
         location = places[0];
+        _location = selectedEvent.location;
         _centre = LatLng(location.latitude, location.longitude);
         _geoPoint = GeoPoint(_centre.latitude, _centre.longitude);
         setState(() {
