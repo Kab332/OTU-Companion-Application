@@ -4,10 +4,8 @@ import 'package:otu_companion/src/event_finder/views/event_form.dart';
 import 'package:otu_companion/src/event_finder/views/event_stats.dart';
 import 'package:otu_companion/src/home_page/home_page_main.dart';
 import 'package:otu_companion/src/profile/profile_page_main.dart';
-import 'package:otu_companion/src/profile/views/change_email_page.dart';
-import 'package:otu_companion/src/profile/views/change_name_page.dart';
-import 'package:otu_companion/src/profile/views/change_password_page.dart';
-import 'package:otu_companion/src/profile/views/change_picture_page.dart';
+import 'package:otu_companion/src/profile/views/change_profile_info_page.dart';
+import 'package:otu_companion/src/profile/views/link_profile_page.dart';
 import 'package:otu_companion/src/room_finder/room_finder_main.dart';
 import 'package:otu_companion/src/settings/settings_main.dart';
 import 'package:otu_companion/src/settings/views/appearance_settings_page.dart';
@@ -35,10 +33,8 @@ class Routes {
 
   // Profile
   static const profileMain = "/profileMain";
-  static const changeNamePage = "/changeNamePage";
-  static const changeEmailPage = "/changeEmailPage";
-  static const changePicturePage = "/changePicturePage";
-  static const changePasswordPage = "/changePasswordPage";
+  static const changeProfileInfoPage = "/changeProfileInfoPage";
+  static const linkProfilePage = "/linkProfilePage";
 
   // Others
 
@@ -77,26 +73,14 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) =>
                 ProfilePageMain(title: 'Profile'));
-      case roomFinderMain:
+      case changeProfileInfoPage:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                RoomFinderMain(title: 'Empty Room Finder'));
-      case changeNamePage:
+                ChangeProfileInfoPage(title: "Change Profile Info"));
+      case linkProfilePage:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                ChangeNamePage(title: "Change Name"));
-      case changeEmailPage:
-        return MaterialPageRoute(
-            builder: (BuildContext context) =>
-                ChangeEmailPage(title: "Change Email"));
-      case changePasswordPage:
-        return MaterialPageRoute(
-            builder: (BuildContext context) =>
-                ChangePasswordPage(title: "Change Password"));
-      case changePicturePage:
-        return MaterialPageRoute(
-            builder: (BuildContext context) =>
-                ChangePicturePage(title: "Change Picture"));
+                LinkProfilePage(title: "Link Accounts"));
       case loginPage:
         return MaterialPageRoute(
             builder: (BuildContext context) => LoginPage());

@@ -15,6 +15,7 @@ class SignUpPage extends StatefulWidget
 class _SignUpPageState extends State<SignUpPage>
 {
   final _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   AuthenticationService _authenticationService = AuthenticationService();
 
   final _firstName = TextEditingController();
@@ -22,12 +23,14 @@ class _SignUpPageState extends State<SignUpPage>
   final _email = TextEditingController();
   final _password = TextEditingController();
   final _passwordRe = TextEditingController();
-  bool _verification = false;
+  String _errorMessage;
+  bool _disableButton = false;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child:Scaffold(
+        key: _scaffoldKey,
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(widget.title),
@@ -203,19 +206,28 @@ class _SignUpPageState extends State<SignUpPage>
   Widget _buildSignUpButton(BuildContext context) {
     return InkWell(
       onTap: () {
-        if (_formKey.currentState.validate()) {
+        if (_formKey.currentState.validate() && _disableButton != true) {
+          _disableButton = true;
           _formKey.currentState.save();
           _authenticationService.signUpWithEmailAndPassword(
             email: _email.text,
             password: _password.text,
             firstName: _firstName.text,
             lastName: _lastName.text
-          ).then((verifying){
-            _verification = verifying;
+          ).then((errorMessage){
+            _errorMessage = errorMessage;
           }).whenComplete((){
-            if (_verification) {
-              Navigator.pushReplacementNamed(context, Routes.loginCheckerPage);
+            var snackbar;
+            if (_errorMessage == null) {
+              Navigator.pushReplacementNamed(context, Routes.homeMain);
+              snackbar = SnackBar(content: Text("Welcome Back!"));
             }
+            else
+            {
+              snackbar = SnackBar(content: Text(_errorMessage));
+            }
+            _scaffoldKey.currentState.showSnackBar(snackbar);
+            _disableButton = false;
           });
         }
       },

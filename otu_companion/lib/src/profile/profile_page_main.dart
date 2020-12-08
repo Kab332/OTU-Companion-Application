@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:otu_companion/res/routes/routes.dart';
+import 'package:otu_companion/src/services/authentication/model/authentication_service.dart';
 
 class ProfilePageMain extends StatefulWidget
 {
@@ -19,13 +20,15 @@ class ProfilePageMain extends StatefulWidget
 class _ProfilePageMainState extends State<ProfilePageMain>
 {
   User _user;
+  AuthenticationService _authenticationService = AuthenticationService();
 
   @override
   Widget build(BuildContext context)
   {
-    _user = Provider.of<User>(context);
+    _user = _authenticationService.getCurrentUser();
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(widget.title),
       ),
@@ -37,10 +40,9 @@ class _ProfilePageMainState extends State<ProfilePageMain>
           children: <Widget>[
             _buildInfoContainer(context),
             Divider(thickness: 5,height: 1,),
-            _buildChangeNameButton(context),
-            _buildChangeEmailButton(context),
-            _buildChangePictureButton(context),
+            _buildChangeProfileInfoButton(context),
             _buildChangePasswordButton(context),
+            _buildLinkProfileButton(context),
           ],
         ),
       ),
@@ -111,11 +113,15 @@ class _ProfilePageMainState extends State<ProfilePageMain>
     );
   }
 
-  Widget _buildChangeNameButton(BuildContext context)
+  Widget _buildChangeProfileInfoButton(BuildContext context)
   {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, Routes.changeNamePage);
+        Navigator.pushNamed(context, Routes.changeProfileInfoPage).whenComplete((){
+          setState(() {
+
+          });
+        });
       },
       child:Container(
         child: Column(
@@ -132,7 +138,7 @@ class _ProfilePageMainState extends State<ProfilePageMain>
                 ),
                 child: Center(
                   child: Text(
-                    "Change Name",
+                    "Change Profile Info",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -150,7 +156,7 @@ class _ProfilePageMainState extends State<ProfilePageMain>
   {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, Routes.changeEmailPage);
+
       },
       child:Container(
         child: Column(
@@ -182,11 +188,11 @@ class _ProfilePageMainState extends State<ProfilePageMain>
   }
 
 
-  Widget _buildChangePictureButton(BuildContext context)
+  Widget _buildLinkProfileButton(BuildContext context)
   {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, Routes.changePicturePage);
+        Navigator.pushNamed(context, Routes.linkProfilePage);
       },
       child:Container(
         child: Column(
@@ -203,7 +209,7 @@ class _ProfilePageMainState extends State<ProfilePageMain>
                 ),
                 child: Center(
                   child: Text(
-                    "Change Picture",
+                    "Link Account",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -217,11 +223,39 @@ class _ProfilePageMainState extends State<ProfilePageMain>
     );
   }
 
+  showPasswordChangeDialog(BuildContext context)
+  {
+    showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: Text("Reset Password"),
+          content: Text("An email will be sent to confirm password reset, would you like to proceed?"),
+          actions: [
+            FlatButton(
+              onPressed: (){
+                Navigator.pop(context);
+              },
+              child: Text("Cancel")
+            ),
+            FlatButton(
+              onPressed: (){
+                Navigator.pop(context);
+                _authenticationService.updatePassword();
+              },
+              child: Text("Continue"),
+            )
+          ],
+        );
+      }
+    );
+  }
+
   Widget _buildChangePasswordButton(BuildContext context)
   {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, Routes.changePasswordPage);
+        showPasswordChangeDialog(context);
       },
       child:Container(
         child: Column(

@@ -22,7 +22,7 @@ class _MainSideDrawerState extends State<MainSideDrawer>
   @override
   Widget build(BuildContext context)
   {
-    _user = Provider.of<User>(context);
+    _user = _authenticationService.getCurrentUser();
     return Drawer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -45,10 +45,14 @@ class _MainSideDrawerState extends State<MainSideDrawer>
                 _buildEventTile(context),
                 _buildRoomTile(context),
                 _buildGuideTile(context),
+
                 Divider(
                   thickness: 2,
                 ),
+
+                /*
                 _buildGroupTile(context),
+                 */
               ],
             ),
           ),
