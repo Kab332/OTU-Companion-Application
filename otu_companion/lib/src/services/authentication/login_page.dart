@@ -37,26 +37,13 @@ class _LoginPageState extends State<LoginPage>
           child: Column(
             children: <Widget>[
               //Logo - Header
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.29,
-                    width: MediaQuery.of(context).size.width * 0.3,
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    width: MediaQuery.of(context).size.width * 0.5,
                     child: Image.asset('lib/res/images/logo.png'),
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.29,
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    child: Center(
-                      child:Text(
-                        "Welcome Back To The Companion App!",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               ),
@@ -109,6 +96,8 @@ class _LoginPageState extends State<LoginPage>
                 thickness: 0,
               ),
 
+              // TODO: Implement Google and Twitter Sign In Features
+              /*
               // Other Login Options Button
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -118,6 +107,7 @@ class _LoginPageState extends State<LoginPage>
                   _buildLoginWithTwitterButton(context),
                 ],
               ),
+               */
             ],
           ),
         ),
@@ -180,15 +170,13 @@ class _LoginPageState extends State<LoginPage>
             _errorMessage = verifying;
           }
           ).whenComplete((){
-            var snackbar;
             if (_errorMessage == null) {
               Navigator.pushReplacementNamed(context, Routes.homeMain);
-              snackbar = SnackBar(content: Text("Welcome Back!"));
             }
             else {
-              snackbar = SnackBar(content: Text(_errorMessage));
+              var snackbar = SnackBar(content: Text(_errorMessage));
+              _scaffoldKey.currentState.showSnackBar(snackbar);
             }
-            _scaffoldKey.currentState.showSnackBar(snackbar);
             _disableButton = false;
           });
         }
@@ -261,6 +249,7 @@ class _LoginPageState extends State<LoginPage>
     );
   }
 
+  /*
   Widget _buildLoginWithGoogleButton(BuildContext context)
   {
     return InkWell(
@@ -304,7 +293,6 @@ class _LoginPageState extends State<LoginPage>
     );
   }
 
-  /*
   Widget _buildLoginWithFacebookButton(BuildContext context)
   {
     return InkWell(
@@ -347,7 +335,6 @@ class _LoginPageState extends State<LoginPage>
       ),
     );
   }
-   */
 
   Widget _buildLoginWithTwitterButton(BuildContext context)
   {
@@ -397,4 +384,5 @@ class _LoginPageState extends State<LoginPage>
       ),
     );
   }
+   */
 }

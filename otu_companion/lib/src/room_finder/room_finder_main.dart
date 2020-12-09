@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:otu_companion/src/navigation_views/main_side_drawer.dart';
 import 'package:intl/intl.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
@@ -35,6 +36,7 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        drawer: MainSideDrawer(),
         appBar: AppBar(
           title: Text(widget.title),
         ),

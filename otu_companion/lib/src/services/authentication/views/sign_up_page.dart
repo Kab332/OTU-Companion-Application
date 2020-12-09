@@ -217,16 +217,14 @@ class _SignUpPageState extends State<SignUpPage>
           ).then((errorMessage){
             _errorMessage = errorMessage;
           }).whenComplete((){
-            var snackbar;
             if (_errorMessage == null) {
               Navigator.pushReplacementNamed(context, Routes.homeMain);
-              snackbar = SnackBar(content: Text("Welcome Back!"));
             }
             else
             {
-              snackbar = SnackBar(content: Text(_errorMessage));
+              var snackbar = SnackBar(content: Text(_errorMessage));
+              _scaffoldKey.currentState.showSnackBar(snackbar);
             }
-            _scaffoldKey.currentState.showSnackBar(snackbar);
             _disableButton = false;
           });
         }

@@ -37,17 +37,7 @@ class _HomePageMainState extends State<HomePageMain> {
         title: Text(widget.title),
       ),
       drawer: MainSideDrawer(),
-      // body: ListView.separated(
-      //   itemCount: 3,
-      //   separatorBuilder: (BuildContext context, int index) {
-      //     return Divider(
-      //       color: Colors.grey[350],
-      //       thickness: 5,
-      //     );
-      //   },
-      //   itemBuilder: (BuildContext context, int index) {
-      //     return _buildEventTile(context,);
-      //   },
+      resizeToAvoidBottomInset: false,
       body: _buildEventList(context),
     );
   }

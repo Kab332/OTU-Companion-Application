@@ -42,7 +42,9 @@ class _ProfilePageMainState extends State<ProfilePageMain>
             Divider(thickness: 5,height: 1,),
             _buildChangeProfileInfoButton(context),
             _buildChangePasswordButton(context),
-            _buildLinkProfileButton(context),
+
+            // TODO: Implement 3rd-party account linking system
+            //_buildLinkProfileButton(context),
           ],
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:otu_companion/src/event_finder/model/notification_utilities.dart
 import 'package:table_calendar/table_calendar.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:otu_companion/src/navigation_views/main_side_drawer.dart';
 import 'dart:async';
 
 import 'package:flutter_map/flutter_map.dart';
@@ -62,6 +63,7 @@ class _EventListWidgetState extends State<EventListWidget> {
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
+      drawer: MainSideDrawer(),
       appBar: AppBar(
         title: Text(widget.title),
         // If we're in the user view, then these buttons aren't shown
