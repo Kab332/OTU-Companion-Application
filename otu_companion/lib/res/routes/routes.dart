@@ -8,9 +8,12 @@ import 'package:otu_companion/src/profile/views/link_profile_page.dart';
 import 'package:otu_companion/src/room_finder/room_finder_main.dart';
 import 'package:otu_companion/src/settings/settings_main.dart';
 import 'package:otu_companion/src/settings/views/appearance_settings_page.dart';
+import 'package:otu_companion/src/settings/views/feed_back_page.dart';
+import 'package:otu_companion/src/settings/views/about_page.dart';
 import 'package:otu_companion/src/services/authentication/login_page.dart';
 import 'package:otu_companion/src/services/authentication/views/login_checker_page.dart';
 import 'package:otu_companion/src/services/authentication/views/sign_up_page.dart';
+import 'package:otu_companion/src/chat/chat_main.dart';
 
 class Routes {
   // Login
@@ -28,11 +31,16 @@ class Routes {
   // Settings
   static const settingMain = "/settingMain";
   static const appearanceSettingPage = "/appearanceSettingPage";
+  static const feedBackPage = "/feedBackPage";
+  static const aboutPage = "/aboutPage";
 
   // Profile
   static const profileMain = "/profileMain";
   static const changeProfileInfoPage = "/changeProfileInfoPage";
   static const linkProfilePage = "/linkProfilePage";
+
+  //
+  static const chatMain = "/chatMain";
 
   // Others
 
@@ -60,6 +68,14 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) =>
                 AppearanceSettingPage(title: 'Appearance'));
+      case feedBackPage:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                FeedBackPage(title: 'Feed Back'));
+      case aboutPage:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                AboutPage(title: 'About'));
       case profileMain:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
@@ -87,6 +103,10 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) =>
               SignUpPage(title: "Account Creation"));
+      case chatMain:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                ChatPage(title: "Messaging"));
     }
 
     return null;

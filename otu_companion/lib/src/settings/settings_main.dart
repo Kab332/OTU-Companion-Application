@@ -23,10 +23,10 @@ class _SettingMainState extends State<SettingMain>
       body: ListView(
         children: <Widget>[
           _buildAppearanceTile(context),
-          _buildNotificationTile(context),
-          _buildDataUsageTile(context),
+          //_buildNotificationTile(context),
+          //_buildDataUsageTile(context),
           _buildFeedBackTile(context),
-          _buildAboutTile(context),
+         // _buildAboutTile(context),
         ],
       ),
     );
@@ -66,6 +66,9 @@ class _SettingMainState extends State<SettingMain>
     return ListTile(
       title: Text('Feed Back'),
       leading: Icon(Icons.feedback),
+      onTap: (){
+        Navigator.pushNamed(context, Routes.feedBackPage);
+      },
     );
   }
 
@@ -74,6 +77,9 @@ class _SettingMainState extends State<SettingMain>
     return ListTile(
       title: Text('About'),
       leading: Icon(Icons.info),
+      onTap: (){
+        Navigator.pushNamed(context, Routes.aboutPage);
+      },
     );
   }
 }

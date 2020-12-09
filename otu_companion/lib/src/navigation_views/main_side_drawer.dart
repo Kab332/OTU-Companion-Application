@@ -45,7 +45,7 @@ class _MainSideDrawerState extends State<MainSideDrawer>
                 _buildEventTile(context),
                 _buildRoomTile(context),
                 _buildGuideTile(context),
-
+                _buildChatTile(context),
                 Divider(
                   thickness: 2,
                 ),
@@ -125,6 +125,7 @@ class _MainSideDrawerState extends State<MainSideDrawer>
                           //TODO: Add Profile Name
                           _user.displayName,
                           style: TextStyle(
+                            color: Colors.white,
                             fontSize: 18
                           ),
                         ),
@@ -134,7 +135,8 @@ class _MainSideDrawerState extends State<MainSideDrawer>
                           //TODO: Add Profile Name
                           "???",
                           style: TextStyle(
-                              fontSize: 18
+                            color: Colors.white,
+                            fontSize: 18
                           ),
                         ),
                       ],
@@ -231,6 +233,21 @@ class _MainSideDrawerState extends State<MainSideDrawer>
       onTap: ()
       {
         Navigator.pop(context);
+      },
+    );
+  }
+
+  Widget _buildChatTile(BuildContext context)
+  {
+    return ListTile(
+      title: Text('Chat'),
+      leading: Icon(Icons.chat),
+      onTap: ()
+      {
+        // Pop Side Menu
+        Navigator.pop(context);
+        // Pop Current Scaffold and Push Chat Scaffold
+        Navigator.popAndPushNamed(context, Routes.chatMain);
       },
     );
   }

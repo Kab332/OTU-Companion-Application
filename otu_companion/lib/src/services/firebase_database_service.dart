@@ -5,6 +5,22 @@ class FirebaseDatabaseService
 {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  static Future<String> createFeedBack({
+    String message,
+  }) async
+  {
+    try
+    {
+      await _db.collection('feedback').add({
+        "message": message,
+      });
+    }
+    on FirebaseException catch(e)
+    {
+      return e.message;
+    }
+  }
+
   static Future<bool> createNewUserProfile
   ({
     String id,

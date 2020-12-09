@@ -37,26 +37,13 @@ class _LoginPageState extends State<LoginPage>
           child: Column(
             children: <Widget>[
               //Logo - Header
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.29,
-                    width: MediaQuery.of(context).size.width * 0.3,
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    width: MediaQuery.of(context).size.width * 0.5,
                     child: Image.asset('lib/res/images/logo.png'),
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.29,
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    child: Center(
-                      child:Text(
-                        "Welcome Back To The Companion App!",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               ),
