@@ -17,6 +17,7 @@ import 'package:otu_companion/src/services/authentication/views/sign_up_page.dar
 import 'package:otu_companion/src/chat/chat_main.dart';
 import 'package:otu_companion/src/guides/guides_main.dart';
 import 'package:otu_companion/src/guides/views/guides_form.dart';
+import 'package:otu_companion/src/guides/views/guides_stats.dart';
 
 class Routes {
   // Login
@@ -49,6 +50,7 @@ class Routes {
   // Guides
   static const guidesMain = "/guidesMain";
   static const guidesForm = "/guidesForm";
+  static const guidesStats = "/guideStats";
 
   // Others
 
@@ -122,6 +124,12 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) =>
                 GuideFormPage(title: "Guides Form", guide: settings.arguments));
+      case guidesStats:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => GuideStats(
+                  title: 'Guides Stats',
+                  userID: settings.arguments,
+                ));
     }
 
     return null;

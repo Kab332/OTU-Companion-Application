@@ -28,7 +28,6 @@ class _EventFormPageState extends State<EventFormPage> {
 
   String _name = '';
   String _description = '';
-  String _imageURL = '';
   String _location = '';
   GeoPoint _geoPoint;
   TextEditingController _locationController;
@@ -175,10 +174,6 @@ class _EventFormPageState extends State<EventFormPage> {
       typeVal = selectedEvent.name;
     } else if (type == "Description" && selectedEvent != null) {
       typeVal = selectedEvent.description;
-    } else if (type == "Image URL" && selectedEvent != null) {
-      typeVal = _imageURL;
-    } else if (type == "Location" && selectedEvent != null) {
-      typeVal = selectedEvent.location;
     }
 
     return TextFormField(
@@ -199,8 +194,6 @@ class _EventFormPageState extends State<EventFormPage> {
           _name = newValue;
         } else if (type == "Description") {
           _description = newValue;
-        } else if (type == "Image URL") {
-          _imageURL = newValue;
         }
       },
     );
@@ -565,26 +558,4 @@ class _EventFormPageState extends State<EventFormPage> {
     );
     marker = newMarker;
   }
-
-  // function to display a dropdown of the auto completions for address
-  /*Future<Null> displayPrediction(maps.Prediction p) async {
-    if (p != null) {
-      maps.PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
-
-      var address = detail.result.formattedAddress;
-
-      print(address);
-
-      setState(() {
-        _locationController.text = address;
-      });
-    }
-  }*/
-
-  // Function to handle Map autocomplete error
-  /*void onError(maps.PlacesAutocompleteResponse response) {
-    Scaffold.of(context).showSnackBar(
-      SnackBar(content: Text(response.errorMessage)),
-    );
-  }*/
 }

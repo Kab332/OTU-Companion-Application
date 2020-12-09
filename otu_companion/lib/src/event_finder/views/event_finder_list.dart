@@ -542,11 +542,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                       title: _buildTile(context, event),
                       onTap: () {
                         setState(() {
-                          print("SELECTED EVENT INITIAL: " +
-                              _selectedEvent.toString());
                           _selectedEvent = event;
-                          print("SELECTED EVENT FINAL: " +
-                              _selectedEvent.toString());
                         });
                       }),
                 ))

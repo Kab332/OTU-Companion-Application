@@ -51,7 +51,11 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
                 : _selectedGuide.createdBy != user.uid
                     ? null
                     : _deleteGuide,
-          )
+          ),
+          IconButton(
+            icon: Icon(Icons.insert_chart, color: Colors.white),
+            onPressed: _checkStats,
+          ),
         ],
       ),
       body: _buildGuides(),
@@ -302,6 +306,10 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
         );
       },
     );
+  }
+
+  void _checkStats() {
+    Navigator.pushNamed(context, "/guideStats", arguments: null);
   }
 
   void _showCustomSnackBar(String content) {
