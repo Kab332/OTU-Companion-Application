@@ -72,6 +72,8 @@ class _HomePageMainState extends State<HomePageMain> {
           ListTile(
               leading: Container(
                 child: CircleAvatar(
+                  child: Text(event.name[0],
+                      style: TextStyle(color: Colors.white)),
                   backgroundColor: Colors.black,
                   radius: 35,
                 ),
@@ -80,10 +82,6 @@ class _HomePageMainState extends State<HomePageMain> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(event.name),
-                  // Text(
-                  //   'Leon is a Gamer™️',
-                  //   style: TextStyle(color: Colors.grey),
-                  // ),
                 ],
               ),
               subtitle: Text(event.startDateTime.toString())),
@@ -104,7 +102,6 @@ class _HomePageMainState extends State<HomePageMain> {
                   minZoom: 5.0,
                   zoom: 10.0,
                   maxZoom: 20.0,
-                  //center: selectedEvent.location != null ? selectedEvent.location : _centre,
                   center: _centre,
                 ),
                 layers: [
