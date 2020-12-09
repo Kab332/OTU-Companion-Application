@@ -22,8 +22,9 @@ def create_all_schedules():
                         CREATE TABLE IF NOT EXISTS 'all_schedules' (
                         'time' TEXT,
                         'day' TEXT,
-                        'location' TEXT,
-                        UNIQUE('time', 'day', 'location')
+                        'building' TEXT,
+                        'room' TEXT,
+                        UNIQUE('time', 'day', 'building', 'room')
                         )
                         """)
     except sqlite3.Error as error:
@@ -59,17 +60,19 @@ def call_locations():
         db_cursor = db_conn.cursor()
         db_cursor.execute("""
                         CREATE TABLE IF NOT EXISTS 'locations' (
-                        'location' TEXT,
-                        UNIQUE('location')
+                        'building' TEXT,
+                        'room' TEXT,
+                        UNIQUE('building', 'room')
                         )
                         """)
 
         for location in get_locations():
             location = re.search(r"\(\'([A-Za-z0-9 ()/-]+)\'\,\)", str(location)).group(1)
+            location = location.rsplit(' ', 1)
             db_cursor.execute("""
-                                INSERT INTO 'locations'('location')
-                                VALUES(?)
-                                """, (location,))
+                                INSERT INTO 'locations'('building', 'room')
+                                VALUES(?, ?)
+                                """, (location[0], location[1]))
     except sqlite3.Error as error:
         print(error)
     finally:
@@ -161,7 +164,8 @@ def create_empty_schedules():
                         ON 
                             'all_schedules'.'time' BETWEEN 'occupied_schedules'.'start_time' AND 'occupied_schedules'.'end_time'
                             AND 'all_schedules'.'day' = 'occupied_schedules'.'day'
-                            AND 'all_schedules'.'location' = 'occupied_schedules'.'location'
+                            AND 'all_schedules'.'building' = 'occupied_schedules'.'building'
+                            AND 'all_schedules'.'room' = 'occupied_schedules'.'room'
                         WHERE 'occupied_schedules'.'start_time' is null
                         """)
     except sqlite3.Error as error:
@@ -171,6 +175,4 @@ def create_empty_schedules():
         db_cursor.close()
 
 
-create_all_schedules()
-cross_join()
 create_empty_schedules()

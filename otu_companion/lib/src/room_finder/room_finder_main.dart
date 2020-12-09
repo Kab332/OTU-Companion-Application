@@ -1,8 +1,15 @@
+/*
+The empty room finder tool is a simple tool, supplied with a premade db the tool
+queries the db at the user's specified input and then returns lists of either
+empty class times or empty times for a class.
+The premade db is made via a python-based webscraper that scrapes a specified
+semester's schedules from the MyCampus Available Courses Preview.
+*/
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:otu_companion/src/room_finder/model/room_model.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
-
 import 'model/room.dart';
 
 class RoomFinderMain extends StatefulWidget {
@@ -15,6 +22,8 @@ class RoomFinderMain extends StatefulWidget {
 }
 
 class _RoomFinderMainState extends State<RoomFinderMain> {
+
+  // Initializes variables
   final _model = RoomModel();
 
   DateTime selectedDate = DateTime.now();
@@ -35,8 +44,14 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
   Future myRoomsFuture;
   Future myBuildingsFuture;
 
+  // --------------------------------------------------------------------------
+
   @override
   void initState() {
+    selectedEndTime = selectedEndTime.replacing(
+      hour: selectedEndTime.hour + 1,
+    );
+
     myRoomsFuture = _getRooms();
     myBuildingsFuture = _getBuildings();
 
@@ -48,6 +63,11 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
+          actions: [
+            IconButton(icon: Icon(Icons.help), onPressed: (){
+              showAlertDialog(context);
+            })
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -64,44 +84,9 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
         ));
   }
 
-  _selectDate(BuildContext context) async {
-    //  Creates DateTimePickerDialog
-    final DateTime picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null && picked != selectedDate)
-      setState(() {
-        selectedDate = picked;
-      });
-  }
+  // --------------------------------------------------------------------------
 
-  _selectStartTime(BuildContext context) async {
-    //  Creates DateTimePickerDialog
-    final TimeOfDay picked = await showTimePicker(
-      context: context,
-      initialTime: selectedStartTime,
-    );
-    if (picked != null && picked != selectedStartTime)
-      setState(() {
-        selectedStartTime = picked;
-      });
-  }
-
-  _selectEndTime(BuildContext context) async {
-    //  Creates DateTimePickerDialog
-    final TimeOfDay picked = await showTimePicker(
-      context: context,
-      initialTime: selectedEndTime,
-    );
-    if (picked != null && picked != selectedEndTime)
-      setState(() {
-        selectedEndTime = picked;
-      });
-  }
-
+  // Builds search display
   Widget _buildSearch(BuildContext context) {
     return Column(children: [
       Text(
@@ -223,6 +208,7 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
     ]);
   }
 
+  // Builds/displays queried search parameters
   Widget _buildList(BuildContext context, String type) {
     return FutureBuilder(
         future: _getList(),
@@ -231,7 +217,7 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
             return ListView.separated(
                 itemBuilder: (BuildContext context, int index) {
                   if (type == 'time') {
-                    if (snapshot.data[index].room.toString().isNotEmpty){
+                    if (snapshot.data != null){
                       return ListTile(
                         title: Text(snapshot.data[index].room),
                       );
@@ -241,7 +227,7 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
                     }
                   }
                   else if (type == 'room'){
-                    if (snapshot.data[index].time.toString().isNotEmpty){
+                    if (snapshot.data != null){
                       return ListTile(
                         title: Text(DateFormat("h:mm a").format(DateFormat('HH:mm').parse(snapshot.data[index].time))),
                       );
@@ -263,6 +249,7 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
         });
   }
 
+  // Builds list header
   Widget _buildListHeader(BuildContext context, String type) {
     if (type == 'time') {
       return Text(
@@ -282,6 +269,7 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
     return Container();
   }
 
+  // Gets list of rooms for rooms DropdownMenu
   Future _getRooms() async {
     List<DropdownMenuItem> rooms  = await _model.getDropdownRooms();
 
@@ -290,6 +278,7 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
     return rooms;
   }
 
+  // Gets list of buildings for building DropdownMenu
   Future _getBuildings() async {
     List<DropdownMenuItem> buildings = await _model.getDropdownBuildings();
 
@@ -298,6 +287,7 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
     return buildings;
   }
 
+  // Gets queried search parameters for display
   Future _getList() async {
     if (type == 'time') {
       String day = _getDay(selectedDate);
@@ -321,6 +311,7 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
     }
   }
 
+  // Converts selected date to how the uni stores a day, used for querying db
   String _getDay(DateTime selectedDate) {
     DateFormat dateFormatter = DateFormat('EEEE');
     String date = dateFormatter.format(selectedDate);
@@ -368,5 +359,76 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
       }
       break;
     }
+  }
+
+  // Creates FAQ popup
+  showAlertDialog(BuildContext context) {
+    Widget close = FlatButton(
+      child: Text("Close"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    // Sets up alert
+    AlertDialog alert = AlertDialog(
+      title: Text("FAQ"),
+      content: Text("The empty room finder is a simple tool that shows either "
+          "the empty rooms between a specified time range or the empty times "
+          "(at 10 minute intervals) for a specified room.\nTimes between "
+          "9:30pm to 8:00am are not included as they are inherently free. No "
+          "classes are scheduled at those times."),
+      actions: [
+        close,
+      ],
+    );
+
+    // Shows dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  // Creates pickers for selecting date & times
+
+  _selectDate(BuildContext context) async {
+    //  Creates DateTimePickerDialog
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+      });
+  }
+
+  _selectStartTime(BuildContext context) async {
+    //  Creates TimeOfDayPickerDialog
+    final TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: selectedStartTime,
+    );
+    if (picked != null && picked != selectedStartTime)
+      setState(() {
+        selectedStartTime = picked;
+      });
+  }
+
+  _selectEndTime(BuildContext context) async {
+    //  Creates TimeOfDayPickerDialog
+    final TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: selectedEndTime,
+    );
+    if (picked != null && picked != selectedEndTime)
+      setState(() {
+        selectedEndTime = picked;
+      });
   }
 }

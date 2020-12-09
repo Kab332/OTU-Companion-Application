@@ -50,12 +50,13 @@ class MySpider(scrapy.Spider):
             db_conn = sqlite3.connect(db_path)
             db_cursor = db_conn.cursor()
             db_cursor.execute("""
-                            CREATE TABLE IF NOT EXISTS 'schedules' (
+                            CREATE TABLE IF NOT EXISTS 'occupied_schedules' (
                             'start_time' TEXT,
                             'end_time' TEXT,
                             'day' TEXT,
-                            'location' TEXT,
-                            UNIQUE('start_time', 'end_time', 'day', 'location')
+                            'building' TEXT,
+                            'room' TEXT,
+                            UNIQUE('start_time', 'end_time', 'day', 'building', 'room')
                             )
                             """)
             db_conn.commit()
@@ -99,11 +100,12 @@ class MySpider(scrapy.Spider):
                 if row.xpath('td[4]//text()').extract_first() not in invalids:
                     if 'Virtual Adobe Connect' not in row.xpath('td[4]//text()').extract_first():
                         location = str(row.xpath('td[4]//text()').extract_first())
+                        location = location.rsplit(" ", 1)
 
                         db_cursor.execute("""
                             INSERT OR REPLACE INTO
-                            schedules('start_time', 'end_time', 'day', 'location')
-                            VALUES(?, ?, ?, ?);""", (str(datetime.strptime(time_range[0], '%I:%M %p'))[11:-3], str(datetime.strptime(time_range[1], '%I:%M %p'))[11:-3], day, location))
+                            occupied_schedules('start_time', 'end_time', 'day', 'building', 'room')
+                            VALUES(?, ?, ?, ?, ?);""", (str(datetime.strptime(time_range[0], '%I:%M %p'))[11:-3], str(datetime.strptime(time_range[1], '%I:%M %p'))[11:-3], day, location[0], location[1]))
                         db_conn.commit()
 
         except sqlite3.Error as error:

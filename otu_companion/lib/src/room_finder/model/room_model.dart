@@ -6,6 +6,8 @@ import 'db_utils.dart';
 import 'room.dart';
 
 class RoomModel {
+
+  // Returns a list of each building for the Building dropdown menu
   Future<List<DropdownMenuItem>> getDropdownBuildings() async {
     final db = await DBUtils.init();
     final List<Map<String, dynamic>> maps = await db.rawQuery('SELECT DISTINCT building FROM room_items');
@@ -21,6 +23,7 @@ class RoomModel {
     return result.map((room) => DropdownMenuItem(child: Text(room.building), value: room.building)).toList();
   }
 
+  // Returns a list of each room for the Rooms dropdown menu
   Future<List<DropdownMenuItem>> getDropdownRooms() async {
     final db = await DBUtils.init();
     final List<Map<String, dynamic>> maps = await db.rawQuery('SELECT DISTINCT room FROM room_items ORDER BY room DESC');
@@ -36,21 +39,7 @@ class RoomModel {
     return result.map((room) => DropdownMenuItem(child: Text(room.room), value: room.room)).toList();
   }
 
-  Future<List<Room>> getRooms() async {
-    final db = await DBUtils.init();
-    final List<Map<String, dynamic>> maps = await db.rawQuery('SELECT room FROM room_items ORDER BY room DESC');
-
-    List<Room> result = [];
-
-    if (maps.length > 0) {
-      for (int i = 0; i < maps.length; i++) {
-        result.add(Room.fromMap(maps[i]));
-      }
-    }
-
-    return result;
-  }
-
+  // Returns a list of free rooms at specified query
   Future<List<Room>> getRoomsAtTime(String day, String startTime, String endTime, [String building]) async {
     final db = await DBUtils.init();
     if (building.isNotEmpty) {
@@ -81,6 +70,7 @@ class RoomModel {
     }
   }
 
+  // Returns a list of free times at specified query
   Future<List<Room>> getTimesAtRoom(String room) async {
     final db = await DBUtils.init();
     final List<Map<String, dynamic>> maps = await db.rawQuery("SELECT DISTINCT time FROM room_items WHERE room LIKE '$room'");

@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Room {
   Room({this.building, this.day, this.room, this.time});
 
@@ -8,9 +6,8 @@ class Room {
   String day;
   String room;
   String time;
-  DocumentReference reference;
 
-  Room.fromMap(Map<String, dynamic> map, {this.reference}) {
+  Room.fromMap(Map<String, dynamic> map) {
     this.building = map['building'];
     this.day = map['day'];
     this.room = map['room'];
