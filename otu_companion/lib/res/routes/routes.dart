@@ -16,6 +16,7 @@ import 'package:otu_companion/src/services/authentication/views/login_checker_pa
 import 'package:otu_companion/src/services/authentication/views/sign_up_page.dart';
 import 'package:otu_companion/src/chat/chat_main.dart';
 import 'package:otu_companion/src/guides/guides_main.dart';
+import 'package:otu_companion/src/guides/views/guides_form.dart';
 
 class Routes {
   // Login
@@ -47,6 +48,7 @@ class Routes {
 
   // Guides
   static const guidesMain = "/guidesMain";
+  static const guidesForm = "/guidesForm";
 
   // Others
 
@@ -116,6 +118,10 @@ class Routes {
       case guidesMain:
         return MaterialPageRoute(
             builder: (BuildContext context) => GuidesMain(title: "Guides"));
+      case guidesForm:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                GuideFormPage(title: "Guides Form", guide: settings.arguments));
     }
 
     return null;

@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// Entity class Tip
-class Tip {
+// Entity class Guide
+class Guide {
   String name;
   String description;
   String createdBy;
   String username;
+
   DocumentReference reference;
 
-  Tip({
+  Guide({
     this.name,
     this.description,
     this.createdBy,
@@ -16,10 +17,10 @@ class Tip {
   });
 
   String toString() {
-    return 'Tip: $name, $description, $createdBy, $username';
+    return 'Guide: $name, $description, $createdBy, $username';
   }
 
-  Tip.fromMap(Map<String, dynamic> maps, {this.reference}) {
+  Guide.fromMap(Map<String, dynamic> maps, {this.reference}) {
     this.name = maps['name'];
     this.description = maps['description'];
     this.createdBy = maps['createdBy'];
