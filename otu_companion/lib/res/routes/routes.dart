@@ -14,6 +14,8 @@ import 'package:otu_companion/src/services/authentication/login_page.dart';
 import 'package:otu_companion/src/services/authentication/views/login_checker_page.dart';
 import 'package:otu_companion/src/services/authentication/views/sign_up_page.dart';
 import 'package:otu_companion/src/chat/chat_main.dart';
+import 'package:otu_companion/src/chat/views/addFriendPage.dart';
+import 'package:otu_companion/src/chat/views/messagePage.dart';
 
 class Routes {
   // Login
@@ -39,8 +41,10 @@ class Routes {
   static const changeProfileInfoPage = "/changeProfileInfoPage";
   static const linkProfilePage = "/linkProfilePage";
 
-  //
+  // Chat
   static const chatMain = "/chatMain";
+  static const chatAddFriend = "/chatAddFriend";
+  static const messagePage = "/messagePage";
 
   // Others
 
@@ -106,7 +110,15 @@ class Routes {
       case chatMain:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                ChatPage(title: "Messaging"));
+                ChatPage(title: "Friends"));
+      case chatAddFriend:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                AddFriendPage(title: "Add Friend"));
+      case messagePage:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                MessagePage(title: "Friend"));
     }
 
     return null;
