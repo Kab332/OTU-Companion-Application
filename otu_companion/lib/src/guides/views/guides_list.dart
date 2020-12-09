@@ -174,6 +174,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
       guide.downVoters = [];
       setState(() {
         _guideModel.insert(guide);
+        _showCustomSnackBar("Guide has been added.");
       });
     }
     print("Adding guide $guide...");
@@ -183,6 +184,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
     if (_selectedGuide != null) {
       setState(() {
         _guideModel.delete(_selectedGuide);
+        _showCustomSnackBar("Guide has been deleted.");
       });
     }
   }
@@ -204,6 +206,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
           _guideModel.update(newGuide);
           _selectedGuide = null;
         });
+        _showCustomSnackBar("Guide has been edited.");
       }
     }
   }
@@ -299,5 +302,16 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
         );
       },
     );
+  }
+
+  void _showCustomSnackBar(String content) {
+    var snackbar = SnackBar(
+        content: Text(content),
+        action: SnackBarAction(
+            label: "Dismiss",
+            onPressed: () {
+              Scaffold.of(context).hideCurrentSnackBar();
+            }));
+    Scaffold.of(context).showSnackBar(snackbar);
   }
 }
