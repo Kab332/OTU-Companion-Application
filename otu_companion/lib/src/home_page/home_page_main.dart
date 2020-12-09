@@ -21,6 +21,7 @@ class _HomePageMainState extends State<HomePageMain>
         title: Text(widget.title),
       ),
       drawer: MainSideDrawer(),
+      resizeToAvoidBottomInset: false,
       body: ListView.separated(
         itemCount: 3,
         separatorBuilder: (BuildContext context, int index)
