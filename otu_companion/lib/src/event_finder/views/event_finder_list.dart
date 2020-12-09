@@ -32,12 +32,13 @@ class _EventListWidgetState extends State<EventListWidget> {
   final _eventModel = EventModel();
   final _viewModel = ViewModel();
   AuthenticationService _authenticationService = AuthenticationService();
-  var _calendarController = CalendarController();
+  CalendarController _calendarController = CalendarController();
   final _eventNotifications = EventNotifications();
 
   Event _selectedEvent;
   List<dynamic> _calendarEvents = [];
-  DateTime _selectedDate = DateTime.now();
+  DateTime _selectedDate;
+  DateTime _currentDate = DateTime.now();
   String _selectedColumn;
 
   LatLng _centre = LatLng(43.945947115276184, -78.89606283789982);
@@ -53,7 +54,6 @@ class _EventListWidgetState extends State<EventListWidget> {
     _eventNotifications.init();
 
     _getViews();
-    // getAllEvents();
   }
 
   @override
@@ -131,6 +131,15 @@ class _EventListWidgetState extends State<EventListWidget> {
             onPressed: () {
               setState(() {
                 userView = true;
+                _selectedEvent = null;
+                _selectedDate = null;
+
+                if (this.views != null &&
+                    this.views[0].viewType == "Calendar") {
+                  _calendarController.setSelectedDay(_currentDate);
+                  _showCustomSnackBar("Calendar has been refreshed.");
+                }
+
                 _calendarEvents.clear();
               });
             },
@@ -146,6 +155,15 @@ class _EventListWidgetState extends State<EventListWidget> {
             onPressed: () {
               setState(() {
                 userView = false;
+                _selectedEvent = null;
+                _selectedDate = null;
+
+                if (this.views != null &&
+                    this.views[0].viewType == "Calendar") {
+                  _calendarController.setSelectedDay(_currentDate);
+                  _showCustomSnackBar("Calendar has been refreshed.");
+                }
+
                 _calendarEvents.clear();
               });
             },
@@ -156,24 +174,6 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   Widget _buildViewButtons() {
     return Row(children: [
-      // Expanded(
-      //     child: FlatButton(
-      //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      //       shape: new RoundedRectangleBorder(
-      //           borderRadius: new BorderRadius.circular(0.0)),
-      //       color: this.views != null && this.views[0].viewType == "Grid"
-      //           ? Colors.blue
-      //           : Colors.grey[350],
-      //       child: Text("Grid"),
-      //       onPressed: () {
-      //         setState(() {
-      //           this.views[0].viewType = "Grid";
-      //           _viewModel.updateView(
-      //               View(id: this.views[0].id, viewType: "Grid"));
-      //         });
-      //       },
-      //     ),
-      //     flex: 2),
       Expanded(
           child: RaisedButton(
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -186,6 +186,9 @@ class _EventListWidgetState extends State<EventListWidget> {
             onPressed: () {
               setState(() {
                 this.views[0].viewType = "Calendar";
+                _selectedEvent = null;
+                _selectedDate = null;
+                _calendarEvents.clear();
                 _viewModel.updateView(
                     View(id: this.views[0].id, viewType: "Calendar"));
               });
@@ -204,6 +207,9 @@ class _EventListWidgetState extends State<EventListWidget> {
             onPressed: () {
               setState(() {
                 this.views[0].viewType = "List";
+                _selectedEvent = null;
+                _selectedDate = null;
+                _calendarEvents.clear();
                 _viewModel
                     .updateView(View(id: this.views[0].id, viewType: "List"));
               });
@@ -222,6 +228,9 @@ class _EventListWidgetState extends State<EventListWidget> {
             onPressed: () {
               setState(() {
                 this.views[0].viewType = 'Table';
+                _selectedEvent = null;
+                _selectedDate = null;
+                _calendarEvents.clear();
                 _viewModel
                     .updateView(View(id: this.views[0].id, viewType: "Table"));
               });
@@ -531,7 +540,11 @@ class _EventListWidgetState extends State<EventListWidget> {
                       title: _buildTile(context, event),
                       onTap: () {
                         setState(() {
+                          print("SELECTED EVENT INITIAL: " +
+                              _selectedEvent.toString());
                           _selectedEvent = event;
+                          print("SELECTED EVENT FINAL: " +
+                              _selectedEvent.toString());
                         });
                       }),
                 ))
@@ -633,16 +646,14 @@ class _EventListWidgetState extends State<EventListWidget> {
       event.participants = [user.uid];
       setState(() {
         _eventModel.insert(event);
-        var snackbar = SnackBar(
-            content: Text("Event has been added."),
-            action: SnackBarAction(
-                label: "Dismiss",
-                onPressed: () {
-                  Scaffold.of(context).hideCurrentSnackBar();
-                }));
-        Scaffold.of(context).showSnackBar(snackbar);
-        if (compareDates(_selectedDate, event.startDateTime)) {
-          _calendarEvents.add(event);
+        _showCustomSnackBar("Event has been added.");
+
+        // Refreshing calendar on add
+        if (this.views[0].viewType == "Calendar") {
+          _selectedDate = null;
+          _calendarController.setSelectedDay(_currentDate);
+          _calendarEvents.clear();
+          _showCustomSnackBar("Calendar has been refreshed.");
         }
       });
 
@@ -656,20 +667,16 @@ class _EventListWidgetState extends State<EventListWidget> {
     if (_selectedEvent != null) {
       setState(() {
         _eventModel.delete(_selectedEvent);
-        var snackbar = SnackBar(
-            content: Text("Event has been deleted."),
-            action: SnackBarAction(
-                label: "Dismiss",
-                onPressed: () {
-                  Scaffold.of(context).hideCurrentSnackBar();
-                }));
-        Scaffold.of(context).showSnackBar(snackbar);
-        _calendarEvents.remove(_selectedEvent);
+        _showCustomSnackBar("Event has been deleted.");
+        if (this.views[0].viewType == "Calendar") {
+          _calendarEvents.remove(_selectedEvent);
+        }
+
         _selectedEvent = null;
       });
     } else {
-      // If an event wasn't selected, show error dialog
-      _showAlertDialog();
+      // If an event wasn't selected (just in case something goes wrong)
+      _showCustomDialog("Error!", "Please select an event first!");
     }
   }
 
@@ -688,25 +695,28 @@ class _EventListWidgetState extends State<EventListWidget> {
         newEvent.reference = _selectedEvent.reference;
         setState(() {
           _eventModel.update(newEvent);
-          var snackbar = SnackBar(
-              content: Text("Event has been edited."),
-              action: SnackBarAction(
-                  label: "Dismiss",
-                  onPressed: () {
-                    Scaffold.of(context).hideCurrentSnackBar();
-                  }));
-          Scaffold.of(context).showSnackBar(snackbar);
+          _showCustomSnackBar("Event has been edited.");
 
-          if (compareDates(_selectedDate, _selectedEvent.startDateTime)) {
-            _calendarEvents[_calendarEvents.indexOf(_selectedEvent)] = newEvent;
+          // If we're in calendar view
+          if (this.views[0].viewType == "Calendar") {
+            // If the selected date and the editted event's date are on the same (day, month, year)
+            if (compareDates(_selectedDate, newEvent.startDateTime)) {
+              // If the selectedEvent exists in calendarEvents (just in case to avoid -1 index)
+              if (_calendarEvents.indexOf(_selectedEvent) >= 0) {
+                _calendarEvents[_calendarEvents.indexOf(_selectedEvent)] =
+                    newEvent;
+              }
+            } else {
+              _calendarEvents.remove(_selectedEvent);
+            }
           }
 
           _selectedEvent = null;
         });
       }
-      // If an event wasn't selected, show error dialog
+      // If an event wasn't selected (just in case something goes wrong)
     } else {
-      _showAlertDialog();
+      _showCustomDialog("Error!", "Please select an event first!");
     }
   }
 
@@ -842,28 +852,6 @@ class _EventListWidgetState extends State<EventListWidget> {
     );
   }
 
-  // Function that shows an error dialog if the user did not select an event before clicking edit or delete
-  void _showAlertDialog() {
-    showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Error!'),
-          content: Text('Please select an event first!'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Dismiss'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   // function to assess which current view it is and displays that user to the user
   Widget _buildViewType() {
     if (this.views != null) {
@@ -914,72 +902,61 @@ class _EventListWidgetState extends State<EventListWidget> {
     }
   }
 
+  // This function calls showDialog inside, created to reduce code
+  void _showCustomDialog(String title, String content) {
+    showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(content),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Dismiss'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void _showCustomSnackBar(String content) {
+    var snackbar = SnackBar(
+        content: Text(content),
+        action: SnackBarAction(
+            label: "Dismiss",
+            onPressed: () {
+              Scaffold.of(context).hideCurrentSnackBar();
+            }));
+    Scaffold.of(context).showSnackBar(snackbar);
+  }
+
   void _manageEvent(Event event) {
     if (user.uid == event.createdBy) {
-      showDialog<void>(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Your Event"),
-              content: Text("You created this event."),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('Dismiss'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
+      _showCustomDialog("Your Event", "You created this event.");
     } else if (userView == true) {
       print("Remove from list");
       setState(() {
-        _calendarEvents.remove(event);
+        if (this.views[0].viewType == "Calendar") {
+          _calendarEvents.remove(event);
+        }
+
         event.participants.remove(user.uid);
         _eventModel.update(event);
-        var snackbar = SnackBar(
-            content: Text("You have left the event."),
-            action: SnackBarAction(
-                label: "Dismiss",
-                onPressed: () {
-                  Scaffold.of(context).hideCurrentSnackBar();
-                }));
-        Scaffold.of(context).showSnackBar(snackbar);
+        _showCustomSnackBar("You have left the event.");
       });
     } else if (event.participants.contains(user.uid)) {
-      showDialog<void>(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Joined Event"),
-              content: Text("You are in this event."),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('Dismiss'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
+      _showCustomDialog("Joined Event", "You are in this event.");
     } else {
       print("Add to list");
       print(event);
       setState(() {
         event.participants.add(user.uid);
         _eventModel.update(event);
-        var snackbar = SnackBar(
-            content: Text("You have joined the event."),
-            action: SnackBarAction(
-                label: "Dismiss",
-                onPressed: () {
-                  Scaffold.of(context).hideCurrentSnackBar();
-                }));
-        Scaffold.of(context).showSnackBar(snackbar);
+        _showCustomSnackBar("You have joined the event.");
         sendNotification(event);
       });
     }
@@ -1006,6 +983,10 @@ class _EventListWidgetState extends State<EventListWidget> {
   }
 
   bool compareDates(DateTime date1, DateTime date2) {
+    if (date1 == null || date2 == null) {
+      return false;
+    }
+
     if (date1.day == date2.day &&
         date1.month == date2.month &&
         date1.year == date2.year) {
