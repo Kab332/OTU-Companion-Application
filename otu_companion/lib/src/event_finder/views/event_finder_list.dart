@@ -323,7 +323,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                   scrollDirection: Axis.horizontal,
                   child: DataTable(
                     showCheckboxColumn: userView == false,
-                    showBottomBorder: true,
+                    //showBottomBorder: true,
                     dataRowHeight: 100.0,
                     columns: <DataColumn>[
                       DataColumn(
