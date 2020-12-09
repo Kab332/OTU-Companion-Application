@@ -32,6 +32,7 @@ dependencies:
   cloud_firestore:
   firebase_core:
   cached_network_image:
+  #google_log_in:
 
   flutter_local_notifications:
 

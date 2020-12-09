@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:otu_companion/src/navigation_views/main_side_drawer.dart';
 import 'dart:async';
 
 import '../model/event_model.dart';
@@ -36,6 +37,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
+      drawer: MainSideDrawer(),
       appBar: AppBar(
         title: Text(widget.title),
         actions: <Widget>[

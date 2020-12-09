@@ -200,6 +200,9 @@ class _MainSideDrawerState extends State<MainSideDrawer>
       leading: Icon(Icons.event),
       onTap: ()
       {
+        // Pop Side Menu
+        Navigator.pop(context);
+        // Pop Current Scaffold and Push Event Finder Scaffold
         Navigator.popAndPushNamed(context, Routes.eventFinderMain);
       },
     );
@@ -212,6 +215,9 @@ class _MainSideDrawerState extends State<MainSideDrawer>
       leading: Icon(Icons.room),
       onTap: ()
       {
+        // Pop Side Menu
+        Navigator.pop(context);
+        // Pop Current Scaffold and Push Room Finder Scaffold
         Navigator.popAndPushNamed(context, Routes.roomFinderMain);
       },
     );

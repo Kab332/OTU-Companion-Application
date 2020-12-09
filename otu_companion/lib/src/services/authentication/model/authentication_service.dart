@@ -2,9 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:otu_companion/src/services/firebase_database_service.dart';
 
+//import 'package:google_sign_in/google_sign_in.dart';
+
 class AuthenticationService
 {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  /*final GoogleSignIn _googleSignIn = GoogleSignIn();*/
 
   User getCurrentUser()
   {
@@ -55,6 +58,27 @@ class AuthenticationService
       return e.message;
     }
   }
+
+  // TODO: Implement Google Authentication System (with Account Management-Registration) and enable SHA fingerprint
+  /*
+  Future<String> signInWithGoogle() async
+  {
+    try
+    {
+      GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+      GoogleSignInAuthentication googleSignInAuthentication = await googleUser.authentication;
+      AuthCredential credential = GoogleAuthProvider.credential(
+        idToken: googleSignInAuthentication.idToken,
+        accessToken: googleSignInAuthentication.accessToken,
+      );
+      await _firebaseAuth.signInWithCredential(credential);
+    }
+    on FirebaseAuthException catch(e)
+    {
+      return e.message;
+    }
+  }
+  */
 
   Future<String> updateProfile({String name, String imageURL, BuildContext context}) async
   {
