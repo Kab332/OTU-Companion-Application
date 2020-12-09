@@ -182,11 +182,15 @@ class _EventFormPageState extends State<EventFormPage> {
       ),
       autovalidateMode: AutovalidateMode.always,
       initialValue: selectedEvent != null ? typeVal : '',
+      maxLines: type == "Description" ? 3 : 1,
       // Validation to check if empty or not 9 numbers
       validator: (String value) {
         if (value.isEmpty) {
           return 'Error: Please enter ' + type + '!';
+        } else if (type == "Event Name" && value.length > 12) {
+          return 'Error: Max name length is 12 characters';
         }
+
         return null;
       },
       onChanged: (String newValue) {

@@ -92,10 +92,13 @@ class _GuideFormPageState extends State<GuideFormPage> {
       ),
       autovalidateMode: AutovalidateMode.always,
       initialValue: _selectedGuide != null ? typeVal : '',
+      maxLines: type == "Description" ? 3 : 1,
       // Validation to check if empty or not 9 numbers
       validator: (String value) {
         if (value.isEmpty) {
           return 'Error: Please enter ' + type + '!';
+        } else if (type == "Guide Name" && value.length > 12) {
+          return 'Error: Max name length is 12 characters.';
         }
         return null;
       },

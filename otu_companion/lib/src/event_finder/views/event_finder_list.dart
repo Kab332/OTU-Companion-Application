@@ -763,6 +763,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                   decoration: const InputDecoration(
                     labelText: 'Event Description',
                   ),
+                  maxLines: 5,
                   initialValue: event.description,
                 ),
                 // Start date form field

@@ -261,33 +261,36 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
           content: Container(
             height: MediaQuery.of(context).size.height * 0.7,
             width: MediaQuery.of(context).size.width * 0.7,
-            child: Column(
-              children: [
-                // Guide name form field
-                TextFormField(
-                  enabled: false,
-                  decoration: const InputDecoration(
-                    labelText: 'Guide Name',
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // Guide name form field
+                  TextFormField(
+                    enabled: false,
+                    decoration: const InputDecoration(
+                      labelText: 'Guide Name',
+                    ),
+                    initialValue: guide.name,
                   ),
-                  initialValue: guide.name,
-                ),
-                // Guide description form field
-                TextFormField(
-                  enabled: false,
-                  decoration: const InputDecoration(
-                    labelText: 'By',
+                  // Guide description form field
+                  TextFormField(
+                    enabled: false,
+                    decoration: const InputDecoration(
+                      labelText: 'By',
+                    ),
+                    initialValue: guide.username,
                   ),
-                  initialValue: guide.username,
-                ),
-                // Guide description form field
-                TextFormField(
-                  enabled: false,
-                  decoration: const InputDecoration(
-                    labelText: 'Guide Description',
+                  // Guide description form field
+                  TextFormField(
+                    enabled: false,
+                    maxLines: 20,
+                    decoration: const InputDecoration(
+                      labelText: 'Guide Description',
+                    ),
+                    initialValue: guide.description,
                   ),
-                  initialValue: guide.description,
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           actions: <Widget>[
