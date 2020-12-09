@@ -6,18 +6,20 @@ class Guide {
   String description;
   String createdBy;
   String username;
-
+  List<String> upVoters;
+  List<String> downVoters;
   DocumentReference reference;
 
-  Guide({
-    this.name,
-    this.description,
-    this.createdBy,
-    this.username,
-  });
+  Guide(
+      {this.name,
+      this.description,
+      this.createdBy,
+      this.username,
+      this.upVoters,
+      this.downVoters});
 
   String toString() {
-    return 'Guide: $name, $description, $createdBy, $username';
+    return 'Guide: $name, $description, $createdBy, $username, $upVoters, $downVoters';
   }
 
   Guide.fromMap(Map<String, dynamic> maps, {this.reference}) {
@@ -25,6 +27,14 @@ class Guide {
     this.description = maps['description'];
     this.createdBy = maps['createdBy'];
     this.username = maps['username'];
+
+    if (maps['upVoters'] != null) {
+      this.upVoters = maps['upVoters'].cast<String>();
+    }
+
+    if (maps['downVoters'] != null) {
+      this.downVoters = maps['downVoters'].cast<String>();
+    }
   }
 
   Map<String, dynamic> toMap() {
@@ -33,6 +43,8 @@ class Guide {
       'description': this.description,
       'createdBy': this.createdBy,
       'username': this.username,
+      'upVoters': this.upVoters,
+      'downVoters': this.downVoters,
     };
   }
 }

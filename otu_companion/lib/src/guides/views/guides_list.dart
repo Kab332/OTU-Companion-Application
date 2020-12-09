@@ -42,7 +42,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
                 ? null
                 : _selectedGuide.createdBy != user.uid
                     ? null
-                    : _editTip,
+                    : _editGuide,
           ),
           IconButton(
             icon: Icon(Icons.delete),
@@ -50,7 +50,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
                 ? null
                 : _selectedGuide.createdBy != user.uid
                     ? null
-                    : _deleteTip,
+                    : _deleteGuide,
           )
         ],
       ),
@@ -62,7 +62,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
     return Container(
         child: Column(
       children: [
-        Expanded(child: _buildTipList()),
+        Expanded(child: _buildGuideList()),
         _buildSubmit(),
       ],
     ));
@@ -76,12 +76,12 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
       child: RaisedButton(
         color: Colors.blue,
         child: Text("Submit a Guide"),
-        onPressed: _addTip,
+        onPressed: _addGuide,
       ),
     );
   }
 
-  Widget _buildTipList() {
+  Widget _buildGuideList() {
     return FutureBuilder<QuerySnapshot>(
         future: _guideModel.getAll(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -89,7 +89,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
             return ListView(
               children: snapshot.data.docs
                   .map((DocumentSnapshot document) =>
-                      _buildTip(context, document))
+                      _buildGuide(context, document))
                   .toList(),
             );
           } else {
@@ -98,8 +98,9 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
         });
   }
 
-  Widget _buildTip(BuildContext context, DocumentSnapshot tipData) {
-    final guide = Guide.fromMap(tipData.data(), reference: tipData.reference);
+  Widget _buildGuide(BuildContext context, DocumentSnapshot guideData) {
+    final guide =
+        Guide.fromMap(guideData.data(), reference: guideData.reference);
 
     return Container(
       decoration: BoxDecoration(
@@ -133,20 +134,34 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
             trailing: Row(mainAxisSize: MainAxisSize.min, children: [
               IconButton(
                 iconSize: 15,
+                color: guide.upVoters.contains(user.uid)
+                    ? Colors.orange
+                    : Colors.grey,
                 icon: Icon(Icons.arrow_upward),
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    _updateVotes("upVote", guide);
+                  });
+                },
               ),
-              Text("10"),
+              Text(guide.upVoters.length.toString()),
               IconButton(
                 iconSize: 15,
+                color: guide.downVoters.contains(user.uid)
+                    ? Colors.blue
+                    : Colors.grey,
                 icon: Icon(Icons.arrow_downward),
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    _updateVotes("downVote", guide);
+                  });
+                },
               ),
-              Text("5"),
+              Text(guide.downVoters.length.toString()),
             ])));
   }
 
-  Future<void> _addTip() async {
+  Future<void> _addGuide() async {
     var result =
         await Navigator.pushNamed(context, "/guidesForm", arguments: null);
 
@@ -155,6 +170,8 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
     if (guide != null) {
       guide.createdBy = user.uid;
       guide.username = user.displayName;
+      guide.upVoters = [];
+      guide.downVoters = [];
       setState(() {
         _guideModel.insert(guide);
       });
@@ -162,7 +179,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
     print("Adding guide $guide...");
   }
 
-  Future<void> _deleteTip() async {
+  Future<void> _deleteGuide() async {
     if (_selectedGuide != null) {
       setState(() {
         _guideModel.delete(_selectedGuide);
@@ -170,7 +187,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
     }
   }
 
-  Future<void> _editTip() async {
+  Future<void> _editGuide() async {
     if (_selectedGuide != null) {
       var result = await Navigator.pushNamed(context, "/guidesForm",
           arguments: _selectedGuide);
@@ -180,6 +197,8 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
       if (result != null) {
         newGuide.createdBy = _selectedGuide.createdBy;
         newGuide.username = _selectedGuide.username;
+        newGuide.upVoters = _selectedGuide.upVoters;
+        newGuide.downVoters = _selectedGuide.downVoters;
         newGuide.reference = _selectedGuide.reference;
         setState(() {
           _guideModel.update(newGuide);
@@ -189,7 +208,43 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
     }
   }
 
-  // Function that shows a dialog that shows quick details about the event selected, pressing dismiss or clicking away will make it disappear
+  /* Updates the passed guide's upVoters and downVoters based on the voteType
+     argument and specific conditions  */
+  Future<void> _updateVotes(String voteType, Guide guide) async {
+    // For upvotes
+    if (voteType == "upVote") {
+      // If the user has already downvoted then we switch that to an upvote
+      if (guide.downVoters.contains(user.uid)) {
+        guide.downVoters.remove(user.uid);
+        guide.upVoters.add(user.uid);
+      }
+      // If the user has already upvoted then we remove the upvote
+      else if (guide.upVoters.contains(user.uid)) {
+        guide.upVoters.remove(user.uid);
+      }
+      // If the user has not voted yet then we add an upvote
+      else {
+        guide.upVoters.add(user.uid);
+      }
+    }
+    // For downvotes, same format as above but upvotes and downvotes have swapped
+    else {
+      if (guide.upVoters.contains(user.uid)) {
+        guide.upVoters.remove(user.uid);
+        guide.downVoters.add(user.uid);
+      } else if (guide.downVoters.contains(user.uid)) {
+        guide.downVoters.remove(user.uid);
+      } else {
+        guide.downVoters.add(user.uid);
+      }
+    }
+
+    setState(() {
+      _guideModel.update(guide);
+    });
+  }
+
+  // Function that shows a dialog that shows quick details about the guide selected, pressing dismiss or clicking away will make it disappear
   void _showViewDialog(BuildContext context, Guide guide) {
     showDialog<void>(
       context: context,
@@ -221,7 +276,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
                 TextFormField(
                   enabled: false,
                   decoration: const InputDecoration(
-                    labelText: 'Event Description',
+                    labelText: 'Guide Description',
                   ),
                   initialValue: guide.description,
                 ),

@@ -22,6 +22,8 @@ class GuideModel {
     guide.reference.update({
       'name': guide.name,
       'description': guide.description,
+      'upVoters': guide.upVoters,
+      'downVoters': guide.downVoters,
     });
   }
 
