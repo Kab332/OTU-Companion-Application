@@ -6,22 +6,19 @@ import 'package:otu_companion/src/services/authentication/model/authentication_s
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class MainSideDrawer extends StatefulWidget
-{
+class MainSideDrawer extends StatefulWidget {
   MainSideDrawer({Key key}) : super(key: key);
 
   @override
   _MainSideDrawerState createState() => _MainSideDrawerState();
 }
 
-class _MainSideDrawerState extends State<MainSideDrawer>
-{
+class _MainSideDrawerState extends State<MainSideDrawer> {
   User _user;
   AuthenticationService _authenticationService = AuthenticationService();
 
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     _user = _authenticationService.getCurrentUser();
     return Drawer(
       child: Column(
@@ -57,7 +54,7 @@ class _MainSideDrawerState extends State<MainSideDrawer>
             ),
           ),
           Column(
-            children:<Widget>[
+            children: <Widget>[
               Divider(
                 thickness: 2,
               ),
@@ -69,35 +66,30 @@ class _MainSideDrawerState extends State<MainSideDrawer>
     );
   }
 
-  Widget _buildDrawerHeader(BuildContext context)
-  {
+  Widget _buildDrawerHeader(BuildContext context) {
     return DrawerHeader(
       decoration: BoxDecoration(
-        color:  Theme.of(context).primaryColor,
+        color: Theme.of(context).primaryColor,
       ),
       child: Center(
         child: Column(
           children: <Widget>[
             Column(
               children: <Widget>[
-                if(_user != null && _user.photoURL != null)...[
+                if (_user != null && _user.photoURL != null) ...[
                   CachedNetworkImage(
                     imageUrl: _user.photoURL,
-                    progressIndicatorBuilder:(context, url, downloadProgress)
-                    {
+                    progressIndicatorBuilder: (context, url, downloadProgress) {
                       return CircularProgressIndicator(
-                          value: downloadProgress.progress
-                      );
+                          value: downloadProgress.progress);
                     },
-                    errorWidget: (context, url, error)
-                    {
+                    errorWidget: (context, url, error) {
                       return CircleAvatar(
                         backgroundColor: Colors.white,
                         radius: 50,
                       );
                     },
-                    imageBuilder: (context, imageProvider)
-                    {
+                    imageBuilder: (context, imageProvider) {
                       return CircleAvatar(
                         backgroundImage: imageProvider,
                         radius: 50,
@@ -105,7 +97,7 @@ class _MainSideDrawerState extends State<MainSideDrawer>
                     },
                   ),
                 ],
-                if(_user != null && _user.photoURL == null)...[
+                if (_user != null && _user.photoURL == null) ...[
                   CircleAvatar(
                     backgroundColor: Colors.white,
                     radius: 50,
@@ -114,30 +106,24 @@ class _MainSideDrawerState extends State<MainSideDrawer>
               ],
             ),
             Flexible(
-              child:Container(
-                margin: EdgeInsets.only(top:8, bottom:5,left:10, right:10),
+              child: Container(
+                margin: EdgeInsets.only(top: 8, bottom: 5, left: 10, right: 10),
                 child: FittedBox(
                   fit: BoxFit.fitWidth,
                   child: Column(
                     children: <Widget>[
-                      if(_user != null && _user.displayName != null)...[
+                      if (_user != null && _user.displayName != null) ...[
                         Text(
                           //TODO: Add Profile Name
                           _user.displayName,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ],
-                      if( _user != null && _user.displayName == null)...[
+                      if (_user != null && _user.displayName == null) ...[
                         Text(
                           //TODO: Add Profile Name
                           "???",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ],
                     ],
@@ -151,13 +137,11 @@ class _MainSideDrawerState extends State<MainSideDrawer>
     );
   }
 
-  Widget _buildHomeTile(BuildContext context)
-  {
+  Widget _buildHomeTile(BuildContext context) {
     return ListTile(
       title: Text('Home'),
       leading: Icon(Icons.home),
-      onTap: ()
-      {
+      onTap: () {
         // Pop Side Menu
         Navigator.pop(context);
         // Pop Current Scaffold and Push Home Scaffold
@@ -166,13 +150,11 @@ class _MainSideDrawerState extends State<MainSideDrawer>
     );
   }
 
-  Widget _buildProfileTile(BuildContext context)
-  {
+  Widget _buildProfileTile(BuildContext context) {
     return ListTile(
       title: Text('Profile'),
       leading: Icon(Icons.account_box),
-      onTap: ()
-      {
+      onTap: () {
         // Pop Side Menu
         Navigator.pop(context);
         // Pop Current Scaffold and Push Home Scaffold
@@ -181,13 +163,11 @@ class _MainSideDrawerState extends State<MainSideDrawer>
     );
   }
 
-  Widget _buildLogOutTile(BuildContext context)
-  {
+  Widget _buildLogOutTile(BuildContext context) {
     return ListTile(
       title: Text('Log Out'),
       leading: Icon(Icons.exit_to_app),
-      onTap: ()
-      {
+      onTap: () {
         // Pop everything to login page
         Navigator.pushReplacementNamed(context, Routes.loginPage);
         _authenticationService.signOut();
@@ -195,13 +175,11 @@ class _MainSideDrawerState extends State<MainSideDrawer>
     );
   }
 
-  Widget _buildEventTile(BuildContext context)
-  {
+  Widget _buildEventTile(BuildContext context) {
     return ListTile(
       title: Text('Event Finder'),
       leading: Icon(Icons.event),
-      onTap: ()
-      {
+      onTap: () {
         // Pop Side Menu
         Navigator.pop(context);
         // Pop Current Scaffold and Push Event Finder Scaffold
@@ -210,13 +188,11 @@ class _MainSideDrawerState extends State<MainSideDrawer>
     );
   }
 
-  Widget _buildRoomTile(BuildContext context)
-  {
+  Widget _buildRoomTile(BuildContext context) {
     return ListTile(
       title: Text('Classroom Finder'),
       leading: Icon(Icons.room),
-      onTap: ()
-      {
+      onTap: () {
         // Pop Side Menu
         Navigator.pop(context);
         // Pop Current Scaffold and Push Room Finder Scaffold
@@ -225,25 +201,22 @@ class _MainSideDrawerState extends State<MainSideDrawer>
     );
   }
 
-  Widget _buildGuideTile(BuildContext context)
-  {
+  Widget _buildGuideTile(BuildContext context) {
     return ListTile(
       title: Text('Guides'),
       leading: Icon(Icons.menu_book),
-      onTap: ()
-      {
+      onTap: () {
         Navigator.pop(context);
+        Navigator.popAndPushNamed(context, Routes.guidesMain);
       },
     );
   }
 
-  Widget _buildChatTile(BuildContext context)
-  {
+  Widget _buildChatTile(BuildContext context) {
     return ListTile(
       title: Text('Chat'),
       leading: Icon(Icons.chat),
-      onTap: ()
-      {
+      onTap: () {
         // Pop Side Menu
         Navigator.pop(context);
         // Pop Current Scaffold and Push Chat Scaffold
@@ -252,26 +225,22 @@ class _MainSideDrawerState extends State<MainSideDrawer>
     );
   }
 
-  Widget _buildSettingsTile(BuildContext context)
-  {
+  Widget _buildSettingsTile(BuildContext context) {
     return ListTile(
       title: Text('Settings'),
       leading: Icon(Icons.settings),
       trailing: Icon(Icons.nights_stay),
-      onTap: ()
-      {
+      onTap: () {
         Navigator.popAndPushNamed(context, Routes.settingMain);
       },
     );
   }
 
-  Widget _buildGroupTile(BuildContext context)
-  {
+  Widget _buildGroupTile(BuildContext context) {
     return ListTile(
       title: Text('Groups and Events'),
       trailing: Text('Edit'),
-      onTap: ()
-      {
+      onTap: () {
         Navigator.pop(context);
       },
     );
