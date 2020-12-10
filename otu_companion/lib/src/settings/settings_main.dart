@@ -23,7 +23,7 @@ class _SettingMainState extends State<SettingMain>
       ),
       body: ListView(
         children: <Widget>[
-          _buildAppearanceTile(context),
+          //_buildAppearanceTile(context),
           //_buildNotificationTile(context),
           //_buildDataUsageTile(context),
           _buildFeedBackTile(context),
