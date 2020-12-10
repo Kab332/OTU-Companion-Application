@@ -54,7 +54,7 @@ class _ProfilePageMainState extends State<ProfilePageMain>
   Widget _buildInfoContainer(BuildContext context)
   {
     return Container(
-      height: MediaQuery.of(context).size.height*0.25,
+      height: MediaQuery.of(context).size.height*0.3,
       margin: EdgeInsets.only(top:15,bottom:5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

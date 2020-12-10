@@ -13,8 +13,8 @@ Future<void> main() async {
   final FlutterI18nDelegate flutterI18nDelegate = FlutterI18nDelegate(
   translationLoader: FileTranslationLoader(
         useCountryCode: false,
-        fallbackFile: 'en',
-        basePath: 'assets/flutter_i18n'),
+        fallbackFile: 'en.json',
+        basePath: 'res/flutter_i18n'),
   );
   await flutterI18nDelegate.load(null);
   WidgetsFlutterBinding.ensureInitialized();

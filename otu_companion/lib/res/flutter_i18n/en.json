@@ -1,0 +1,14 @@
+{
+    "eventFinderList": {
+        "buttonLabels": {
+            "joinedEvents": "Joined Test",
+            "allEvents": "All Events",
+            "calendarView": "Calendar View",
+            "listView": "List View",
+            "tableView": "Table View"
+        },
+        "form-labels": {
+    
+        }
+    }
+}

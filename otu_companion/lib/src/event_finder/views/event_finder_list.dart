@@ -5,6 +5,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:otu_companion/src/navigation_views/main_side_drawer.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'dart:async';
 
 import 'package:flutter_map/flutter_map.dart';
@@ -129,7 +130,7 @@ class _EventListWidgetState extends State<EventListWidget> {
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(0.0)),
             color: userView == true ? Colors.blue : Colors.grey[350],
-            child: Text("Joined Events"),
+            child: Text(FlutterI18n.translate(context, "eventFinderList.buttonLabels.joinedEvents")),
             onPressed: () {
               setState(() {
                 userView = true;
