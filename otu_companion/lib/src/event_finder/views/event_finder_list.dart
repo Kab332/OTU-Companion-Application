@@ -49,14 +49,11 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   User user;
 
-  Locale tempLocale = Locale("en");
-
   @override
   void initState() {
     super.initState();
     tz.initializeTimeZones();
     _eventNotifications.init();
-
     _getViews();
   }
 
@@ -79,14 +76,14 @@ class _EventListWidgetState extends State<EventListWidget> {
                 IconButton(
                   icon: Icon(Icons.taxi_alert),
                   onPressed: () async {
-                    if (tempLocale.toString() == "en") {
-                      print('Switching to french');
-                      tempLocale = Locale('fr');
-                      await FlutterI18n.refresh(context, tempLocale);
+                    var currentLocale =
+                        FlutterI18n.currentLocale(context).toString();
+                    if (currentLocale == "en" || currentLocale == "en_US") {
+                      print('Switching to French');
+                      await FlutterI18n.refresh(context, Locale("fr"));
                     } else {
-                      print('Switching to english');
-                      tempLocale = Locale('en');
-                      await FlutterI18n.refresh(context, tempLocale);
+                      print('Switching to English');
+                      await FlutterI18n.refresh(context, Locale("en"));
                     }
 
                     setState(() {});
@@ -159,7 +156,8 @@ class _EventListWidgetState extends State<EventListWidget> {
                 if (this.views != null &&
                     this.views[0].viewType == "Calendar") {
                   _calendarController.setSelectedDay(_currentDate);
-                  _showCustomSnackBar("Calendar has been refreshed.");
+                  _showCustomSnackBar(FlutterI18n.translate(context,
+                      "eventFinderList.snackBarLabels.refreshCalendar"));
                 }
 
                 _calendarEvents.clear();
@@ -184,7 +182,8 @@ class _EventListWidgetState extends State<EventListWidget> {
                 if (this.views != null &&
                     this.views[0].viewType == "Calendar") {
                   _calendarController.setSelectedDay(_currentDate);
-                  _showCustomSnackBar("Calendar has been refreshed.");
+                  _showCustomSnackBar(FlutterI18n.translate(context,
+                      "eventFinderList.snackBarLabels.refreshCalendar"));
                 }
 
                 _calendarEvents.clear();
@@ -352,26 +351,50 @@ class _EventListWidgetState extends State<EventListWidget> {
                     columns: <DataColumn>[
                       DataColumn(
                         label: userView == true
-                            ? Text('Leave Event?')
-                            : Text('Join Event?'),
+                            ? Text(
+                                FlutterI18n.translate(context,
+                                    "eventFinderList.tableLabels.leaveEvent"),
+                              )
+                            : Text(
+                                FlutterI18n.translate(context,
+                                    "eventFinderList.tableLabels.joinEvent"),
+                              ),
                       ),
                       DataColumn(
-                        label: Text('View Details'),
+                        label: Text(
+                          FlutterI18n.translate(context,
+                              "eventFinderList.tableLabels.viewDetails"),
+                        ),
                       ),
                       DataColumn(
-                        label: Text('Event Name'),
+                        label: Text(
+                          FlutterI18n.translate(
+                              context, "eventFinderList.tableLabels.name"),
+                        ),
                       ),
                       DataColumn(
-                        label: Text('Description'),
+                        label: Text(
+                          FlutterI18n.translate(context,
+                              "eventFinderList.tableLabels.description"),
+                        ),
                       ),
                       DataColumn(
-                        label: Text('Start Date'),
+                        label: Text(
+                          FlutterI18n.translate(
+                              context, "eventFinderList.tableLabels.startDate"),
+                        ),
                       ),
                       DataColumn(
-                        label: Text('End Date'),
+                        label: Text(
+                          FlutterI18n.translate(
+                              context, "eventFinderList.tableLabels.endDate"),
+                        ),
                       ),
                       DataColumn(
-                        label: Text('Location'),
+                        label: Text(
+                          FlutterI18n.translate(
+                              context, "eventFinderList.tableLabels.location"),
+                        ),
                       ),
                     ],
                     rows: snapshot.data.docs
@@ -668,14 +691,16 @@ class _EventListWidgetState extends State<EventListWidget> {
       event.participants = [user.uid];
       setState(() {
         _eventModel.insert(event);
-        _showCustomSnackBar("Event has been added.");
+        _showCustomSnackBar(FlutterI18n.translate(
+            context, "eventFinderList.snackBarLabels.eventAdded"));
 
         // Refreshing calendar on add
         if (this.views[0].viewType == "Calendar") {
           _selectedDate = null;
           _calendarController.setSelectedDay(_currentDate);
           _calendarEvents.clear();
-          _showCustomSnackBar("Calendar has been refreshed.");
+          _showCustomSnackBar(FlutterI18n.translate(
+              context, "eventFinderList.snackBarLabels.refreshCalendar"));
         }
       });
 
@@ -689,7 +714,8 @@ class _EventListWidgetState extends State<EventListWidget> {
     if (_selectedEvent != null) {
       setState(() {
         _eventModel.delete(_selectedEvent);
-        _showCustomSnackBar("Event has been deleted.");
+        _showCustomSnackBar(FlutterI18n.translate(
+            context, "eventFinderList.snackBarLabels.eventDeleted"));
         if (this.views[0].viewType == "Calendar") {
           _calendarEvents.remove(_selectedEvent);
         }
@@ -698,7 +724,11 @@ class _EventListWidgetState extends State<EventListWidget> {
       });
     } else {
       // If an event wasn't selected (just in case something goes wrong)
-      _showCustomDialog("Error!", "Please select an event first!");
+      _showCustomDialog(
+          FlutterI18n.translate(
+              context, "eventFinderList.dialogLabels.selectTitle"),
+          FlutterI18n.translate(
+              context, "eventFinderList.dialogLabels.selectDescription"));
     }
   }
 
@@ -717,7 +747,8 @@ class _EventListWidgetState extends State<EventListWidget> {
         newEvent.reference = _selectedEvent.reference;
         setState(() {
           _eventModel.update(newEvent);
-          _showCustomSnackBar("Event has been edited.");
+          _showCustomSnackBar(FlutterI18n.translate(
+              context, "eventFinderList.snackBarLabels.eventEdited"));
 
           // If we're in calendar view
           if (this.views[0].viewType == "Calendar") {
@@ -738,7 +769,11 @@ class _EventListWidgetState extends State<EventListWidget> {
       }
       // If an event wasn't selected (just in case something goes wrong)
     } else {
-      _showCustomDialog("Error!", "Please select an event first!");
+      _showCustomDialog(
+          FlutterI18n.translate(
+              context, "eventFinderList.dialogLabels.selectTitle"),
+          FlutterI18n.translate(
+              context, "eventFinderList.dialogLabels.selectDescription"));
     }
   }
 
@@ -763,6 +798,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   // Function that shows a dialog that shows quick details about the event selected, pressing dismiss or clicking away will make it disappear
   void _showViewDialog(BuildContext context, Event event) {
     _centre = LatLng(event.geoPoint.latitude, event.geoPoint.longitude);
+
     showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -776,16 +812,18 @@ class _EventListWidgetState extends State<EventListWidget> {
                 // Event name form field
                 TextFormField(
                   enabled: false,
-                  decoration: const InputDecoration(
-                    labelText: 'Event Name',
+                  decoration: InputDecoration(
+                    labelText: FlutterI18n.translate(
+                        context, "eventFinderList.formLabels.name"),
                   ),
                   initialValue: event.name,
                 ),
                 // Event description form field
                 TextFormField(
                   enabled: false,
-                  decoration: const InputDecoration(
-                    labelText: 'Event Description',
+                  decoration: InputDecoration(
+                    labelText: FlutterI18n.translate(
+                        context, "eventFinderList.formLabels.description"),
                   ),
                   maxLines: 5,
                   initialValue: event.description,
@@ -793,23 +831,26 @@ class _EventListWidgetState extends State<EventListWidget> {
                 // Start date form field
                 TextFormField(
                   enabled: false,
-                  decoration: const InputDecoration(
-                    labelText: 'Start Date and Time',
+                  decoration: InputDecoration(
+                    labelText: FlutterI18n.translate(
+                        context, "eventFinderList.formLabels.startDate"),
                   ),
                   initialValue: event.startDateTime.toString(),
                 ),
                 // End date form field
                 TextFormField(
                   enabled: false,
-                  decoration: const InputDecoration(
-                    labelText: 'End Date and Time',
+                  decoration: InputDecoration(
+                    labelText: FlutterI18n.translate(
+                        context, "eventFinderList.formLabels.endDate"),
                   ),
                   initialValue: event.endDateTime.toString(),
                 ),
                 TextFormField(
                   enabled: false,
-                  decoration: const InputDecoration(
-                    labelText: 'Location',
+                  decoration: InputDecoration(
+                    labelText: FlutterI18n.translate(
+                        context, "eventFinderList.formLabels.location"),
                   ),
                   initialValue: event.location,
                 ),
@@ -936,7 +977,8 @@ class _EventListWidgetState extends State<EventListWidget> {
             content: Text(content),
             actions: <Widget>[
               FlatButton(
-                child: Text('Dismiss'),
+                child: Text(FlutterI18n.translate(
+                    context, "eventFinderList.dialogLabels.dismissButton")),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -950,7 +992,8 @@ class _EventListWidgetState extends State<EventListWidget> {
     var snackbar = SnackBar(
         content: Text(content),
         action: SnackBarAction(
-            label: "Dismiss",
+            label: FlutterI18n.translate(
+                context, "eventFinderList.snackBarLabels.dismissButton"),
             onPressed: () {
               Scaffold.of(context).hideCurrentSnackBar();
             }));
@@ -959,7 +1002,11 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   void _manageEvent(Event event) {
     if (user.uid == event.createdBy) {
-      _showCustomDialog("Your Event", "You created this event.");
+      _showCustomDialog(
+          FlutterI18n.translate(
+              context, "eventFinderList.dialogLabels.yourEventTitle"),
+          FlutterI18n.translate(
+              context, "eventFinderList.dialogLabels.yourEventDescription"));
     } else if (userView == true) {
       print("Remove from list");
       setState(() {
@@ -969,17 +1016,23 @@ class _EventListWidgetState extends State<EventListWidget> {
 
         event.participants.remove(user.uid);
         _eventModel.update(event);
-        _showCustomSnackBar("You have left the event.");
+        _showCustomSnackBar(FlutterI18n.translate(
+            context, "eventFinderList.snackBarLabels.eventLeft"));
       });
     } else if (event.participants.contains(user.uid)) {
-      _showCustomDialog("Joined Event", "You are in this event.");
+      _showCustomDialog(
+          FlutterI18n.translate(
+              context, "eventFinderList.dialogLabels.joinedEventTitle"),
+          FlutterI18n.translate(
+              context, "eventFinderList.dialogLabels.joinedEventDescription"));
     } else {
       print("Add to list");
       print(event);
       setState(() {
         event.participants.add(user.uid);
         _eventModel.update(event);
-        _showCustomSnackBar("You have joined the event.");
+        _showCustomSnackBar(FlutterI18n.translate(
+            context, "eventFinderList.snackBarLabels.eventJoined"));
         sendNotification(event);
       });
     }

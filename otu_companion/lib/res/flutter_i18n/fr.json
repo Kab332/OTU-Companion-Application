@@ -7,8 +7,68 @@
             "listView": "Liste",
             "tableView": "Table"
         },
-        "form-labels": {
-    
+        "formLabels": {
+            "name": "Nom de l'événement",
+            "description": "Description de l'évenement",
+            "startDate": "Date et heure de début",
+            "endDate": "Date et heure de fin",
+            "location": "Emplacement"
+        },
+        "tableLabels": {
+            "joinEvent": "Rejoindre l'événement?",
+            "leaveEvent": "Quitter l'événement?",
+            "viewDetails": "Voir les détails",
+            "name": "Nom de l'événement",
+            "description": "La description",
+            "startDate": "Date de début",
+            "endDate": "Date de fin",
+            "location": "Emplacement"
+        },
+        "snackBarLabels": {
+            "refreshCalendar": "Le calendrier a été actualisé.",
+            "eventAdded": "L'événement a été ajouté.",
+            "eventDeleted": "L'événement a été supprimé.",
+            "eventEdited": "L'événement a été modifié.",
+            "eventLeft": "Vous avez quitté l'événement.",
+            "eventJoined": "Vous avez rejoint l'événement.",
+            "dismissButton": "Rejeter"
+        },
+        "dialogLabels": {
+            "selectTitle": "Erreur!",
+            "selectDescription": "Veuillez d'abord sélectionner un événement!",
+            "yourEventTitle": "Votre événement",
+            "yourEventDescription": "Vous avez créé cet événement.",
+            "joinedEventTitle": "Événement rejoint",
+            "joinedEventDescription": "Vous êtes dans cet événement.",
+            "dismissButton": "Rejeter"
+        }
+    },
+    "eventForm": {
+        "formLabels": {
+            "name": "Nom de l'événement",
+            "description": "Description de l'évenement",
+            "startDate": "Date de début",
+            "startTime": "Heure de début",
+            "endDate": "Date de fin",
+            "endTime": "Heure de fin",
+            "location": "Emplacement",
+            "selectButton": "Sélectionner",
+            "locationButton": "Vérifier l'emplacement"
+        },
+        "errorLabels": {
+            "emptyName": "Erreur: Veuillez saisir le nom de l'événement!",
+            "nameLength": "Erreur: La longueur maximale du nom est de 12 caractères",
+            "emptyDescription": "Erreur: Veuillez saisir la description de l'événement!",
+            "emptyLocation": "Erreur: Veuillez saisir le lieu de l'événement!",
+            "checkLocation": "Erreur: Veuillez cliquer sur \"Vérifier l'emplacement\" pour vérifier la validité!",
+            "errorTitle": "Erreur!",
+            "errorButton": "Rejeter"
+        }
+    },
+    "eventStats": {
+        "chartLabels": {
+            "domainLabel": "Noms d'événements",
+            "measureLabel": "Nombre de participants"
         }
     }
 }

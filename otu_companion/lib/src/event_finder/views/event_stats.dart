@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:charts_flutter/flutter.dart' as charts;
 
+import 'package:flutter_i18n/flutter_i18n.dart';
+
 import '../model/event_model.dart';
 import '../model/event.dart';
 
@@ -47,9 +49,13 @@ class _EventStatsState extends State<EventStats> {
                 barGroupingType: charts.BarGroupingType.grouped,
                 vertical: false,
                 behaviors: [
-                  new charts.ChartTitle("Event Names",
+                  new charts.ChartTitle(
+                      FlutterI18n.translate(
+                          context, "eventStats.chartLabels.domainLabel"),
                       behaviorPosition: charts.BehaviorPosition.start),
-                  new charts.ChartTitle("Number of participants",
+                  new charts.ChartTitle(
+                      FlutterI18n.translate(
+                          context, "eventStats.chartLabels.measureLabel"),
                       behaviorPosition: charts.BehaviorPosition.bottom)
                 ],
               ),
@@ -64,7 +70,7 @@ class _EventStatsState extends State<EventStats> {
     if (events != null) {
       return [
         new charts.Series<Event, String>(
-          id: "Event # of Participants",
+          id: "# of Participants",
           domainFn: (Event event, _) => event.name,
           measureFn: (Event event, _) => event.participants.length,
           data: events,

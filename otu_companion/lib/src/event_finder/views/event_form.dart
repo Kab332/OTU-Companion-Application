@@ -7,6 +7,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'dart:async';
 
 import '../model/event.dart';
@@ -59,10 +60,8 @@ class _EventFormPageState extends State<EventFormPage> {
     if (selectedEvent != null) {
       _locationController =
           new TextEditingController(text: selectedEvent.location);
-      // getPosition(false);
     } else {
       _locationController = new TextEditingController();
-      // getPosition(true);
     }
 
     getPosition(false);
@@ -178,7 +177,10 @@ class _EventFormPageState extends State<EventFormPage> {
 
     return TextFormField(
       decoration: InputDecoration(
-        labelText: type,
+        labelText: type == "Event Name"
+            ? FlutterI18n.translate(context, "eventForm.formLabels.name")
+            : FlutterI18n.translate(
+                context, "eventForm.formLabels.description"),
       ),
       autovalidateMode: AutovalidateMode.always,
       initialValue: selectedEvent != null ? typeVal : '',
@@ -186,9 +188,16 @@ class _EventFormPageState extends State<EventFormPage> {
       // Validation to check if empty or not 9 numbers
       validator: (String value) {
         if (value.isEmpty) {
-          return 'Error: Please enter ' + type + '!';
+          // return 'Error: Please enter ' + type + '!';
+          return type == "Event Name"
+              ? FlutterI18n.translate(
+                  context, "eventForm.errorLabels.emptyName")
+              : FlutterI18n.translate(
+                  context, "eventForm.errorLabels.emptyDescription");
+          ;
         } else if (type == "Event Name" && value.length > 12) {
-          return 'Error: Max name length is 12 characters';
+          return FlutterI18n.translate(
+              context, "eventForm.errorLabels.nameLength");
         }
 
         return null;
@@ -235,7 +244,13 @@ class _EventFormPageState extends State<EventFormPage> {
       child: Row(
         children: [
           Text(
-            type + ": ",
+            type == "Start Date"
+                ? FlutterI18n.translate(
+                        context, "eventForm.formLabels.startDate") +
+                    ": "
+                : FlutterI18n.translate(
+                        context, "eventForm.formLabels.endDate") +
+                    ": ",
             style: TextStyle(color: Colors.grey[700], fontSize: 16.0),
           ),
           Text(_date.day.toString() +
@@ -244,7 +259,8 @@ class _EventFormPageState extends State<EventFormPage> {
               "/" +
               _date.year.toString()),
           FlatButton(
-            child: Text("Select"),
+            child: Text(FlutterI18n.translate(
+                context, "eventForm.formLabels.selectButton")),
             onPressed: () {
               showDatePicker(
                       context: context,
@@ -306,12 +322,18 @@ class _EventFormPageState extends State<EventFormPage> {
     return Container(
       child: Row(children: [
         Text(
-          type + ": ",
+          type == "Start Time"
+              ? FlutterI18n.translate(
+                      context, "eventForm.formLabels.startTime") +
+                  ": "
+              : FlutterI18n.translate(context, "eventForm.formLabels.endTime") +
+                  ": ",
           style: TextStyle(color: Colors.grey[700], fontSize: 16.0),
         ),
         Text(_date.hour.toString() + ":" + minuteToString(_date.minute)),
         FlatButton(
-          child: Text("Select"),
+          child: Text(FlutterI18n.translate(
+              context, "eventForm.formLabels.selectButton")),
           onPressed: () {
             showTimePicker(
               context: context,
@@ -346,16 +368,19 @@ class _EventFormPageState extends State<EventFormPage> {
   Widget _buildLocationFormField() {
     return TextFormField(
       decoration: InputDecoration(
-        labelText: 'Location',
+        labelText:
+            FlutterI18n.translate(context, "eventForm.formLabels.location"),
       ),
       autovalidateMode: AutovalidateMode.always,
       // initialValue: selectedEvent != null ? selectedEvent.location : '',
       // Validation to check if empty or not 9 numbers
       validator: (String value) {
         if (value.isEmpty) {
-          return 'Error: Please enter the event location!';
+          return FlutterI18n.translate(
+              context, "eventForm.errorLabels.emptyLocation");
         } else if (locationException == true) {
-          return 'Error: Please click \"Check location\" to check validity!';
+          return FlutterI18n.translate(
+              context, "eventForm.errorLabels.checkLocation");
         }
         return null;
       },
@@ -363,20 +388,13 @@ class _EventFormPageState extends State<EventFormPage> {
         _location = newValue;
       },
       controller: _locationController,
-      /*onTap: () async {
-        // then get the Prediction selected
-        const kGoogleApiKey = "API_KEY";
-        maps.Prediction p = await places.PlacesAutocomplete.show(
-          context: context, apiKey: kGoogleApiKey,
-        );
-        displayPrediction(p);
-      },*/
     );
   }
 
   Widget _buildLocationFormButton() {
     return RaisedButton(
-      child: Text("Check location"),
+      child: Text(FlutterI18n.translate(
+          context, "eventForm.formLabels.locationButton")),
       onPressed: () {
         if (_location != '') {
           getPosition(false);
@@ -529,11 +547,13 @@ class _EventFormPageState extends State<EventFormPage> {
         barrierDismissible: true,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Error!'),
+            title: Text(FlutterI18n.translate(
+                context, "eventForm.errorLabels.errorTitle")),
             content: Text(exception.toString()),
             actions: <Widget>[
               FlatButton(
-                child: Text('Dismiss'),
+                child: Text(FlutterI18n.translate(
+                    context, "eventForm.errorLabels.errorButton")),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },

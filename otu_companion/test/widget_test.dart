@@ -7,13 +7,23 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_i18n/flutter_i18n_delegate.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:otu_companion/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+    final FlutterI18nDelegate flutterI18nDelegate = FlutterI18nDelegate(
+      translationLoader: FileTranslationLoader(
+          useCountryCode: false,
+          fallbackFile: 'en',
+          basePath: 'lib/res/flutter_i18n'),
+    );
+    await flutterI18nDelegate.load(null);
+    runApp(MyApp(flutterI18nDelegate));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

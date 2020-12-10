@@ -7,8 +7,68 @@
             "listView": "List",
             "tableView": "Table"
         },
-        "form-labels": {
-    
+        "formLabels": {
+            "name": "Event Name",
+            "description": "Event Description",
+            "startDate": "Start Date and Time",
+            "endDate": "End Date and Time",
+            "location": "Location"
+        },
+        "tableLabels": {
+            "joinEvent": "Join Event?",
+            "leaveEvent": "Leave Event?",
+            "viewDetails": "View Details",
+            "name": "Event Name",
+            "description": "Description",
+            "startDate": "Start Date",
+            "endDate": "End Date",
+            "location": "Location"
+        },
+        "snackBarLabels": {
+            "refreshCalendar": "Calendar has been refreshed.",
+            "eventAdded": "Event has been added.",
+            "eventDeleted": "Event has been deleted.",
+            "eventEdited": "Event has been edited.",
+            "eventLeft": "You have left the event.",
+            "eventJoined": "You have joined the event.",
+            "dismissButton": "Dismiss"
+        },
+        "dialogLabels": {
+            "selectTitle": "Error!",
+            "selectDescription": "Please select an event first!",
+            "yourEventTitle": "Your Event",
+            "yourEventDescription": "You created this event.",
+            "joinedEventTitle": "Joined Event",
+            "joinedEventDescription": "You are in this event.",
+            "dismissButton": "Dismiss"
+        }
+    },
+    "eventForm": {
+        "formLabels": {
+            "name": "Event Name",
+            "description": "Event Description",
+            "startDate": "Start Date",
+            "startTime": "Start Time",
+            "endDate": "End Date",
+            "endTime": "End Time",
+            "location": "Location",
+            "selectButton": "Select",
+            "locationButton": "Check Location"
+        }, 
+        "errorLabels": {
+            "emptyName": "Error: Please enter the event name!",
+            "nameLength": "Error: Max name length is 12 characters",
+            "emptyDescription": "Error: Please enter the event description!",
+            "emptyLocation": "Error: Please enter the event location!",
+            "checkLocation": "Error: Please click \"Check location\" to check validity!",
+            "errorTitle": "Error!",
+            "errorButton": "Dismiss"
+        }
+    },
+    "eventStats": {
+        "chartLabels": {
+            "domainLabel": "Event Names",
+            "measureLabel": "Number of participants"
         }
     }
 }
