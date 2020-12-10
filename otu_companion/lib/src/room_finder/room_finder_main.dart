@@ -49,10 +49,11 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
 
   @override
   void initState() {
+    /*
     selectedEndTime = selectedEndTime.replacing(
       hour: selectedEndTime.hour + 1,
     );
-
+     */
     myRoomsFuture = _getRooms();
     myBuildingsFuture = _getBuildings();
 
