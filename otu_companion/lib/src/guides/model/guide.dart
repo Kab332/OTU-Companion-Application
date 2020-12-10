@@ -22,6 +22,7 @@ class Guide {
     return 'Guide: $name, $description, $createdBy, $username, $upVoters, $downVoters';
   }
 
+  // Entity from map function
   Guide.fromMap(Map<String, dynamic> maps, {this.reference}) {
     this.name = maps['name'];
     this.description = maps['description'];
@@ -37,6 +38,7 @@ class Guide {
     }
   }
 
+  // Entity to map function
   Map<String, dynamic> toMap() {
     return {
       'name': this.name,

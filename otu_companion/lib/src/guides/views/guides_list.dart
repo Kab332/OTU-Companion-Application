@@ -87,6 +87,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
     );
   }
 
+  // Getting all objects from guides collection and showing them in a list
   Widget _buildGuideList() {
     return FutureBuilder<QuerySnapshot>(
         future: _guideModel.getAll(),
@@ -105,11 +106,8 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
                 child: Center(
                   child: Text(
                     FlutterI18n.translate(
-                      context, "guidesList.messages.noGuides"
-                    ),
-                    style: TextStyle(
-                      fontSize: 16.0
-                    ),
+                        context, "guidesList.messages.noGuides"),
+                    style: TextStyle(fontSize: 16.0),
                   ),
                 ),
               );
@@ -120,6 +118,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
         });
   }
 
+  // This function builds each guide
   Widget _buildGuide(BuildContext context, DocumentSnapshot guideData) {
     final guide =
         Guide.fromMap(guideData.data(), reference: guideData.reference);

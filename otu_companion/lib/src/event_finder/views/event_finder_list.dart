@@ -56,7 +56,7 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // authenticate and get current user 
+    // authenticate and get current user
     user = _authenticationService.getCurrentUser();
 
     return Scaffold(
@@ -227,7 +227,7 @@ class _EventListWidgetState extends State<EventListWidget> {
             child: Text(FlutterI18n.translate(
                 context, "eventFinderList.buttonLabels.listView")),
             onPressed: () {
-              // set view to list view and clear variables, 
+              // set view to list view and clear variables,
               setState(() {
                 this.views[0].viewType = "List";
                 _selectedEvent = null;
@@ -309,11 +309,8 @@ class _EventListWidgetState extends State<EventListWidget> {
                 child: Center(
                   child: Text(
                     FlutterI18n.translate(
-                      context, "eventFinderList.messages.noEvents"
-                    ),
-                    style: TextStyle(
-                      fontSize: 16.0
-                    ),
+                        context, "eventFinderList.messages.noEvents"),
+                    style: TextStyle(fontSize: 16.0),
                   ),
                 ),
               );
@@ -374,8 +371,8 @@ class _EventListWidgetState extends State<EventListWidget> {
                         ),
                         DataColumn(
                           label: Text(
-                            FlutterI18n.translate(
-                                context, "eventFinderList.tableLabels.startDate"),
+                            FlutterI18n.translate(context,
+                                "eventFinderList.tableLabels.startDate"),
                           ),
                         ),
                         DataColumn(
@@ -386,8 +383,8 @@ class _EventListWidgetState extends State<EventListWidget> {
                         ),
                         DataColumn(
                           label: Text(
-                            FlutterI18n.translate(
-                                context, "eventFinderList.tableLabels.location"),
+                            FlutterI18n.translate(context,
+                                "eventFinderList.tableLabels.location"),
                           ),
                         ),
                       ],
@@ -468,7 +465,8 @@ class _EventListWidgetState extends State<EventListWidget> {
                                   DataCell(
                                     Container(
                                         width: 200.0,
-                                        child: Text(Event.fromMap(document.data(),
+                                        child: Text(Event.fromMap(
+                                                document.data(),
                                                 reference: document.reference)
                                             .description)),
                                     onTap: () {
@@ -527,11 +525,8 @@ class _EventListWidgetState extends State<EventListWidget> {
                 child: Center(
                   child: Text(
                     FlutterI18n.translate(
-                      context, "eventFinderList.messages.noEvents"
-                    ),
-                    style: TextStyle(
-                      fontSize: 16.0
-                    ),
+                        context, "eventFinderList.messages.noEvents"),
+                    style: TextStyle(fontSize: 16.0),
                   ),
                 ),
               );
@@ -1070,7 +1065,7 @@ class _EventListWidgetState extends State<EventListWidget> {
     }
   }
 
-  // void function to send a notification now or later, depending on the start date 
+  // void function to send a notification now or later, depending on the start date
   void sendNotification(Event event) {
     var secondsDiff = (event.startDateTime.millisecondsSinceEpoch -
             tz.TZDateTime.now(tz.local).millisecondsSinceEpoch) ~/

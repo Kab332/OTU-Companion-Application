@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'guide.dart';
 
+// Guide version of the event model
 // Model that represents the CRUD functions, used lecture 07a_Cloud_Storage for assistance
 class GuideModel {
   // Future function of that returns a QuerySnapshot to get all Guides from the database

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import '../model/guide.dart';
 
+// This is basically a simpler version of the event form
 class GuideFormPage extends StatefulWidget {
   GuideFormPage({Key key, this.title, this.guide}) : super(key: key);
 
@@ -78,6 +79,7 @@ class _GuideFormPageState extends State<GuideFormPage> {
         ));
   }
 
+  // A function for building the name and description text forms, works similar to the one in event form
   Widget _buildTextFormField(String type) {
     String typeVal = "";
 
@@ -97,10 +99,8 @@ class _GuideFormPageState extends State<GuideFormPage> {
       autovalidateMode: AutovalidateMode.always,
       initialValue: _selectedGuide != null ? typeVal : '',
       maxLines: type == "Description" ? 3 : 1,
-      // Validation to check if empty or not 9 numbers
       validator: (String value) {
         if (value.isEmpty) {
-          // return 'Error: Please enter ' + type + '!';
           return type == "Guide Name"
               ? FlutterI18n.translate(
                   context, "guidesForm.errorLabels.emptyName")

@@ -43,6 +43,7 @@ class _HomePageMainState extends State<HomePageMain> {
     );
   }
 
+  // This function gets the events the user is in and uses it to build a list
   Widget _buildEventList(BuildContext context) {
     EventModel _eventModel = EventModel();
     return FutureBuilder<QuerySnapshot>(
@@ -62,11 +63,8 @@ class _HomePageMainState extends State<HomePageMain> {
                 child: Center(
                   child: Text(
                     FlutterI18n.translate(
-                      context, "homePageMain.messages.noEvents"
-                    ),
-                    style: TextStyle(
-                      fontSize: 16.0
-                    ),
+                        context, "homePageMain.messages.noEvents"),
+                    style: TextStyle(fontSize: 16.0),
                   ),
                 ),
               );
@@ -77,6 +75,7 @@ class _HomePageMainState extends State<HomePageMain> {
         });
   }
 
+  // Building the event tile
   Widget _buildEventTile(BuildContext context, DocumentSnapshot eventData) {
     final event =
         Event.fromMap(eventData.data(), reference: eventData.reference);
@@ -88,6 +87,7 @@ class _HomePageMainState extends State<HomePageMain> {
         children: <Widget>[
           ListTile(
               leading: Container(
+                // This is a place holder Circle Avatar that just has the first letter of the event name
                 child: CircleAvatar(
                   child: Text(event.name[0],
                       style: TextStyle(color: Colors.white)),
@@ -95,13 +95,16 @@ class _HomePageMainState extends State<HomePageMain> {
                   radius: 35,
                 ),
               ),
+              // Displaying event name
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(event.name),
                 ],
               ),
+              // Displaying event start date time
               subtitle: Text(event.startDateTime.toString())),
+          // Displaying event description
           Container(
             padding: EdgeInsets.only(top: 8, bottom: 8, left: 20, right: 20),
             child: Align(
@@ -114,6 +117,7 @@ class _HomePageMainState extends State<HomePageMain> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(18),
               ),
+              // Displaying the location in a map
               child: FlutterMap(
                 options: MapOptions(
                   minZoom: 5.0,
