@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:otu_companion/src/navigation_views/main_side_drawer.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -11,6 +11,7 @@ import 'package:latlong/latlong.dart';
 
 import 'package:geocoding/geocoding.dart';
 
+import 'package:otu_companion/src/navigation_views/main_side_drawer.dart';
 import '../event_finder/model/event_model.dart';
 import '../event_finder/model/event.dart';
 
@@ -48,12 +49,28 @@ class _HomePageMainState extends State<HomePageMain> {
         future: _eventModel.getUserEvents(user.uid),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
-            return ListView(
-              children: snapshot.data.docs
-                  .map((DocumentSnapshot document) =>
-                      _buildEventTile(context, document))
-                  .toList(),
-            );
+            if (snapshot.data.docs.isNotEmpty) {
+              return ListView(
+                children: snapshot.data.docs
+                    .map((DocumentSnapshot document) =>
+                        _buildEventTile(context, document))
+                    .toList(),
+              );
+            } else {
+              return Container(
+                padding: const EdgeInsets.all(16.0),
+                child: Center(
+                  child: Text(
+                    FlutterI18n.translate(
+                      context, "homePageMain.messages.noEvents"
+                    ),
+                    style: TextStyle(
+                      fontSize: 16.0
+                    ),
+                  ),
+                ),
+              );
+            }
           } else {
             return CircularProgressIndicator();
           }
