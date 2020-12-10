@@ -846,6 +846,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                   ),
                   initialValue: event.endDateTime.toString(),
                 ),
+                // Location form field
                 TextFormField(
                   enabled: false,
                   decoration: InputDecoration(
@@ -854,13 +855,13 @@ class _EventListWidgetState extends State<EventListWidget> {
                   ),
                   initialValue: event.location,
                 ),
+                // Showing map based on location
                 Expanded(
                   child: FlutterMap(
                     options: MapOptions(
                       minZoom: 5.0,
                       zoom: 10.0,
                       maxZoom: 20.0,
-                      //center: selectedEvent.location != null ? selectedEvent.location : _centre,
                       center: _centre,
                     ),
                     layers: [
@@ -916,7 +917,7 @@ class _EventListWidgetState extends State<EventListWidget> {
     );
   }
 
-  // function to assess which current view it is and displays that user to the user
+  // Function to assess which current view it is and displays that user to the user
   Widget _buildViewType() {
     if (this.views != null) {
       switch (this.views[0].viewType) {
@@ -940,7 +941,7 @@ class _EventListWidgetState extends State<EventListWidget> {
     return null;
   }
 
-  // utility function to map the starting event date and time to the list of event names for that day
+  // Utility function to map the starting event date and time to the list of event names for that day
   Map<DateTime, List<dynamic>> getDateEventMap(AsyncSnapshot snapshot) {
     Map<DateTime, List<dynamic>> eventDateMap = {};
     for (int i = 0; i < snapshot.data.docs.length; i++) {
@@ -958,6 +959,8 @@ class _EventListWidgetState extends State<EventListWidget> {
     return eventDateMap;
   }
 
+  /* This function navigates to event stats page and passes an argument based on
+     whether or not the app is in user view */
   void _checkStats() {
     if (userView == true) {
       Navigator.pushNamed(context, "/eventStats", arguments: user.uid);
@@ -988,6 +991,7 @@ class _EventListWidgetState extends State<EventListWidget> {
         });
   }
 
+  // This creates a custom snackbar with its content based on the argument
   void _showCustomSnackBar(String content) {
     var snackbar = SnackBar(
         content: Text(content),
@@ -1000,6 +1004,9 @@ class _EventListWidgetState extends State<EventListWidget> {
     Scaffold.of(context).showSnackBar(snackbar);
   }
 
+  /* This function handles the event join and leave button presses inside the
+     table/calendar/list view as well as the presses to the single person and 
+     2 people buttons. */
   void _manageEvent(Event event) {
     if (user.uid == event.createdBy) {
       _showCustomDialog(
@@ -1058,12 +1065,11 @@ class _EventListWidgetState extends State<EventListWidget> {
     }
   }
 
+  // A function to compare dates based on only day, month, and year
   bool compareDates(DateTime date1, DateTime date2) {
     if (date1 == null || date2 == null) {
       return false;
-    }
-
-    if (date1.day == date2.day &&
+    } else if (date1.day == date2.day &&
         date1.month == date2.month &&
         date1.year == date2.year) {
       return true;
