@@ -31,7 +31,7 @@ class EventListWidget extends StatefulWidget {
 class _EventListWidgetState extends State<EventListWidget> {
   // List<Event> events;
   List<View> views;
-  final _eventModel = EventModel();
+  EventModel _eventModel = EventModel();
   final _viewModel = ViewModel();
   AuthenticationService _authenticationService = AuthenticationService();
   CalendarController _calendarController = CalendarController();
@@ -73,22 +73,6 @@ class _EventListWidgetState extends State<EventListWidget> {
                   icon: Icon(Icons.insert_chart, color: Colors.white),
                   onPressed: _checkStats,
                 ),
-                IconButton(
-                  icon: Icon(Icons.taxi_alert),
-                  onPressed: () async {
-                    var currentLocale =
-                        FlutterI18n.currentLocale(context).toString();
-                    if (currentLocale == "en" || currentLocale == "en_US") {
-                      print('Switching to French');
-                      await FlutterI18n.refresh(context, Locale("fr"));
-                    } else {
-                      print('Switching to English');
-                      await FlutterI18n.refresh(context, Locale("en"));
-                    }
-
-                    setState(() {});
-                  },
-                )
               ]
             : <Widget>[
                 // Add an event
@@ -137,34 +121,40 @@ class _EventListWidgetState extends State<EventListWidget> {
     );
   }
 
+  // Building the buttons to switch between joined and all events views
   Widget _buildEventButtons() {
     return Row(children: [
+      // The joined events button
       Expanded(
           child: RaisedButton(
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            // Removing circular border
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(0.0)),
+            // If we're in user view (so this button is selected) the colour is blue otherwise it is grey
             color: userView == true ? Colors.blue : Colors.grey[350],
             child: Text(FlutterI18n.translate(
                 context, "eventFinderList.buttonLabels.joinedEvents")),
             onPressed: () {
               setState(() {
+                // Setting user view and deselecting event and date
                 userView = true;
                 _selectedEvent = null;
                 _selectedDate = null;
 
+                // Refreshing Calendar if we were in calendar view
                 if (this.views != null &&
                     this.views[0].viewType == "Calendar") {
                   _calendarController.setSelectedDay(_currentDate);
                   _showCustomSnackBar(FlutterI18n.translate(context,
                       "eventFinderList.snackBarLabels.refreshCalendar"));
                 }
-
                 _calendarEvents.clear();
               });
             },
           ),
           flex: 2),
+      // Same as above but for all events
       Expanded(
           child: RaisedButton(
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -185,7 +175,6 @@ class _EventListWidgetState extends State<EventListWidget> {
                   _showCustomSnackBar(FlutterI18n.translate(context,
                       "eventFinderList.snackBarLabels.refreshCalendar"));
                 }
-
                 _calendarEvents.clear();
               });
             },
@@ -194,13 +183,17 @@ class _EventListWidgetState extends State<EventListWidget> {
     ]);
   }
 
+  // Building the buttons to switch to Calendar/List/Table views
   Widget _buildViewButtons() {
     return Row(children: [
+      // Calendar button
       Expanded(
           child: RaisedButton(
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            // Removing circular border
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(0.0)),
+            // If the views is calendar (so this button is selected), it's blue otherwise it's grey
             color: this.views != null && this.views[0].viewType == "Calendar"
                 ? Colors.blue
                 : Colors.grey[350],
@@ -208,6 +201,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                 context, "eventFinderList.buttonLabels.calendarView")),
             onPressed: () {
               setState(() {
+                // Setting view type to calendar and resetting it Calendar selection and events shown
                 this.views[0].viewType = "Calendar";
                 _selectedEvent = null;
                 _selectedDate = null;
@@ -218,6 +212,7 @@ class _EventListWidgetState extends State<EventListWidget> {
             },
           ),
           flex: 2),
+      // List button, works similarly to above but for list
       Expanded(
           child: RaisedButton(
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -240,6 +235,7 @@ class _EventListWidgetState extends State<EventListWidget> {
             },
           ),
           flex: 2),
+      // Table button, works similarly to above but for table
       Expanded(
           child: RaisedButton(
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -287,7 +283,6 @@ class _EventListWidgetState extends State<EventListWidget> {
   /* This function returns a list of events displayed in a ListView and obtained
      from a cloud storage */
   Widget _buildListView() {
-    EventModel _eventModel = EventModel();
     return FutureBuilder<QuerySnapshot>(
         future: userView == true
             ? _eventModel.getUserEvents(user.uid)
@@ -306,33 +301,9 @@ class _EventListWidgetState extends State<EventListWidget> {
         });
   }
 
-  /* This function returns a grid of events displayed in a GridView with 2 columns
-     and obtained from a cloud storage */
-  Widget _buildGridView() {
-    EventModel _eventModel = EventModel();
-    return FutureBuilder<QuerySnapshot>(
-        future: userView == true
-            ? _eventModel.getUserEvents(user.uid)
-            : _eventModel.getAll(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasData) {
-            return GridView.count(
-              crossAxisCount: 2,
-              children: snapshot.data.docs
-                  .map((DocumentSnapshot document) =>
-                      _buildEvent(context, document))
-                  .toList(),
-            );
-          } else {
-            return CircularProgressIndicator();
-          }
-        });
-  }
-
   /* This function returns a list of events displayed in a DataTable and obtained
      from a cloud storage */
   Widget _buildTableView() {
-    EventModel _eventModel = EventModel();
     return FutureBuilder<QuerySnapshot>(
         future: userView == true
             ? _eventModel.getUserEvents(user.uid)
@@ -346,7 +317,6 @@ class _EventListWidgetState extends State<EventListWidget> {
                   scrollDirection: Axis.horizontal,
                   child: DataTable(
                     showCheckboxColumn: userView == false,
-                    //showBottomBorder: true,
                     dataRowHeight: 100.0,
                     columns: <DataColumn>[
                       DataColumn(
@@ -410,7 +380,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                                 });
                               },
                               cells: <DataCell>[
-                                // join or leave event button
+                                // Join or leave event button
                                 DataCell(
                                   IconButton(
                                       icon: user.uid ==
@@ -444,7 +414,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                                             reference: document.reference));
                                       }),
                                 ),
-                                // view icon
+                                // View icon
                                 DataCell(
                                   IconButton(
                                     icon: Icon(Icons.visibility),
@@ -456,7 +426,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                                     },
                                   ),
                                 ),
-                                // event name
+                                // Event name
                                 DataCell(
                                   Text(Event.fromMap(document.data(),
                                           reference: document.reference)
@@ -470,7 +440,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                                     });
                                   },
                                 ),
-                                // event description
+                                // Event description
                                 DataCell(
                                   Container(
                                       width: 200.0,
@@ -483,7 +453,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                                         reference: document.reference);
                                   },
                                 ),
-                                // event start date
+                                // Event start date
                                 DataCell(
                                   Text(Event.fromMap(document.data(),
                                           reference: document.reference)
@@ -496,7 +466,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                                         reference: document.reference);
                                   },
                                 ),
-                                // event end date
+                                // Event end date
                                 DataCell(
                                   Text(Event.fromMap(document.data(),
                                           reference: document.reference)
@@ -509,7 +479,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                                         reference: document.reference);
                                   },
                                 ),
-                                // event location
+                                // Event location
                                 DataCell(
                                   Text(Event.fromMap(document.data(),
                                           reference: document.reference)
@@ -535,19 +505,18 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   // This function returns a calendar of events displayed using Calendar Table Package, obtained from cloud storage
   Widget _buildCalendarView() {
-    EventModel _eventModel = EventModel();
     return FutureBuilder<QuerySnapshot>(
         future: userView == true
             ? _eventModel.getUserEvents(user.uid)
             : _eventModel.getAll(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
-            // function to map events to their respective date
+            // Function to map events to their respective date
             Map<DateTime, List<dynamic>> eventDateMap =
                 getDateEventMap(snapshot);
             // 3rd party package calendar implementation
             return TableCalendar(
-              // list of events that are mapped, places markers on the calendar
+              // List of events that are mapped, places markers on the calendar
               events: eventDateMap,
               calendarController: _calendarController,
               // onTap Day selection for the calendar
@@ -557,7 +526,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                   if (compareDates(day, _selectedDate) == false) {
                     _selectedEvent = null;
                   }
-                  // setting the calendar events for the particular day selected, used to create a scrollable list of elements to select and edit/delete
+                  // Setting the calendar events for the particular day selected, used to create a scrollable list of elements to select and edit/delete
                   _calendarEvents = events;
                   _selectedDate = day;
                 });
@@ -569,7 +538,7 @@ class _EventListWidgetState extends State<EventListWidget> {
         });
   }
 
-  // function that returns a widget list of all the events as buttons to select, edit and delete
+  // Function that returns a widget list of all the events as buttons to select, edit and delete
   Widget _buildCalendarButtons() {
     return Scrollbar(
       child: ListView(
@@ -765,10 +734,12 @@ class _EventListWidgetState extends State<EventListWidget> {
           }
 
           _selectedEvent = null;
+          _selectedColumn = null;
         });
       }
-      // If an event wasn't selected (just in case something goes wrong)
-    } else {
+    }
+    // If an event wasn't selected (just in case something goes wrong)
+    else {
       _showCustomDialog(
           FlutterI18n.translate(
               context, "eventFinderList.dialogLabels.selectTitle"),
@@ -791,7 +762,6 @@ class _EventListWidgetState extends State<EventListWidget> {
     } else {
       this.views = views;
     }
-
     return views;
   }
 
@@ -923,8 +893,6 @@ class _EventListWidgetState extends State<EventListWidget> {
       switch (this.views[0].viewType) {
         case 'List':
           return _buildListView();
-        case 'Grid':
-          return _buildGridView();
         case 'Calendar':
           return Column(
             children: <Widget>[
@@ -1004,17 +972,21 @@ class _EventListWidgetState extends State<EventListWidget> {
     Scaffold.of(context).showSnackBar(snackbar);
   }
 
-  /* This function handles the event join and leave button presses inside the
-     table/calendar/list view as well as the presses to the single person and 
-     2 people buttons. */
+  /* This function handles the leading button in the event tile which will have
+     different functionality based on what view the user is in and their relationship
+     with the event */
   void _manageEvent(Event event) {
+    /* If the user created this event then we tell them they did because they
+       should not be able to join or leave it */
     if (user.uid == event.createdBy) {
       _showCustomDialog(
           FlutterI18n.translate(
               context, "eventFinderList.dialogLabels.yourEventTitle"),
           FlutterI18n.translate(
               context, "eventFinderList.dialogLabels.yourEventDescription"));
-    } else if (userView == true) {
+    }
+    // If we're in user view then the button will have the remove functionality
+    else if (userView == true) {
       print("Remove from list");
       setState(() {
         if (this.views[0].viewType == "Calendar") {
@@ -1026,13 +998,19 @@ class _EventListWidgetState extends State<EventListWidget> {
         _showCustomSnackBar(FlutterI18n.translate(
             context, "eventFinderList.snackBarLabels.eventLeft"));
       });
-    } else if (event.participants.contains(user.uid)) {
+    }
+    /* If we're in all events view and the user is a part of the event then we 
+       let them know, they can leave the event in joined events view */
+    else if (event.participants.contains(user.uid)) {
       _showCustomDialog(
           FlutterI18n.translate(
               context, "eventFinderList.dialogLabels.joinedEventTitle"),
           FlutterI18n.translate(
               context, "eventFinderList.dialogLabels.joinedEventDescription"));
-    } else {
+    }
+    /* If the user is not in event and we're in all events view, then the only
+       option left is to join the event */
+    else {
       print("Add to list");
       print(event);
       setState(() {
