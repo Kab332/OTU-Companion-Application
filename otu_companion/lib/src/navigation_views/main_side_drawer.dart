@@ -43,7 +43,7 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
                 _buildEventTile(context),
                 _buildRoomTile(context),
                 _buildGuideTile(context),
-                _buildChatTile(context),
+                //_buildChatTile(context),
                 Divider(
                   thickness: 2,
                 ),
