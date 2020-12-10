@@ -149,5 +149,16 @@
             "addFriends": "Add Friends",
             "friend": "Friend"
         }
+    },
+    "profilePageMain": {
+        "buttonLabels": {
+            "changeProfileInfo": "Change Profile Info",
+            "changeEmail": "Change Email",
+            "resetPassword": "Reset Password",
+            "resetPasswordMessage": "An email will be sent to confirm password reset, would you like to proceed?",
+            "cancel": "Cancel",
+            "continue": "Continue",
+            "changePassword": "Change Password"
+        }
     }
 }

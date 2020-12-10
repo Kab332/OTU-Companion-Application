@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:otu_companion/src/navigation_views/main_side_drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
@@ -140,7 +141,8 @@ class _ProfilePageMainState extends State<ProfilePageMain>
                 ),
                 child: Center(
                   child: Text(
-                    "Change Profile Info",
+                    FlutterI18n.translate(
+                      context, "profilePageMain.buttonLabels.changeProfileInfo"),
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -175,7 +177,9 @@ class _ProfilePageMainState extends State<ProfilePageMain>
                 ),
                 child: Center(
                   child: Text(
-                    "Change Email",
+                    FlutterI18n.translate(
+                      context, "profilePageMain.buttonLabels.changeEmail"
+                    ),
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -231,21 +235,37 @@ class _ProfilePageMainState extends State<ProfilePageMain>
       context: context,
       builder: (BuildContext context){
         return AlertDialog(
-          title: Text("Reset Password"),
-          content: Text("An email will be sent to confirm password reset, would you like to proceed?"),
+          title: Text(
+            FlutterI18n.translate(
+              context, "profilePageMain.buttonLabels.resetPassword"
+            ),
+          ),
+          content: Text(
+            FlutterI18n.translate(
+              context, "profilePageMain.buttonLabels.resetPasswordMessage"
+            ),
+          ),
           actions: [
             FlatButton(
               onPressed: (){
                 Navigator.pop(context);
               },
-              child: Text("Cancel")
+              child: Text(
+                FlutterI18n.translate(
+                  context, "profilePageMain.buttonLabels.cancel"
+                )
+              ),
             ),
             FlatButton(
               onPressed: (){
                 Navigator.pop(context);
                 _authenticationService.updatePassword();
               },
-              child: Text("Continue"),
+              child: Text(
+                FlutterI18n.translate(
+                  context, "profilePageMain.buttonLabels.continue"
+                )
+              ),
             )
           ],
         );
@@ -274,7 +294,9 @@ class _ProfilePageMainState extends State<ProfilePageMain>
                 ),
                 child: Center(
                   child: Text(
-                    "Change Password",
+                    FlutterI18n.translate(
+                      context, "profilePageMain.buttonLabels.changePassword"
+                    ),
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
