@@ -134,6 +134,9 @@ class Routes {
                   title: 'Guides Stats',
                   userID: settings.arguments,
                 ));
+      case chatMain:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
                 ChatPage(title: "Friends"));
       case chatAddFriend:
         return MaterialPageRoute(
