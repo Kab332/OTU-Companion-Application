@@ -23,6 +23,8 @@ if (flutterVersionName == null) {
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+implementation 'com.google.firebase:firebase-crashlytics'
+implementation 'com.google.firebase:firebase-analytics'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
