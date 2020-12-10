@@ -29,6 +29,9 @@ class _EventStatsState extends State<EventStats> {
     );
   }
 
+  /* This function gets the events from the cloud based on whether the user is 
+     in joined events (gets userID) or in all events and builds a bar chart to
+     show the # of participants in each event. */
   Widget _buildEventStats() {
     EventModel _eventModel = EventModel();
     return FutureBuilder<QuerySnapshot>(
@@ -48,6 +51,7 @@ class _EventStatsState extends State<EventStats> {
                 ),
                 barGroupingType: charts.BarGroupingType.grouped,
                 vertical: false,
+                // Creating the Axis titles
                 behaviors: [
                   new charts.ChartTitle(
                       FlutterI18n.translate(
@@ -66,8 +70,10 @@ class _EventStatsState extends State<EventStats> {
         });
   }
 
+  // Converts a list of events to data that can be used by a chart
   static List<charts.Series<Event, String>> convertData(List<Event> events) {
     if (events != null) {
+      // Showing the # of participants for each event
       return [
         new charts.Series<Event, String>(
           id: "# of Participants",
