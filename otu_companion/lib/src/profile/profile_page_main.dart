@@ -219,7 +219,6 @@ class _ProfilePageMainState extends State<ProfilePageMain> {
 
   showPasswordChangeDialog(BuildContext context) {
     showDialog(
-<<<<<<< HEAD
       context: context,
       builder: (BuildContext context){
         return AlertDialog(
@@ -259,30 +258,6 @@ class _ProfilePageMainState extends State<ProfilePageMain> {
         );
       }
     );
-=======
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("Reset Password"),
-            content: Text(
-                "An email will be sent to confirm password reset, would you like to proceed?"),
-            actions: [
-              FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Cancel")),
-              FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _authenticationService.updatePassword();
-                },
-                child: Text("Continue"),
-              )
-            ],
-          );
-        });
->>>>>>> ae865e5ab4eb8023e9f39b3ed61571b759d76df6
   }
 
   Widget _buildChangePasswordButton(BuildContext context) {
