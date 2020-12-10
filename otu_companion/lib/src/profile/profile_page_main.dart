@@ -54,15 +54,15 @@ class _ProfilePageMainState extends State<ProfilePageMain>
   Widget _buildInfoContainer(BuildContext context)
   {
     return Container(
-      height: MediaQuery.of(context).size.height*0.25,
-      margin: EdgeInsets.only(top:15,bottom:5),
+      height: MediaQuery.of(context).size.height*0.3,
+      margin: EdgeInsets.only(bottom:5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           if(_user.photoURL != null)...[
             Padding(
-              padding: EdgeInsets.only(bottom:15),
+              padding: EdgeInsets.only(bottom:10),
               child: CachedNetworkImage(
                 imageUrl: _user.photoURL,
                 progressIndicatorBuilder:(context, url, downloadProgress)
@@ -90,18 +90,21 @@ class _ProfilePageMainState extends State<ProfilePageMain>
           ],
           if(_user.photoURL == null)...[
             Padding(
-              padding: EdgeInsets.only(bottom:15),
+              padding: EdgeInsets.only(top:2, bottom:25),
               child: CircleAvatar(
                 backgroundColor: Colors.black,
                 radius: 75,
               ),
             ),
           ],
-          Text(
-            _user.displayName,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+          Padding(
+            padding: EdgeInsets.only(bottom:3),
+            child: Text(
+              _user.displayName,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           Text(
