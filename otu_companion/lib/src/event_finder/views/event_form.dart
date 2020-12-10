@@ -112,8 +112,19 @@ class _EventFormPageState extends State<EventFormPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Handling validation here, also sending the event back to the function that invoked this
-          if (_formKey.currentState.validate()) {
+          /* Making sure end date time is not less than start date time. Initially 
+             same time is okay for easy testing purposes. */
+          if (_endDate.compareTo(_startDate) < 0) {
+            _showCustomDialog(
+                FlutterI18n.translate(
+                    context, "eventForm.errorLabels.invalidDateTitle"),
+                FlutterI18n.translate(
+                    context, "eventForm.errorLabels.invalidDateContent"),
+                FlutterI18n.translate(
+                    context, "eventForm.errorLabels.errorButton"));
+          }
+          // Handling rest of validation here, also sending the event back to the function that invoked this
+          else if (_formKey.currentState.validate()) {
             Event event = Event(
               name: _name != "" ? _name : selectedEvent.name,
               description:
@@ -365,6 +376,10 @@ class _EventFormPageState extends State<EventFormPage> {
     );
   }
 
+  /* Building the form that covers the location field, unlike the others this 
+     one has a specific controller to update the value inside based on the 
+     current location's postal code (if the user presses the get my location
+     button below the zoom buttons). */
   Widget _buildLocationFormField() {
     return TextFormField(
       decoration: InputDecoration(
@@ -372,8 +387,6 @@ class _EventFormPageState extends State<EventFormPage> {
             FlutterI18n.translate(context, "eventForm.formLabels.location"),
       ),
       autovalidateMode: AutovalidateMode.always,
-      // initialValue: selectedEvent != null ? selectedEvent.location : '',
-      // Validation to check if empty or not 9 numbers
       validator: (String value) {
         if (value.isEmpty) {
           return FlutterI18n.translate(
@@ -391,6 +404,8 @@ class _EventFormPageState extends State<EventFormPage> {
     );
   }
 
+  /* If this button is clicked then the location of the current address inside
+     location field is obtained and shown on the map (done in get position). */
   Widget _buildLocationFormButton() {
     return RaisedButton(
       child: Text(FlutterI18n.translate(
@@ -403,6 +418,7 @@ class _EventFormPageState extends State<EventFormPage> {
     );
   }
 
+  // Building the map
   Widget _buildLocation() {
     return Container(
       padding: const EdgeInsets.only(top: 10.0),
@@ -423,7 +439,6 @@ class _EventFormPageState extends State<EventFormPage> {
           minZoom: 5.0,
           zoom: _zoom,
           maxZoom: 20.0,
-          //center: selectedEvent.location != null ? selectedEvent.location : _centre,
           center: _centre,
         ),
         layers: [
@@ -444,11 +459,13 @@ class _EventFormPageState extends State<EventFormPage> {
     );
   }
 
+  // Building the zoom in, zoom out, and get my location buttons
   Widget _buildMapButtons() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Zoom in button
         IconButton(
           icon: Icon(Icons.zoom_in),
           onPressed: () {
@@ -460,6 +477,7 @@ class _EventFormPageState extends State<EventFormPage> {
             }
           },
         ),
+        // Zoom out button
         IconButton(
             icon: Icon(Icons.zoom_out),
             onPressed: () {
@@ -470,6 +488,7 @@ class _EventFormPageState extends State<EventFormPage> {
                 });
               }
             }),
+        // Get my location button (map related actions performed in get position)
         IconButton(
           icon: Icon(Icons.my_location),
           onPressed: () {
@@ -489,26 +508,36 @@ class _EventFormPageState extends State<EventFormPage> {
     }
   }
 
-  // future function to get the current position from the location property of event and use it for locationFromAddress
+  /* This function gets the current position of the user based on the passed argument
+     and whether the user has entered/modified a value in the form field or whether
+     there is already a location due to this being an edit form. */
   Future<void> getPosition(bool current) async {
     var location;
     List<Placemark> places;
     try {
+      // If the current argument is true then get the user's current position
       if (current == true) {
         location = await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.high);
+
+        // Updating _centre based on the user's current position latitude and longitude
         _centre = LatLng(location.latitude, location.longitude);
 
         places = await geocoder.placemarkFromCoordinates(
             location.latitude, location.longitude);
 
+        /* Updating _location field which holds the address of the location and 
+           the _geoPoint field which will hold the latitude and longitude of the
+           position in GeoPoint form same as FireStore. */
         _location = places[0].postalCode.toString();
         _geoPoint = GeoPoint(_centre.latitude, _centre.longitude);
 
         setState(() {
+          // Getting new marker and updating the map
           updateMarker(location);
           mapController.move(_centre, _zoom);
 
+          // Updating location form field with the current position's postal code
           _locationController.value = TextEditingValue(
             text: _location,
             selection: TextSelection.fromPosition(
@@ -517,7 +546,11 @@ class _EventFormPageState extends State<EventFormPage> {
           );
         });
         locationException = false;
-      } else if (_location != '') {
+      }
+      /* If the user has entered a value in the location form field use that as
+         an address and get the location (lat and lang) then update global variables
+         and the map. */
+      else if (_location != '') {
         List<Location> places = await geocoder.locationFromAddress(_location);
         location = places[0];
         _centre = LatLng(location.latitude, location.longitude);
@@ -527,7 +560,11 @@ class _EventFormPageState extends State<EventFormPage> {
           mapController.move(_centre, _zoom);
         });
         locationException = false;
-      } else if (selectedEvent != null && selectedEvent.location != null) {
+      }
+      /* If the user has not modified the location field but this is an edit
+         form so there is a selected event, then get that event location's 
+         position and do the same as above. */
+      else if (selectedEvent != null && selectedEvent.location != null) {
         List<Location> places =
             await geocoder.locationFromAddress(selectedEvent.location);
         location = places[0];
@@ -540,32 +577,39 @@ class _EventFormPageState extends State<EventFormPage> {
         });
         locationException = false;
       }
-    } on Exception catch (exception) {
+    }
+    // If there's an exception then we send out an alert, the exception is printed
+    on Exception catch (exception) {
       locationException = true;
-      showDialog<void>(
+      _showCustomDialog(
+          FlutterI18n.translate(context, "eventForm.errorLabels.errorTitle"),
+          exception.toString(),
+          FlutterI18n.translate(context, "eventForm.errorLabels.errorButton"));
+    }
+  }
+
+  // This function calls showDialog inside, created to reduce code
+  void _showCustomDialog(String title, String content, String button) {
+    showDialog<void>(
         context: context,
         barrierDismissible: true,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(FlutterI18n.translate(
-                context, "eventForm.errorLabels.errorTitle")),
-            content: Text(exception.toString()),
+            title: Text(title),
+            content: Text(content),
             actions: <Widget>[
               FlatButton(
-                child: Text(FlutterI18n.translate(
-                    context, "eventForm.errorLabels.errorButton")),
+                child: Text(button),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
             ],
           );
-        },
-      );
-    }
+        });
   }
 
-  // function to add a marker on the map box
+  // Function to add a marker on the map box
   void updateMarker(var position) {
     var newMarker = new Marker(
       width: 70.0,
