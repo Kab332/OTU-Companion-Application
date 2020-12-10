@@ -278,6 +278,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
         guide.downVoters.add(user.uid);
       }
     }
+    _selectedGuide = guide;
 
     setState(() {
       _guideModel.update(guide);
