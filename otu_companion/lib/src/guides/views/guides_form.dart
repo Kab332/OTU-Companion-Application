@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import '../model/guide.dart';
 
 class GuideFormPage extends StatefulWidget {
@@ -88,7 +89,10 @@ class _GuideFormPageState extends State<GuideFormPage> {
 
     return TextFormField(
       decoration: InputDecoration(
-        labelText: type,
+        labelText: type == "Guide Name"
+            ? FlutterI18n.translate(context, "guidesForm.formLabels.name")
+            : FlutterI18n.translate(
+                context, "guidesForm.formLabels.description"),
       ),
       autovalidateMode: AutovalidateMode.always,
       initialValue: _selectedGuide != null ? typeVal : '',
@@ -96,9 +100,15 @@ class _GuideFormPageState extends State<GuideFormPage> {
       // Validation to check if empty or not 9 numbers
       validator: (String value) {
         if (value.isEmpty) {
-          return 'Error: Please enter ' + type + '!';
+          // return 'Error: Please enter ' + type + '!';
+          return type == "Guide Name"
+              ? FlutterI18n.translate(
+                  context, "guidesForm.errorLabels.emptyName")
+              : FlutterI18n.translate(
+                  context, "guidesForm.errorLabels.emptyDescription");
         } else if (type == "Guide Name" && value.length > 12) {
-          return 'Error: Max name length is 12 characters.';
+          return FlutterI18n.translate(
+              context, "guidesForm.errorLabels.nameLength");
         }
         return null;
       },
