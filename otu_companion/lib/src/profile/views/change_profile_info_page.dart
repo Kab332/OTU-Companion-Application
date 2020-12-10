@@ -4,6 +4,7 @@ import 'package:otu_companion/src/services/authentication/model/authentication_s
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 
 class ChangeProfileInfoPage extends StatefulWidget
 {
@@ -130,16 +131,22 @@ class _ChangeProfileInfoPageState extends State<ChangeProfileInfoPage>
   Widget _buildFirstNameField()
   {
     return TextFormField(
-      decoration: const InputDecoration(
-        labelText: "First Name",
+      decoration: InputDecoration(
+        labelText: FlutterI18n.translate(
+          context, "changeProfileInfoPage.labelText.firstName"
+        ),
         icon: Icon(Icons.person),
-        hintText:"Enter First Name",
+        hintText: FlutterI18n.translate(
+          context, "changeProfileInfoPage.hintText.firstName"
+        ),
         border: const OutlineInputBorder(),
       ),
       controller: _firstName,
       validator: (String value) {
         if (value.isEmpty) {
-          return "Name is required";
+          return FlutterI18n.translate(
+            context, "changeProfileInfoPage.isEmptyText.firstName"
+          );
         }
         return null;
       },
@@ -149,16 +156,22 @@ class _ChangeProfileInfoPageState extends State<ChangeProfileInfoPage>
   Widget _buildLastNameField()
   {
     return TextFormField(
-      decoration: const InputDecoration(
-        labelText: "Last Name",
+      decoration: InputDecoration(
+        labelText: FlutterI18n.translate(
+          context, "changeProfileInfoPage.labelText.lastName"
+        ),
         icon: Icon(Icons.person),
-        hintText:"Enter Last Name",
+        hintText: FlutterI18n.translate(
+          context, "changeProfileInfoPage.hintText.lastName"
+        ),
         border: const OutlineInputBorder(),
       ),
       controller: _lastName,
       validator: (String value) {
         if (value.isEmpty) {
-          return "Name is required";
+          return FlutterI18n.translate(
+            context, "changeProfileInfoPage.isEmptyText.lastName"
+          );
         }
         return null;
       },
@@ -168,16 +181,22 @@ class _ChangeProfileInfoPageState extends State<ChangeProfileInfoPage>
   Widget _buildPictureField()
   {
     return TextFormField(
-      decoration: const InputDecoration(
-        labelText: "Picture Url",
+      decoration: InputDecoration(
+        labelText: FlutterI18n.translate(
+          context, "changeProfileInfoPage.labelText.pictureURL"
+        ),
         icon: Icon(Icons.person),
-        hintText:"Enter URL",
+        hintText: FlutterI18n.translate(
+          context, "changeProfileInfoPage.hintText.pictureURL"
+        ),
         border: const OutlineInputBorder(),
       ),
       controller: _pictureURL,
       validator: (String value) {
         if (value.isEmpty) {
-          return "URL is required";
+          return FlutterI18n.translate(
+            context, "changeProfileInfoPage.isEmptyText.pictureURL"
+          );
         }
         return null;
       },
@@ -192,8 +211,10 @@ class _ChangeProfileInfoPageState extends State<ChangeProfileInfoPage>
           _urlString = _pictureURL.text;
         });
       },
-      child: const Text(
-        "Update Avatar",
+      child: Text(
+        FlutterI18n.translate(
+          context, "changeProfileInfoPage.buttonLabels.updateAvatar"
+        ),
         style: TextStyle(
           fontSize: 18,
         ),

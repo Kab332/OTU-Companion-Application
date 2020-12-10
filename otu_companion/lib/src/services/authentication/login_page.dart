@@ -132,7 +132,9 @@ class _LoginPageState extends State<LoginPage>
       controller: _email,
       validator: (String value) {
         if (value.isEmpty) {
-          return "Email is required";
+          return FlutterI18n.translate(
+            context, "loginPage.isEmptyText.email"
+          );
         }
         return null;
       },
@@ -158,7 +160,7 @@ class _LoginPageState extends State<LoginPage>
       validator: (String value) {
         if (value.isEmpty) {
           return FlutterI18n.translate(
-            context, "loginPage.isEmptyText"
+            context, "loginPage.isEmptyText.password"
           );
         }
         return null;

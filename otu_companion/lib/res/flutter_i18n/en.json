@@ -219,5 +219,25 @@
         "doesNotMatch": {
             "password": "Password does not match"
         }
+    },
+    "changeProfileInfoPage": {
+        "buttonLabels": {
+            "updateAvatar": "Update Avatar"
+        },
+        "labelText": {
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "pictureURL": "Picture URL"
+        },
+        "hintText": {
+            "firstName": "Enter First Name",
+            "lastName": "Enter Password",
+            "pictureURL": "Enter URL"
+        },
+        "isEmptyText": {
+            "firstName": "Email is required",
+            "lastName": "Password is required",
+            "pictureURL": "Picture URL is required"
+        }
     }
 }
