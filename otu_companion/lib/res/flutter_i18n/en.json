@@ -160,5 +160,14 @@
             "continue": "Continue",
             "changePassword": "Change Password"
         }
+    },
+    "settingsMain": {
+        "buttonLabels": {
+            "appearance": "Appearance",
+            "notifications": "Notifications",
+            "dataUsage": "Data Usage",
+            "feedback": "Feedback",
+            "about": "About"
+        }
     }
 }

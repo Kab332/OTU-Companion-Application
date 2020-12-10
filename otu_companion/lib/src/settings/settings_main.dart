@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:otu_companion/res/routes/routes.dart';
 
 class SettingMain extends StatefulWidget
@@ -35,7 +36,11 @@ class _SettingMainState extends State<SettingMain>
   Widget _buildAppearanceTile(BuildContext context)
   {
     return ListTile(
-      title: Text('Appearance'),
+      title: Text(
+        FlutterI18n.translate(
+          context, "settingsMain.buttonLabels.appearance"
+        )
+      ),
       leading: Icon(Icons.palette),
       onTap: ()
       {
@@ -47,7 +52,11 @@ class _SettingMainState extends State<SettingMain>
   Widget _buildNotificationTile(BuildContext context)
   {
     return ListTile(
-      title: Text('Notification'),
+      title: Text(
+        FlutterI18n.translate(
+          context, "settingsMain.buttonLabels.notifications"
+        )
+      ),
       leading: Icon(Icons.notifications),
     );
   }
@@ -56,7 +65,11 @@ class _SettingMainState extends State<SettingMain>
   Widget _buildDataUsageTile(BuildContext context)
   {
     return ListTile(
-      title: Text('Data Usage'),
+      title: Text(
+        FlutterI18n.translate(
+          context, "settingsMain.buttonLabels.dataUsage"
+        )
+      ),
       leading: Icon(Icons.insert_chart),
     );
   }
@@ -64,7 +77,11 @@ class _SettingMainState extends State<SettingMain>
   Widget _buildFeedBackTile(BuildContext context)
   {
     return ListTile(
-      title: Text('Feed Back'),
+      title: Text(
+        FlutterI18n.translate(
+          context, "settingsMain.buttonLabels.feedback"
+        )
+      ),
       leading: Icon(Icons.feedback),
       onTap: (){
         Navigator.pushNamed(context, Routes.feedBackPage);
@@ -75,7 +92,11 @@ class _SettingMainState extends State<SettingMain>
   Widget _buildAboutTile(BuildContext context)
   {
     return ListTile(
-      title: Text('About'),
+      title: Text(
+        FlutterI18n.translate(
+          context, "settingsMain.buttonLabels.about"
+        )
+      ),
       leading: Icon(Icons.info),
       onTap: (){
         Navigator.pushNamed(context, Routes.aboutPage);
