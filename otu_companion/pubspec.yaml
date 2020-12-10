@@ -28,11 +28,15 @@ dependencies:
 
   provider:
   sqflite:
+
+  # Firebase Dependencies
   firebase_auth:
   cloud_firestore:
   firebase_core:
-  cached_network_image:
+  firebase_crashlytics:
   #google_log_in:
+
+  cached_network_image:
   url_launcher:
 
   flutter_local_notifications:
@@ -68,10 +72,7 @@ flutter:
     - lib/res/images/icons/
     - lib/res/images/
     - lib/res/flutter_i18n/
-
-  # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+    - lib/res/database/room_manager.db
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
