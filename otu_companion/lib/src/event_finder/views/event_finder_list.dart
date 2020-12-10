@@ -641,17 +641,12 @@ class _EventListWidgetState extends State<EventListWidget> {
                         Icons.person,
                         color: Colors.blue,
                       )
-                    : userView == true
+                    : event.participants.contains(user.uid)
                         ? Icon(
                             Icons.cancel,
                             color: Colors.red,
                           )
-                        : event.participants.contains(user.uid)
-                            ? Icon(
-                                Icons.people,
-                                color: Colors.blue,
-                              )
-                            : Icon(Icons.add, color: Colors.green),
+                        : Icon(Icons.add, color: Colors.green),
                 onPressed: () {
                   _manageEvent(event);
                 }),
@@ -1027,8 +1022,8 @@ class _EventListWidgetState extends State<EventListWidget> {
           FlutterI18n.translate(
               context, "eventFinderList.dialogLabels.dismissButton"));
     }
-    // If we're in user view then the button will have the remove functionality
-    else if (userView == true) {
+    // If the user is in the event the button will have the remove functionality
+    else if (event.participants.contains(user.uid)) {
       print("Remove from list");
       setState(() {
         if (this.views[0].viewType == "Calendar") {
@@ -1041,18 +1036,7 @@ class _EventListWidgetState extends State<EventListWidget> {
             context, "eventFinderList.snackBarLabels.eventLeft"));
       });
     }
-    /* If we're in all events view and the user is a part of the event then we 
-       let them know, they can leave the event in joined events view */
-    else if (event.participants.contains(user.uid)) {
-      _showCustomDialog(
-          FlutterI18n.translate(
-              context, "eventFinderList.dialogLabels.joinedEventTitle"),
-          FlutterI18n.translate(
-              context, "eventFinderList.dialogLabels.joinedEventDescription"),
-          FlutterI18n.translate(
-              context, "eventFinderList.dialogLabels.dismissButton"));
-    }
-    /* If the user is not in event and we're in all events view, then the only
+    /* If the user is not in event and they did not create it, then the only
        option left is to join the event */
     else {
       print("Add to list");
