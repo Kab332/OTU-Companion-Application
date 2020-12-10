@@ -1,16 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:otu_companion/src/navigation_views/main_side_drawer.dart';
+import 'package:otu_companion/src/services/authentication/model/authentication_service.dart';
 import '../model/guide.dart';
 import '../model/guide_model.dart';
 
-import 'package:flutter_i18n/flutter_i18n.dart';
-
-import 'package:otu_companion/src/navigation_views/main_side_drawer.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:otu_companion/src/services/authentication/model/authentication_service.dart';
-
+/* We had this functionality in our original plan so we decided to include it
+   even though it shares many similarities with event finder. */
 class GuidesListWidget extends StatefulWidget {
   GuidesListWidget({Key key, this.title}) : super(key: key);
 
@@ -74,6 +72,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
     ));
   }
 
+  // A button to add a new guide
   Widget _buildSubmit() {
     return Container(
       padding: EdgeInsets.all(5.0),
@@ -144,6 +143,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
     );
   }
 
+  // This function has votes functionality that is not in event finder
   Widget _buildTile(BuildContext context, Guide guide) {
     return Card(
         child: ListTile(
@@ -157,9 +157,12 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
                 _showViewDialog(context, guide);
               },
             ),
+            // The trailing part of the tile holds the vote buttons and # of votes
             trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+              // For up votes
               IconButton(
                 iconSize: 15,
+                // The icon has an orange colour if the user has up voted, otherwise it is grey
                 color: guide.upVoters.contains(user.uid)
                     ? Colors.orange
                     : Colors.grey,
@@ -171,8 +174,10 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
                 },
               ),
               Text(guide.upVoters.length.toString()),
+              // For down votes
               IconButton(
                 iconSize: 15,
+                // The icon has a blue colour if the user has down voted, otherwise it is grey
                 color: guide.downVoters.contains(user.uid)
                     ? Colors.blue
                     : Colors.grey,
@@ -187,6 +192,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
             ])));
   }
 
+  // This function sends the user to a guide form to get user data then adds it to the guides collection
   Future<void> _addGuide() async {
     var result =
         await Navigator.pushNamed(context, "/guidesForm", arguments: null);
@@ -207,6 +213,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
     print("Adding guide $guide...");
   }
 
+  // This funciton deletes the guide that is currently selected
   Future<void> _deleteGuide() async {
     if (_selectedGuide != null) {
       setState(() {
@@ -217,6 +224,8 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
     }
   }
 
+  /* This function sends the user to the guide form to edit the selected guide 
+     and then updates it on the FireStore side */
   Future<void> _editGuide() async {
     if (_selectedGuide != null) {
       var result = await Navigator.pushNamed(context, "/guidesForm",
@@ -340,10 +349,12 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
     );
   }
 
+  // Function that sends the user to the stats page
   void _checkStats() {
     Navigator.pushNamed(context, "/guideStats", arguments: null);
   }
 
+  // This creates a custom snackbar with its content based on the argument
   void _showCustomSnackBar(String content) {
     var snackbar = SnackBar(
         content: Text(content),
