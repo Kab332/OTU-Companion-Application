@@ -11,6 +11,7 @@
 # https://i.imgur.com/j0G7qNT.png
 
 import scrapy
+from datetime import datetime
 import sqlite3
 
 term = '201909'  # Change this value to get a different term schedule
@@ -49,11 +50,13 @@ class MySpider(scrapy.Spider):
             db_conn = sqlite3.connect(db_path)
             db_cursor = db_conn.cursor()
             db_cursor.execute("""
-                            CREATE TABLE IF NOT EXISTS 'schedules' (
-                            'time' TEXT,
+                            CREATE TABLE IF NOT EXISTS 'occupied_schedules' (
+                            'start_time' TEXT,
+                            'end_time' TEXT,
                             'day' TEXT,
-                            'location' TEXT,
-                            UNIQUE('time', 'day', 'location')
+                            'building' TEXT,
+                            'room' TEXT,
+                            UNIQUE('start_time', 'end_time', 'day', 'building', 'room')
                             )
                             """)
             db_conn.commit()
@@ -89,6 +92,7 @@ class MySpider(scrapy.Spider):
                 # Gets time column
                 if row.xpath('td[2]//text()').extract_first() not in invalids:
                     time = str(row.xpath('td[2]//text()').extract_first())
+                    time_range = time.split(' - ')
                 # Gets day column
                 if row.xpath('td[3]//text()').extract_first() not in invalids:
                     day = str(row.xpath('td[3]//text()').extract_first())
@@ -96,11 +100,12 @@ class MySpider(scrapy.Spider):
                 if row.xpath('td[4]//text()').extract_first() not in invalids:
                     if 'Virtual Adobe Connect' not in row.xpath('td[4]//text()').extract_first():
                         location = str(row.xpath('td[4]//text()').extract_first())
+                        location = location.rsplit(" ", 1)
 
                         db_cursor.execute("""
                             INSERT OR REPLACE INTO
-                            schedules('time', 'day', 'location')
-                            VALUES(?, ?, ?);""", (time, day, location))
+                            occupied_schedules('start_time', 'end_time', 'day', 'building', 'room')
+                            VALUES(?, ?, ?, ?, ?);""", (str(datetime.strptime(time_range[0], '%I:%M %p'))[11:-3], str(datetime.strptime(time_range[1], '%I:%M %p'))[11:-3], day, location[0], location[1]))
                         db_conn.commit()
 
         except sqlite3.Error as error:
