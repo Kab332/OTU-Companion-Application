@@ -1,7 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong/latlong.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'dart:async';
 
 import '../model/event.dart';
 import '../model/notification_utilities.dart';
@@ -22,7 +28,9 @@ class _EventFormPageState extends State<EventFormPage> {
 
   String _name = '';
   String _description = '';
-  String _imageURL = '';
+  String _location = '';
+  GeoPoint _geoPoint;
+  TextEditingController _locationController;
 
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now();
@@ -30,14 +38,38 @@ class _EventFormPageState extends State<EventFormPage> {
   bool _startSet = false;
   bool _endSet = false;
 
+  bool locationException = true;
+
+  double _zoom = 10.0;
+  Marker marker;
+  LatLng _centre = LatLng(43.945947115276184, -78.89606283789982);
+  var geocoder = GeocodingPlatform.instance;
+  MapController mapController = new MapController();
+
   Event selectedEvent;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+
     selectedEvent = widget.event != null ? widget.event : null;
     tz.initializeTimeZones();
     _eventNotifications.init();
 
+    if (selectedEvent != null) {
+      _locationController =
+          new TextEditingController(text: selectedEvent.location);
+      // getPosition(false);
+    } else {
+      _locationController = new TextEditingController();
+      // getPosition(true);
+    }
+
+    getPosition(false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
@@ -57,19 +89,24 @@ class _EventFormPageState extends State<EventFormPage> {
             )
           ],
         ),
-        child: Form(
-          key: _formKey,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.0),
-            child: Column(
-              children: [
-                _buildTextFormField("Event Name"),
-                _buildTextFormField("Description"),
-                _buildDate("Start Date"),
-                _buildTime("Start Time"),
-                _buildDate("End Date"),
-                _buildTime("End Time"),
-              ],
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.0),
+              child: Column(
+                children: [
+                  _buildTextFormField("Event Name"),
+                  _buildTextFormField("Description"),
+                  _buildDate("Start Date"),
+                  _buildTime("Start Time"),
+                  _buildDate("End Date"),
+                  _buildTime("End Time"),
+                  _buildLocationFormField(),
+                  _buildLocationFormButton(),
+                  Row(children: [_buildMapButtons(), _buildLocation()]),
+                ],
+              ),
             ),
           ),
         ),
@@ -88,29 +125,31 @@ class _EventFormPageState extends State<EventFormPage> {
               endDateTime: _endSet == false && selectedEvent != null
                   ? selectedEvent.endDateTime
                   : _endDate,
+              location: _location != "" ? _location : '',
+              geoPoint: _geoPoint != null ? _geoPoint : GeoPoint(0, 0),
             );
             // Calculating the difference in milliseconds between the event start date and the time it is not
             var secondsDiff = (event.startDateTime.millisecondsSinceEpoch -
                     tz.TZDateTime.now(tz.local).millisecondsSinceEpoch) ~/
                 1000;
 
-            print('seconds: $secondsDiff');
-
             // If the start date is greater than one day, send a notification later,
-            if (secondsDiff >= 86400) {
-              var later = tz.TZDateTime.now(tz.local)
-                  .add(Duration(seconds: secondsDiff - 86400));
-              _eventNotifications.sendNotificationLater(
-                  event.name,
-                  event.description,
-                  later,
-                  event.reference != null ? event.reference.id : null);
-            } else {
-              // Otherwise send the notification now
-              _eventNotifications.sendNotificationNow(
-                  event.name,
-                  event.description,
-                  event.reference != null ? event.reference.id : null);
+            if (secondsDiff > 0) {
+              if (secondsDiff >= 86400) {
+                var later = tz.TZDateTime.now(tz.local)
+                    .add(Duration(seconds: secondsDiff - 86400));
+                _eventNotifications.sendNotificationLater(
+                    event.name,
+                    event.description,
+                    later,
+                    event.reference != null ? event.reference.id : null);
+              } else {
+                // Otherwise send the notification now
+                _eventNotifications.sendNotificationNow(
+                    event.name,
+                    event.description,
+                    event.reference != null ? event.reference.id : null);
+              }
             }
 
             // Go back to event list
@@ -135,8 +174,6 @@ class _EventFormPageState extends State<EventFormPage> {
       typeVal = selectedEvent.name;
     } else if (type == "Description" && selectedEvent != null) {
       typeVal = selectedEvent.description;
-    } else if (type == "Image URL" && selectedEvent != null) {
-      typeVal = _imageURL;
     }
 
     return TextFormField(
@@ -145,11 +182,15 @@ class _EventFormPageState extends State<EventFormPage> {
       ),
       autovalidateMode: AutovalidateMode.always,
       initialValue: selectedEvent != null ? typeVal : '',
+      maxLines: type == "Description" ? 3 : 1,
       // Validation to check if empty or not 9 numbers
       validator: (String value) {
         if (value.isEmpty) {
           return 'Error: Please enter ' + type + '!';
+        } else if (type == "Event Name" && value.length > 12) {
+          return 'Error: Max name length is 12 characters';
         }
+
         return null;
       },
       onChanged: (String newValue) {
@@ -157,8 +198,6 @@ class _EventFormPageState extends State<EventFormPage> {
           _name = newValue;
         } else if (type == "Description") {
           _description = newValue;
-        } else if (type == "Image URL") {
-          _imageURL = newValue;
         }
       },
     );
@@ -210,7 +249,7 @@ class _EventFormPageState extends State<EventFormPage> {
               showDatePicker(
                       context: context,
                       initialDate: _date,
-                      firstDate: DateTime.now(),
+                      firstDate: DateTime(2020),
                       lastDate: DateTime(2150))
                   .then((value) {
                 setState(() {
@@ -304,6 +343,125 @@ class _EventFormPageState extends State<EventFormPage> {
     );
   }
 
+  Widget _buildLocationFormField() {
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: 'Location',
+      ),
+      autovalidateMode: AutovalidateMode.always,
+      // initialValue: selectedEvent != null ? selectedEvent.location : '',
+      // Validation to check if empty or not 9 numbers
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Error: Please enter the event location!';
+        } else if (locationException == true) {
+          return 'Error: Please click \"Check location\" to check validity!';
+        }
+        return null;
+      },
+      onChanged: (String newValue) {
+        _location = newValue;
+      },
+      controller: _locationController,
+      /*onTap: () async {
+        // then get the Prediction selected
+        const kGoogleApiKey = "API_KEY";
+        maps.Prediction p = await places.PlacesAutocomplete.show(
+          context: context, apiKey: kGoogleApiKey,
+        );
+        displayPrediction(p);
+      },*/
+    );
+  }
+
+  Widget _buildLocationFormButton() {
+    return RaisedButton(
+      child: Text("Check location"),
+      onPressed: () {
+        if (_location != '') {
+          getPosition(false);
+        }
+      },
+    );
+  }
+
+  Widget _buildLocation() {
+    return Container(
+      padding: const EdgeInsets.only(top: 10.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(1.0)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+          )
+        ],
+      ),
+      width: 300.0,
+      height: 200.0,
+      child: FlutterMap(
+        mapController: mapController,
+        options: MapOptions(
+          minZoom: 5.0,
+          zoom: _zoom,
+          maxZoom: 20.0,
+          //center: selectedEvent.location != null ? selectedEvent.location : _centre,
+          center: _centre,
+        ),
+        layers: [
+          TileLayerOptions(
+            urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            additionalOptions: {
+              'accessToken':
+                  'pk.eyJ1IjoibGVvbi1jaG93MSIsImEiOiJja2hyMGRteWcwNjh0MzBteXh1NXNibHY0In0.nFSqVO-aIMytp_hQWKmXXQ',
+              'id': 'mapbox.mapbox-streets-v8'
+            },
+            subdomains: ['a', 'b', 'c'],
+          ),
+          new MarkerLayerOptions(
+            markers: marker != null ? [marker] : [],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMapButtons() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        IconButton(
+          icon: Icon(Icons.zoom_in),
+          onPressed: () {
+            if (_zoom < 20.0) {
+              setState(() {
+                _zoom += 1.0;
+                mapController.move(_centre, _zoom);
+              });
+            }
+          },
+        ),
+        IconButton(
+            icon: Icon(Icons.zoom_out),
+            onPressed: () {
+              if (_zoom > 5.0) {
+                setState(() {
+                  _zoom -= 1.0;
+                  mapController.move(_centre, _zoom);
+                });
+              }
+            }),
+        IconButton(
+          icon: Icon(Icons.my_location),
+          onPressed: () {
+            getPosition(true);
+          },
+        ),
+      ],
+    );
+  }
+
   // Function to convert minute to string format, will be moved to another file later
   String minuteToString(int minute) {
     if (minute < 10) {
@@ -311,5 +469,97 @@ class _EventFormPageState extends State<EventFormPage> {
     } else {
       return minute.toString();
     }
+  }
+
+  // future function to get the current position from the location property of event and use it for locationFromAddress
+  Future<void> getPosition(bool current) async {
+    var location;
+    List<Placemark> places;
+    try {
+      if (current == true) {
+        location = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high);
+        _centre = LatLng(location.latitude, location.longitude);
+
+        places = await geocoder.placemarkFromCoordinates(
+            location.latitude, location.longitude);
+
+        _location = places[0].postalCode.toString();
+        _geoPoint = GeoPoint(_centre.latitude, _centre.longitude);
+
+        setState(() {
+          updateMarker(location);
+          mapController.move(_centre, _zoom);
+
+          _locationController.value = TextEditingValue(
+            text: _location,
+            selection: TextSelection.fromPosition(
+              TextPosition(offset: _location.length),
+            ),
+          );
+        });
+        locationException = false;
+      } else if (_location != '') {
+        List<Location> places = await geocoder.locationFromAddress(_location);
+        location = places[0];
+        _centre = LatLng(location.latitude, location.longitude);
+        _geoPoint = GeoPoint(_centre.latitude, _centre.longitude);
+        setState(() {
+          updateMarker(location);
+          mapController.move(_centre, _zoom);
+        });
+        locationException = false;
+      } else if (selectedEvent != null && selectedEvent.location != null) {
+        List<Location> places =
+            await geocoder.locationFromAddress(selectedEvent.location);
+        location = places[0];
+        _location = selectedEvent.location;
+        _centre = LatLng(location.latitude, location.longitude);
+        _geoPoint = GeoPoint(_centre.latitude, _centre.longitude);
+        setState(() {
+          updateMarker(location);
+          mapController.move(_centre, _zoom);
+        });
+        locationException = false;
+      }
+    } on Exception catch (exception) {
+      locationException = true;
+      showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error!'),
+            content: Text(exception.toString()),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Dismiss'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  // function to add a marker on the map box
+  void updateMarker(var position) {
+    var newMarker = new Marker(
+      width: 70.0,
+      height: 70.0,
+      point: new LatLng(position.latitude, position.longitude),
+      builder: (context) => Container(
+          child: IconButton(
+        color: Colors.red,
+        icon: Icon(Icons.location_on),
+        onPressed: () {
+          print('Clicked icon!');
+        },
+      )),
+    );
+    marker = newMarker;
   }
 }

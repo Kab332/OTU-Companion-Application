@@ -1,19 +1,20 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-import './views/event_finder_list.dart';
+import 'views/guides_list.dart';
+
 import 'package:otu_companion/src/navigation_views/main_side_drawer.dart';
 
-class EventFinderMain extends StatefulWidget {
-  EventFinderMain({Key key, this.title}) : super(key: key);
+class GuidesMain extends StatefulWidget {
+  GuidesMain({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _EventFinderMainState createState() => _EventFinderMainState();
+  _GuidesMainState createState() => _GuidesMainState();
 }
 
-class _EventFinderMainState extends State<EventFinderMain> {
+class _GuidesMainState extends State<GuidesMain> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -29,7 +30,7 @@ class _EventFinderMainState extends State<EventFinderMain> {
           return Scaffold(
             resizeToAvoidBottomPadding: false,
             drawer: MainSideDrawer(),
-            body: EventListWidget(title: "Event Finder"),
+            body: GuidesListWidget(title: "Guides"),
           );
         } else {
           return CircularProgressIndicator();

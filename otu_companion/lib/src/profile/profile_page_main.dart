@@ -1,6 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:otu_companion/src/navigation_views/main_side_drawer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:otu_companion/res/routes/routes.dart';
+import 'package:otu_companion/src/services/authentication/model/authentication_service.dart';
 
 class ProfilePageMain extends StatefulWidget
 {
@@ -14,10 +19,16 @@ class ProfilePageMain extends StatefulWidget
 
 class _ProfilePageMainState extends State<ProfilePageMain>
 {
+  User _user;
+  AuthenticationService _authenticationService = AuthenticationService();
+
   @override
   Widget build(BuildContext context)
   {
+    _user = _authenticationService.getCurrentUser();
+
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(widget.title),
       ),
@@ -28,10 +39,12 @@ class _ProfilePageMainState extends State<ProfilePageMain>
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             _buildInfoContainer(context),
-            _buildChangeNameButton(context),
-            _buildChangeEmailButton(context),
-            _buildChangePictureButton(context),
+            Divider(thickness: 5,height: 1,),
+            _buildChangeProfileInfoButton(context),
             _buildChangePasswordButton(context),
+
+            // TODO: Implement 3rd-party account linking system
+            //_buildLinkProfileButton(context),
           ],
         ),
       ),
@@ -41,28 +54,61 @@ class _ProfilePageMainState extends State<ProfilePageMain>
   Widget _buildInfoContainer(BuildContext context)
   {
     return Container(
-      height: MediaQuery.of(context).size.height/4,
-      margin: EdgeInsets.only(top:15,bottom:25),
+      height: MediaQuery.of(context).size.height*0.3,
+      margin: EdgeInsets.only(bottom:5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
+          if(_user.photoURL != null)...[
+            Padding(
+              padding: EdgeInsets.only(bottom:10),
+              child: CachedNetworkImage(
+                imageUrl: _user.photoURL,
+                progressIndicatorBuilder:(context, url, downloadProgress)
+                {
+                  return CircularProgressIndicator(
+                      value: downloadProgress.progress
+                  );
+                },
+                errorWidget: (context, url, error)
+                {
+                  return CircleAvatar(
+                    backgroundColor: Colors.black,
+                    radius: 75,
+                  );
+                },
+                imageBuilder: (context, imageProvider)
+                {
+                  return CircleAvatar(
+                    backgroundImage: imageProvider,
+                    radius: 75,
+                  );
+                },
+              ),
+            ),
+          ],
+          if(_user.photoURL == null)...[
+            Padding(
+              padding: EdgeInsets.only(top:2, bottom:25),
+              child: CircleAvatar(
+                backgroundColor: Colors.black,
+                radius: 75,
+              ),
+            ),
+          ],
           Padding(
-            padding: EdgeInsets.only(bottom:15),
-            child:CircleAvatar(
-              backgroundColor: Colors.black,
-              radius: 55,
+            padding: EdgeInsets.only(bottom:3),
+            child: Text(
+              _user.displayName,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           Text(
-            "Leon Balogne",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            "Email@gmail.com",
+            _user.email,
             style: TextStyle(
               fontSize: 14,
             ),
@@ -72,11 +118,15 @@ class _ProfilePageMainState extends State<ProfilePageMain>
     );
   }
 
-  Widget _buildChangeNameButton(BuildContext context)
+  Widget _buildChangeProfileInfoButton(BuildContext context)
   {
     return InkWell(
       onTap: () {
+        Navigator.pushNamed(context, Routes.changeProfileInfoPage).whenComplete((){
+          setState(() {
 
+          });
+        });
       },
       child:Container(
         child: Column(
@@ -93,7 +143,7 @@ class _ProfilePageMainState extends State<ProfilePageMain>
                 ),
                 child: Center(
                   child: Text(
-                    "Change Name",
+                    "Change Profile Info",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -143,11 +193,11 @@ class _ProfilePageMainState extends State<ProfilePageMain>
   }
 
 
-  Widget _buildChangePictureButton(BuildContext context)
+  Widget _buildLinkProfileButton(BuildContext context)
   {
     return InkWell(
       onTap: () {
-
+        Navigator.pushNamed(context, Routes.linkProfilePage);
       },
       child:Container(
         child: Column(
@@ -164,7 +214,7 @@ class _ProfilePageMainState extends State<ProfilePageMain>
                 ),
                 child: Center(
                   child: Text(
-                    "Change Picture",
+                    "Link Account",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -178,11 +228,39 @@ class _ProfilePageMainState extends State<ProfilePageMain>
     );
   }
 
+  showPasswordChangeDialog(BuildContext context)
+  {
+    showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: Text("Reset Password"),
+          content: Text("An email will be sent to confirm password reset, would you like to proceed?"),
+          actions: [
+            FlatButton(
+              onPressed: (){
+                Navigator.pop(context);
+              },
+              child: Text("Cancel")
+            ),
+            FlatButton(
+              onPressed: (){
+                Navigator.pop(context);
+                _authenticationService.updatePassword();
+              },
+              child: Text("Continue"),
+            )
+          ],
+        );
+      }
+    );
+  }
+
   Widget _buildChangePasswordButton(BuildContext context)
   {
     return InkWell(
       onTap: () {
-
+        showPasswordChangeDialog(context);
       },
       child:Container(
         child: Column(
