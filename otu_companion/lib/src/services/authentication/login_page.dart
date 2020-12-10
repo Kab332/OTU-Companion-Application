@@ -215,7 +215,7 @@ class _LoginPageState extends State<LoginPage>
                     ),
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -252,9 +252,10 @@ class _LoginPageState extends State<LoginPage>
                     FlutterI18n.translate(
                       context, "loginPage.buttonLabels.createAccount"
                     ),
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

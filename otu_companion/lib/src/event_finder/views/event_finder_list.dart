@@ -702,7 +702,9 @@ class _EventListWidgetState extends State<EventListWidget> {
           FlutterI18n.translate(
               context, "eventFinderList.dialogLabels.selectTitle"),
           FlutterI18n.translate(
-              context, "eventFinderList.dialogLabels.selectDescription"));
+              context, "eventFinderList.dialogLabels.selectDescription"),
+          FlutterI18n.translate(
+              context, "eventFinderList.dialogLabels.dismissButton"));
     }
   }
 
@@ -749,7 +751,9 @@ class _EventListWidgetState extends State<EventListWidget> {
           FlutterI18n.translate(
               context, "eventFinderList.dialogLabels.selectTitle"),
           FlutterI18n.translate(
-              context, "eventFinderList.dialogLabels.selectDescription"));
+              context, "eventFinderList.dialogLabels.selectDescription"),
+          FlutterI18n.translate(
+              context, "eventFinderList.dialogLabels.dismissButton"));
     }
   }
 
@@ -944,7 +948,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   }
 
   // This function calls showDialog inside, created to reduce code
-  void _showCustomDialog(String title, String content) {
+  void _showCustomDialog(String title, String content, String button) {
     showDialog<void>(
         context: context,
         barrierDismissible: true,
@@ -954,8 +958,7 @@ class _EventListWidgetState extends State<EventListWidget> {
             content: Text(content),
             actions: <Widget>[
               FlatButton(
-                child: Text(FlutterI18n.translate(
-                    context, "eventFinderList.dialogLabels.dismissButton")),
+                child: Text(button),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -989,7 +992,9 @@ class _EventListWidgetState extends State<EventListWidget> {
           FlutterI18n.translate(
               context, "eventFinderList.dialogLabels.yourEventTitle"),
           FlutterI18n.translate(
-              context, "eventFinderList.dialogLabels.yourEventDescription"));
+              context, "eventFinderList.dialogLabels.yourEventDescription"),
+          FlutterI18n.translate(
+              context, "eventFinderList.dialogLabels.dismissButton"));
     }
     // If we're in user view then the button will have the remove functionality
     else if (userView == true) {
@@ -1012,7 +1017,9 @@ class _EventListWidgetState extends State<EventListWidget> {
           FlutterI18n.translate(
               context, "eventFinderList.dialogLabels.joinedEventTitle"),
           FlutterI18n.translate(
-              context, "eventFinderList.dialogLabels.joinedEventDescription"));
+              context, "eventFinderList.dialogLabels.joinedEventDescription"),
+          FlutterI18n.translate(
+              context, "eventFinderList.dialogLabels.dismissButton"));
     }
     /* If the user is not in event and we're in all events view, then the only
        option left is to join the event */

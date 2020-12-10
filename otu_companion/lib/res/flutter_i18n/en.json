@@ -61,6 +61,8 @@
             "emptyDescription": "Error: Please enter the event description!",
             "emptyLocation": "Error: Please enter the event location!",
             "checkLocation": "Error: Please click \"Check location\" to check validity!",
+            "invalidDateTitle": "Invalid Date Values",
+            "invalidDateContent": "End date and time cannot be earlier than start date and time",
             "errorTitle": "Error!",
             "errorButton": "Dismiss"
         }
