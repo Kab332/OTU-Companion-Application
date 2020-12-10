@@ -217,34 +217,29 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             return ListView.separated(
-                itemBuilder: (BuildContext context, int index) {
-                  if (type == 'time') {
-                    if (snapshot.data != null){
-                      return ListTile(
-                        title: Text(snapshot.data[index].room),
-                      );
-                    }
-                    else {
-                      return Container();
-                    }
+              itemBuilder: (BuildContext context, int index) {
+                if (snapshot.data == null){
+                    return Container();
+                }
+                else{
+                  if (type == 'time' && snapshot.data[index].room != null) {
+                    return ListTile(
+                      title: Text(snapshot.data[index].room),
+                    );
                   }
-                  else if (type == 'room'){
-                    if (snapshot.data != null){
-                      return ListTile(
-                        title: Text(DateFormat("h:mm a").format(DateFormat('HH:mm').parse(snapshot.data[index].time))),
-                      );
-                    }
-                    else {
-                      return Container();
-                    }
+                  else if (type == 'room' && snapshot.data[index].time != null){
+                    return ListTile(
+                      title: Text(DateFormat("h:mm a").format(DateFormat('HH:mm').parse(snapshot.data[index].time))),
+                    );
                   }
-                  else {
+                  else{
                     return Container();
                   }
-                },
-                separatorBuilder: (BuildContext context, int index) =>
-                    const Divider(),
-                itemCount: snapshot.data.length);
+                }
+              },
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(),
+              itemCount: snapshot.data.length);
           } else {
             return Container();
           }
