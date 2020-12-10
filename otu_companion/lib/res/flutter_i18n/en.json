@@ -1,11 +1,11 @@
 {
     "eventFinderList": {
         "buttonLabels": {
-            "joinedEvents": "Joined Test",
+            "joinedEvents": "Joined Events",
             "allEvents": "All Events",
-            "calendarView": "Calendar View",
-            "listView": "List View",
-            "tableView": "Table View"
+            "calendarView": "Calendar",
+            "listView": "List",
+            "tableView": "Table"
         },
         "form-labels": {
     

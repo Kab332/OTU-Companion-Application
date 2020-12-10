@@ -10,20 +10,20 @@ import 'res/routes/routes.dart';
 import 'res/values/theme.dart';
 
 Future<void> main() async {
-  final FlutterI18nDelegate flutterI18nDelegate = FlutterI18nDelegate(
-  translationLoader: FileTranslationLoader(
-        useCountryCode: false,
-        fallbackFile: 'en.json',
-        basePath: 'res/flutter_i18n'),
-  );
-  await flutterI18nDelegate.load(null);
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  final FlutterI18nDelegate flutterI18nDelegate = FlutterI18nDelegate(
+    translationLoader: FileTranslationLoader(
+        useCountryCode: false,
+        fallbackFile: 'en',
+        basePath: 'lib/res/flutter_i18n'),
+  );
+  await flutterI18nDelegate.load(null);
   runApp(MyApp(flutterI18nDelegate));
 }
 
 class MyApp extends StatelessWidget {
-  
   final FlutterI18nDelegate flutterI18nDelegate;
 
   MyApp(this.flutterI18nDelegate);

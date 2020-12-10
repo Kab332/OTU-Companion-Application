@@ -1,0 +1,14 @@
+{
+    "eventFinderList": {
+        "buttonLabels": {
+            "joinedEvents": "Événements rejoints",
+            "allEvents": "Tous les évènements",
+            "calendarView": "Calendrier",
+            "listView": "Liste",
+            "tableView": "Table"
+        },
+        "form-labels": {
+    
+        }
+    }
+}

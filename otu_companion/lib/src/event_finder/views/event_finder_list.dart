@@ -49,6 +49,8 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   User user;
 
+  Locale tempLocale = Locale("en");
+
   @override
   void initState() {
     super.initState();
@@ -74,6 +76,22 @@ class _EventListWidgetState extends State<EventListWidget> {
                   icon: Icon(Icons.insert_chart, color: Colors.white),
                   onPressed: _checkStats,
                 ),
+                IconButton(
+                  icon: Icon(Icons.taxi_alert),
+                  onPressed: () async {
+                    if (tempLocale.toString() == "en") {
+                      print('Switching to french');
+                      tempLocale = Locale('fr');
+                      await FlutterI18n.refresh(context, tempLocale);
+                    } else {
+                      print('Switching to english');
+                      tempLocale = Locale('en');
+                      await FlutterI18n.refresh(context, tempLocale);
+                    }
+
+                    setState(() {});
+                  },
+                )
               ]
             : <Widget>[
                 // Add an event
@@ -130,8 +148,8 @@ class _EventListWidgetState extends State<EventListWidget> {
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(0.0)),
             color: userView == true ? Colors.blue : Colors.grey[350],
-            child: Text("Joined Events"),
-            //child: Text(FlutterI18n.translate(context, "eventFinderList.buttonLabels.joinedEvents")),
+            child: Text(FlutterI18n.translate(
+                context, "eventFinderList.buttonLabels.joinedEvents")),
             onPressed: () {
               setState(() {
                 userView = true;
@@ -155,7 +173,8 @@ class _EventListWidgetState extends State<EventListWidget> {
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(0.0)),
             color: userView == false ? Colors.blue : Colors.grey[350],
-            child: Text("All Events"),
+            child: Text(FlutterI18n.translate(
+                context, "eventFinderList.buttonLabels.allEvents")),
             onPressed: () {
               setState(() {
                 userView = false;
@@ -186,7 +205,8 @@ class _EventListWidgetState extends State<EventListWidget> {
             color: this.views != null && this.views[0].viewType == "Calendar"
                 ? Colors.blue
                 : Colors.grey[350],
-            child: Text("Calendar"),
+            child: Text(FlutterI18n.translate(
+                context, "eventFinderList.buttonLabels.calendarView")),
             onPressed: () {
               setState(() {
                 this.views[0].viewType = "Calendar";
@@ -207,7 +227,8 @@ class _EventListWidgetState extends State<EventListWidget> {
             color: this.views != null && this.views[0].viewType == "List"
                 ? Colors.blue
                 : Colors.grey[350],
-            child: Text("List"),
+            child: Text(FlutterI18n.translate(
+                context, "eventFinderList.buttonLabels.listView")),
             onPressed: () {
               setState(() {
                 this.views[0].viewType = "List";
@@ -228,7 +249,8 @@ class _EventListWidgetState extends State<EventListWidget> {
             color: this.views != null && this.views[0].viewType == 'Table'
                 ? Colors.blue
                 : Colors.grey[350],
-            child: Text("Table"),
+            child: Text(FlutterI18n.translate(
+                context, "eventFinderList.buttonLabels.tableView")),
             onPressed: () {
               setState(() {
                 this.views[0].viewType = 'Table';
