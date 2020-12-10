@@ -24,6 +24,7 @@ class FirebaseDatabaseService
   static Future<bool> createNewUserProfile
   ({
     String id,
+    String imageURL,
     String name,
   }) async
   {
@@ -31,26 +32,6 @@ class FirebaseDatabaseService
       await _db.collection('profiles').doc(id).set({
         "id": id,
         "imageURL": "",
-        "name": name,
-      });
-    } on FirebaseException catch(e)
-    {
-      return false;
-    }
-    return true;
-  }
-
-  static Future<bool> updateUserProfile
-      ({
-    String id,
-    String imageURL = "",
-    String name,
-  }) async
-  {
-    try {
-      await _db.collection('profiles').doc(id).set({
-        "id": id,
-        "imageURL": imageURL,
         "name": name,
       });
     } on FirebaseException catch(e)
