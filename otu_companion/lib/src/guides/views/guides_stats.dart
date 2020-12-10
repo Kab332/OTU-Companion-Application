@@ -5,6 +5,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import '../model/guide_model.dart';
 import '../model/guide.dart';
 
+// Similar to event finder chart but this has 2 values measure for each name
 class GuideStats extends StatefulWidget {
   final String title;
   final String userID;
@@ -44,6 +45,7 @@ class _GuideStatsState extends State<GuideStats> {
                 ),
                 barGroupingType: charts.BarGroupingType.grouped,
                 vertical: false,
+                // The axis titles and the chart's legend
                 behaviors: [
                   new charts.ChartTitle(
                       FlutterI18n.translate(
@@ -63,6 +65,8 @@ class _GuideStatsState extends State<GuideStats> {
         });
   }
 
+  /* Converts a list of guides to data that can be used by a chart. Each guide
+     name has 2 values, # of up votes and # of down votes. */
   static List<charts.Series<Guide, String>> convertData(
       BuildContext context, List<Guide> guides) {
     if (guides != null) {

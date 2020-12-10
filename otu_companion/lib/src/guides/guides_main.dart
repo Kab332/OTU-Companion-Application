@@ -1,9 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-import 'views/guides_list.dart';
-
 import 'package:otu_companion/src/navigation_views/main_side_drawer.dart';
+import 'views/guides_list.dart';
 
 class GuidesMain extends StatefulWidget {
   GuidesMain({Key key, this.title}) : super(key: key);
