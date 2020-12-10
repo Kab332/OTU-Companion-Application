@@ -169,5 +169,27 @@
             "feedback": "Feedback",
             "about": "About"
         }
+    },
+    "feedbackPage": {
+        "hintText": "Enter Feedback Here...",
+        "isEmptyText": "Please Input Text"
+    },
+    "loginPage": {
+        "buttonLabels": {
+            "login": "Login",
+            "createAccount": "Create Account"
+        },
+        "labelText": {
+            "email": "Email",
+            "password": "Password"
+        },
+        "hintText": {
+            "email": "Enter Email",
+            "password": "Enter Password"
+        },
+        "isEmptyText": {
+            "email": "Email is required",
+            "password": "Password is required"
+        }
     }
 }

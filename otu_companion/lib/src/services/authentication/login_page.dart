@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:otu_companion/src/services/authentication/model/authentication_service.dart';
 import 'package:otu_companion/res/routes/routes.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 
 class LoginPage extends StatefulWidget
 {
@@ -118,10 +119,14 @@ class _LoginPageState extends State<LoginPage>
   Widget _buildEmailField()
   {
     return TextFormField(
-      decoration: const InputDecoration(
-        labelText: "Email",
+      decoration: InputDecoration(
+        labelText: FlutterI18n.translate(
+            context, "loginPage.labelText.email"
+        ),
         icon: Icon(Icons.email),
-        hintText:"Enter Email Address",
+        hintText: FlutterI18n.translate(
+            context, "loginPage.hintText.email"
+          ),
         border: const OutlineInputBorder(),
       ),
       controller: _email,
@@ -139,16 +144,22 @@ class _LoginPageState extends State<LoginPage>
     return TextFormField(
       obscureText: true,
       obscuringCharacter: "*",
-      decoration: const InputDecoration(
-          labelText: "Password",
+      decoration: InputDecoration(
+          labelText: FlutterI18n.translate(
+            context, "loginPage.labelText.password"
+          ),
           icon: Icon(Icons.lock),
-          hintText:"Enter Password",
+          hintText: FlutterI18n.translate(
+            context, "loginPage.hintText.password"
+          ),
           border: const OutlineInputBorder(),
       ),
       controller: _password,
       validator: (String value) {
         if (value.isEmpty) {
-          return "Password is required";
+          return FlutterI18n.translate(
+            context, "loginPage.isEmptyText"
+          );
         }
         return null;
       },
@@ -197,7 +208,9 @@ class _LoginPageState extends State<LoginPage>
                 ),
                 child: Center(
                   child: Text(
-                    "Login",
+                    FlutterI18n.translate(
+                      context, "loginPage.buttonLabels.login"
+                    ),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -234,7 +247,9 @@ class _LoginPageState extends State<LoginPage>
                 ),
                 child: Center(
                   child: Text(
-                    "Create Account",
+                    FlutterI18n.translate(
+                      context, "loginPage.buttonLabels.createAccount"
+                    ),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,

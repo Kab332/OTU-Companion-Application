@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:otu_companion/src/services/firebase_database_service.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 
 class FeedBackPage extends StatefulWidget
 {
@@ -33,11 +34,15 @@ class _FeedBackPageState extends State<FeedBackPage>
               maxLines: 20,
               controller: _feedBack,
               decoration: new InputDecoration(
-                hintText: "Enter Feedback Here...",
+                hintText: FlutterI18n.translate(
+                  context, "feedbackPage.hintText"
+                )
               ),
               validator: (String value) {
                 if (value.isEmpty) {
-                  return "Please Input Text";
+                  return FlutterI18n.translate(
+                    context, "feedbackPage.isEmptyText"
+                  );
                 }
                 return null;
               },
