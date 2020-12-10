@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,23 +31,37 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        StreamProvider<User>.value(
-          value: FirebaseAuth.instance.authStateChanges(),
-        ),
-      ],
-      child: MaterialApp(
-        title: 'OTU Companion Hub',
-        theme: Themes.mainAppTheme(),
-        initialRoute: Routes.loginCheckerPage,
-        onGenerateRoute: Routes.generateRoute,
-        localizationsDelegates: [
-          flutterI18nDelegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-        ],
-      ),
+    return FutureBuilder(
+      future: Firebase.initializeApp(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          print('Error initializing firebase');
+          return Text('Error initializing firebase');
+        }
+
+        if (snapshot.connectionState == ConnectionState.done) {
+          return MultiProvider(
+            providers: [
+              StreamProvider<User>.value(
+                value: FirebaseAuth.instance.authStateChanges(),
+              ),
+            ],
+            child: MaterialApp(
+              title: 'OTU Companion Hub',
+              theme: Themes.mainAppTheme(),
+              initialRoute: Routes.loginCheckerPage,
+              onGenerateRoute: Routes.generateRoute,
+              localizationsDelegates: [
+                flutterI18nDelegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+            ),
+          );
+        } else {
+          return CircularProgressIndicator();
+        }
+      }
     );
   }
 }
