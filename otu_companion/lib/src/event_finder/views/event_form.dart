@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_map/flutter_map.dart';
@@ -9,7 +8,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'dart:async';
-
 import '../model/event.dart';
 import '../model/notification_utilities.dart';
 

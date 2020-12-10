@@ -1,23 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:otu_companion/src/event_finder/model/notification_utilities.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong/latlong.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:otu_companion/src/navigation_views/main_side_drawer.dart';
+import 'package:otu_companion/src/event_finder/model/notification_utilities.dart';
+import 'package:otu_companion/src/services/authentication/model/authentication_service.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'dart:async';
-
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong/latlong.dart';
-
 import '../model/event_model.dart';
 import '../model/event.dart';
 import '../model/view.dart';
 import '../model/view_model.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:otu_companion/src/services/authentication/model/authentication_service.dart';
 
 class EventListWidget extends StatefulWidget {
   EventListWidget({Key key, this.title}) : super(key: key);
@@ -29,7 +26,6 @@ class EventListWidget extends StatefulWidget {
 }
 
 class _EventListWidgetState extends State<EventListWidget> {
-  // List<Event> events;
   List<View> views;
   EventModel _eventModel = EventModel();
   final _viewModel = ViewModel();
@@ -141,6 +137,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                 userView = true;
                 _selectedEvent = null;
                 _selectedDate = null;
+                _selectedColumn = null;
 
                 // Refreshing Calendar if we were in calendar view
                 if (this.views != null &&
@@ -168,6 +165,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                 userView = false;
                 _selectedEvent = null;
                 _selectedDate = null;
+                _selectedColumn = null;
 
                 if (this.views != null &&
                     this.views[0].viewType == "Calendar") {
@@ -205,6 +203,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                 this.views[0].viewType = "Calendar";
                 _selectedEvent = null;
                 _selectedDate = null;
+                _selectedColumn = null;
                 _calendarEvents.clear();
                 _viewModel.updateView(
                     View(id: this.views[0].id, viewType: "Calendar"));
@@ -228,6 +227,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                 this.views[0].viewType = "List";
                 _selectedEvent = null;
                 _selectedDate = null;
+                _selectedColumn = null;
                 _calendarEvents.clear();
                 _viewModel
                     .updateView(View(id: this.views[0].id, viewType: "List"));
@@ -251,6 +251,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                 this.views[0].viewType = 'Table';
                 _selectedEvent = null;
                 _selectedDate = null;
+                _selectedColumn = null;
                 _calendarEvents.clear();
                 _viewModel
                     .updateView(View(id: this.views[0].id, viewType: "Table"));
