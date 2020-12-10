@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:otu_companion/src/room_finder/model/room_model.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'model/room.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 
 class RoomFinderMain extends StatefulWidget {
   RoomFinderMain({Key key, this.title}) : super(key: key);
@@ -93,7 +94,7 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
   Widget _buildSearch(BuildContext context) {
     return Column(children: [
       Text(
-        "Search by Time...",
+        FlutterI18n.translate(context, "roomFinder.formLabels.searchByTime"),
         style: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.bold,
@@ -112,8 +113,8 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
                       ),
                       items: snapshot.data,
                       value: selectedBuilding,
-                      hint: "Building (Optional)",
-                      searchHint: "Select one",
+                      hint: FlutterI18n.translate(context, "roomFinder.formLabels.buildingHint"),
+                      searchHint: FlutterI18n.translate(context, "roomFinder.formLabels.searchHint"),
                       onChanged: (value) {
                         setState(() {
                           selectedBuilding = value;
@@ -166,11 +167,11 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
         },
         color: Colors.blue,
         textColor: Colors.white,
-        child: Text("Confirm Time"),
+        child: Text(FlutterI18n.translate(context, "roomFinder.buttonLabels.confirmTime")),
       ),
       Divider(),
       Text(
-        "Search by Room...",
+        FlutterI18n.translate(context, "roomFinder.formLabels.searchByRoom"),
         style: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.bold,
@@ -191,8 +192,8 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
                         ),
                         items: snapshot.data,
                         value: selectedRoom,
-                        hint: "e.g. UA1120",
-                        searchHint: "Select one",
+                        hint: FlutterI18n.translate(context, "roomFinder.formLabels.roomHint"),
+                        searchHint: FlutterI18n.translate(context, "roomFinder.formLabels.searchHint"),
                         onChanged: (value) {
                           setState(() {
                             selectedRoom = value;
@@ -251,14 +252,14 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
   Widget _buildListHeader(BuildContext context, String type) {
     if (type == 'time') {
       return Text(
-        "List of available rooms at specified time...",
+        FlutterI18n.translate(context, "roomFinder.listLabels.roomList"),
         style: TextStyle(
           fontWeight: FontWeight.bold,
         ),
       );
     } else if (type == 'room') {
       return Text(
-        "List of available times at specified room...",
+        FlutterI18n.translate(context, "roomFinder.listLabels.timeList"),
         style: TextStyle(
           fontWeight: FontWeight.bold,
         ),
@@ -362,7 +363,7 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
   // Creates FAQ popup
   showAlertDialog(BuildContext context) {
     Widget close = FlatButton(
-      child: Text("Close"),
+      child: Text(FlutterI18n.translate(context, "roomFinder.popup.close")),
       onPressed: () {
         Navigator.pop(context);
       },
@@ -370,12 +371,8 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
 
     // Sets up alert
     AlertDialog alert = AlertDialog(
-      title: Text("FAQ"),
-      content: Text("The empty room finder is a simple tool that shows either "
-          "the empty rooms between a specified time range or the empty times "
-          "(at 10 minute intervals) for a specified room.\nTimes between "
-          "9:30pm to 8:00am are not included as they are inherently free. No "
-          "classes are scheduled at those times."),
+      title: Text(FlutterI18n.translate(context, "roomFinder.popup.faq")),
+      content: Text(FlutterI18n.translate(context, "roomFinder.popup.content")),
       actions: [
         close,
       ],

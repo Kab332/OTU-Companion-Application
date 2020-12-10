@@ -239,5 +239,26 @@
             "lastName": "Password is required",
             "pictureURL": "Picture URL is required"
         }
+    },
+    "roomFinder": {
+        "formLabels": {
+            "searchByTime": "Search by Time...",
+            "buildingHint": "Building (Optional)",
+            "searchHint": "Select One",
+            "searchByRoom": "Search by Room...",
+            "roomHint": "e.g. UA1120"
+        },
+        "buttonLabels": {
+            "confirmTime": "Confirm Time"
+        },
+        "listLabels": {
+            "roomList": "List of available rooms at specified time...",
+            "timeList": "List of available times at specified room..."
+        },
+        "popup": {
+            "close": "Close",
+            "faq": "FAQ",
+            "content": "The empty room finder is a simple tool that shows either the empty rooms between a specified time range or the empty times (at 10 minute intervals) for a specified room.\nTimes between 9:30pm to 8:00am are not included as they are inherently free. No classes are scheduled at those times."
+        }
     }
 }
