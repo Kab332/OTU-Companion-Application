@@ -41,6 +41,9 @@
             "joinedEventTitle": "Joined Event",
             "joinedEventDescription": "You are in this event.",
             "dismissButton": "Dismiss"
+        },
+        "messages": {
+            "noEvents": "You are not in any events :("
         }
     },
     "eventForm": {
@@ -110,6 +113,9 @@
             "guideDeleted": "Guide has been deleted.",
             "guideEdited": "Guide has been edited.",
             "dismissButton": "Dismiss"
+        },
+        "messages": {
+            "noGuides": "We couldn't find any guides, perhaps you can try creating one yourself :)"
         }
     },
     "guidesForm": {

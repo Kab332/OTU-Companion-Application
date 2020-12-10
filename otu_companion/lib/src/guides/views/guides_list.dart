@@ -93,12 +93,28 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
         future: _guideModel.getAll(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
-            return ListView(
-              children: snapshot.data.docs
-                  .map((DocumentSnapshot document) =>
-                      _buildGuide(context, document))
-                  .toList(),
-            );
+            if (snapshot.data.docs.isNotEmpty) {
+              return ListView(
+                children: snapshot.data.docs
+                    .map((DocumentSnapshot document) =>
+                        _buildGuide(context, document))
+                    .toList(),
+              );
+            } else {
+              return Container(
+                padding: const EdgeInsets.all(16.0),
+                child: Center(
+                  child: Text(
+                    FlutterI18n.translate(
+                      context, "guidesList.messages.noGuides"
+                    ),
+                    style: TextStyle(
+                      fontSize: 16.0
+                    ),
+                  ),
+                ),
+              );
+            }
           } else {
             return CircularProgressIndicator();
           }

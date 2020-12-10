@@ -294,12 +294,28 @@ class _EventListWidgetState extends State<EventListWidget> {
             : _eventModel.getAll(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
-            return ListView(
-              children: snapshot.data.docs
-                  .map((DocumentSnapshot document) =>
-                      _buildEvent(context, document))
-                  .toList(),
-            );
+            if (snapshot.data.docs.isNotEmpty) {
+              return ListView(
+                children: snapshot.data.docs
+                    .map((DocumentSnapshot document) =>
+                        _buildEvent(context, document))
+                    .toList(),
+              );
+            } else {
+              return Container(
+                padding: const EdgeInsets.all(16.0),
+                child: Center(
+                  child: Text(
+                    FlutterI18n.translate(
+                      context, "eventFinderList.messages.noEvents"
+                    ),
+                    style: TextStyle(
+                      fontSize: 16.0
+                    ),
+                  ),
+                ),
+              );
+            }
           } else {
             return CircularProgressIndicator();
           }
@@ -315,193 +331,209 @@ class _EventListWidgetState extends State<EventListWidget> {
             : _eventModel.getAll(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
-            return Container(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
+            if (snapshot.data.docs.isNotEmpty) {
+              return Container(
                 child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    showCheckboxColumn: userView == false,
-                    dataRowHeight: 100.0,
-                    columns: <DataColumn>[
-                      DataColumn(
-                        label: userView == true
-                            ? Text(
-                                FlutterI18n.translate(context,
-                                    "eventFinderList.tableLabels.leaveEvent"),
-                              )
-                            : Text(
-                                FlutterI18n.translate(context,
-                                    "eventFinderList.tableLabels.joinEvent"),
-                              ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          FlutterI18n.translate(context,
-                              "eventFinderList.tableLabels.viewDetails"),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          FlutterI18n.translate(
-                              context, "eventFinderList.tableLabels.name"),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          FlutterI18n.translate(context,
-                              "eventFinderList.tableLabels.description"),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          FlutterI18n.translate(
-                              context, "eventFinderList.tableLabels.startDate"),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          FlutterI18n.translate(
-                              context, "eventFinderList.tableLabels.endDate"),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          FlutterI18n.translate(
-                              context, "eventFinderList.tableLabels.location"),
-                        ),
-                      ),
-                    ],
-                    rows: snapshot.data.docs
-                        .map((document) => DataRow(
-                              selected: userView == false &&
-                                  _selectedColumn == document.id,
-                              onSelectChanged: (val) {
-                                setState(() {
-                                  _selectedEvent = Event.fromMap(
-                                      document.data(),
-                                      reference: document.reference);
-                                  _selectedColumn = document.id;
-                                });
-                              },
-                              cells: <DataCell>[
-                                // Join or leave event button
-                                DataCell(
-                                  IconButton(
-                                      icon: user.uid ==
-                                              Event.fromMap(document.data(),
-                                                      reference:
-                                                          document.reference)
-                                                  .createdBy
-                                          ? Icon(
-                                              Icons.person,
-                                              color: Colors.blue,
-                                            )
-                                          : userView == true
-                                              ? Icon(
-                                                  Icons.cancel,
-                                                  color: Colors.red,
-                                                )
-                                              : Event.fromMap(document.data(),
-                                                          reference: document
-                                                              .reference)
-                                                      .participants
-                                                      .contains(user.uid)
-                                                  ? Icon(
-                                                      Icons.people,
-                                                      color: Colors.blue,
-                                                    )
-                                                  : Icon(Icons.add,
-                                                      color: Colors.green),
-                                      onPressed: () {
-                                        _manageEvent(Event.fromMap(
-                                            document.data(),
-                                            reference: document.reference));
-                                      }),
+                  scrollDirection: Axis.vertical,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      showCheckboxColumn: userView == false,
+                      dataRowHeight: 100.0,
+                      columns: <DataColumn>[
+                        DataColumn(
+                          label: userView == true
+                              ? Text(
+                                  FlutterI18n.translate(context,
+                                      "eventFinderList.tableLabels.leaveEvent"),
+                                )
+                              : Text(
+                                  FlutterI18n.translate(context,
+                                      "eventFinderList.tableLabels.joinEvent"),
                                 ),
-                                // View icon
-                                DataCell(
-                                  IconButton(
-                                    icon: Icon(Icons.visibility),
-                                    onPressed: () {
-                                      _showViewDialog(
-                                          context,
-                                          Event.fromMap(document.data(),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            FlutterI18n.translate(context,
+                                "eventFinderList.tableLabels.viewDetails"),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            FlutterI18n.translate(
+                                context, "eventFinderList.tableLabels.name"),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            FlutterI18n.translate(context,
+                                "eventFinderList.tableLabels.description"),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            FlutterI18n.translate(
+                                context, "eventFinderList.tableLabels.startDate"),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            FlutterI18n.translate(
+                                context, "eventFinderList.tableLabels.endDate"),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            FlutterI18n.translate(
+                                context, "eventFinderList.tableLabels.location"),
+                          ),
+                        ),
+                      ],
+                      rows: snapshot.data.docs
+                          .map((document) => DataRow(
+                                selected: userView == false &&
+                                    _selectedColumn == document.id,
+                                onSelectChanged: (val) {
+                                  setState(() {
+                                    _selectedEvent = Event.fromMap(
+                                        document.data(),
+                                        reference: document.reference);
+                                    _selectedColumn = document.id;
+                                  });
+                                },
+                                cells: <DataCell>[
+                                  // Join or leave event button
+                                  DataCell(
+                                    IconButton(
+                                        icon: user.uid ==
+                                                Event.fromMap(document.data(),
+                                                        reference:
+                                                            document.reference)
+                                                    .createdBy
+                                            ? Icon(
+                                                Icons.person,
+                                                color: Colors.blue,
+                                              )
+                                            : userView == true
+                                                ? Icon(
+                                                    Icons.cancel,
+                                                    color: Colors.red,
+                                                  )
+                                                : Event.fromMap(document.data(),
+                                                            reference: document
+                                                                .reference)
+                                                        .participants
+                                                        .contains(user.uid)
+                                                    ? Icon(
+                                                        Icons.people,
+                                                        color: Colors.blue,
+                                                      )
+                                                    : Icon(Icons.add,
+                                                        color: Colors.green),
+                                        onPressed: () {
+                                          _manageEvent(Event.fromMap(
+                                              document.data(),
                                               reference: document.reference));
+                                        }),
+                                  ),
+                                  // View icon
+                                  DataCell(
+                                    IconButton(
+                                      icon: Icon(Icons.visibility),
+                                      onPressed: () {
+                                        _showViewDialog(
+                                            context,
+                                            Event.fromMap(document.data(),
+                                                reference: document.reference));
+                                      },
+                                    ),
+                                  ),
+                                  // Event name
+                                  DataCell(
+                                    Text(Event.fromMap(document.data(),
+                                            reference: document.reference)
+                                        .name),
+                                    onTap: () {
+                                      setState(() {
+                                        _selectedColumn = document.id;
+                                        _selectedEvent = Event.fromMap(
+                                            document.data(),
+                                            reference: document.reference);
+                                      });
                                     },
                                   ),
-                                ),
-                                // Event name
-                                DataCell(
-                                  Text(Event.fromMap(document.data(),
-                                          reference: document.reference)
-                                      .name),
-                                  onTap: () {
-                                    setState(() {
-                                      _selectedColumn = document.id;
+                                  // Event description
+                                  DataCell(
+                                    Container(
+                                        width: 200.0,
+                                        child: Text(Event.fromMap(document.data(),
+                                                reference: document.reference)
+                                            .description)),
+                                    onTap: () {
                                       _selectedEvent = Event.fromMap(
                                           document.data(),
                                           reference: document.reference);
-                                    });
-                                  },
-                                ),
-                                // Event description
-                                DataCell(
-                                  Container(
-                                      width: 200.0,
-                                      child: Text(Event.fromMap(document.data(),
-                                              reference: document.reference)
-                                          .description)),
-                                  onTap: () {
-                                    _selectedEvent = Event.fromMap(
-                                        document.data(),
-                                        reference: document.reference);
-                                  },
-                                ),
-                                // Event start date
-                                DataCell(
-                                  Text(Event.fromMap(document.data(),
-                                          reference: document.reference)
-                                      .startDateTime
-                                      .toLocal()
-                                      .toString()),
-                                  onTap: () {
-                                    _selectedEvent = Event.fromMap(
-                                        document.data(),
-                                        reference: document.reference);
-                                  },
-                                ),
-                                // Event end date
-                                DataCell(
-                                  Text(Event.fromMap(document.data(),
-                                          reference: document.reference)
-                                      .endDateTime
-                                      .toLocal()
-                                      .toString()),
-                                  onTap: () {
-                                    _selectedEvent = Event.fromMap(
-                                        document.data(),
-                                        reference: document.reference);
-                                  },
-                                ),
-                                // Event location
-                                DataCell(
-                                  Text(Event.fromMap(document.data(),
-                                          reference: document.reference)
-                                      .location),
-                                  onTap: () {
-                                    _selectedEvent = Event.fromMap(
-                                        document.data(),
-                                        reference: document.reference);
-                                  },
-                                ),
-                              ],
-                            ))
-                        .toList(),
+                                    },
+                                  ),
+                                  // Event start date
+                                  DataCell(
+                                    Text(Event.fromMap(document.data(),
+                                            reference: document.reference)
+                                        .startDateTime
+                                        .toLocal()
+                                        .toString()),
+                                    onTap: () {
+                                      _selectedEvent = Event.fromMap(
+                                          document.data(),
+                                          reference: document.reference);
+                                    },
+                                  ),
+                                  // Event end date
+                                  DataCell(
+                                    Text(Event.fromMap(document.data(),
+                                            reference: document.reference)
+                                        .endDateTime
+                                        .toLocal()
+                                        .toString()),
+                                    onTap: () {
+                                      _selectedEvent = Event.fromMap(
+                                          document.data(),
+                                          reference: document.reference);
+                                    },
+                                  ),
+                                  // Event location
+                                  DataCell(
+                                    Text(Event.fromMap(document.data(),
+                                            reference: document.reference)
+                                        .location),
+                                    onTap: () {
+                                      _selectedEvent = Event.fromMap(
+                                          document.data(),
+                                          reference: document.reference);
+                                    },
+                                  ),
+                                ],
+                              ))
+                          .toList(),
+                    ),
                   ),
                 ),
-              ),
-            );
+              );
+            } else {
+              return Container(
+                padding: const EdgeInsets.all(16.0),
+                child: Center(
+                  child: Text(
+                    FlutterI18n.translate(
+                      context, "eventFinderList.messages.noEvents"
+                    ),
+                    style: TextStyle(
+                      fontSize: 16.0
+                    ),
+                  ),
+                ),
+              );
+            }
           } else {
             return CircularProgressIndicator();
           }
