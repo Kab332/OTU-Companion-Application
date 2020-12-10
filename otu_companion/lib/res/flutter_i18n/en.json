@@ -125,5 +125,29 @@
             "upVotes": "Up votes",
             "downVotes": "Down votes"
         }
+    },
+    "routes": {
+        "titles": {
+            "dashboard": "Dashboard",
+            "eventFinder": "Event Finder",
+            "eventForm": "Event Form",
+            "eventStats": "Event Stats",
+            "emptyRoomFinder": "Empty Room Finder",
+            "settings": "Settings",
+            "appearance": "Appearance",
+            "feedback": "Feedback",
+            "about": "About",
+            "profile": "Profile",
+            "changeProfileInfo": "Change Profile Info",
+            "linkAccounts": "Link Accounts",
+            "accountCreation": "Account Creation",
+            "messaging": "Messaging",
+            "guides": "Guides",
+            "guidesForm": "Guides Form",
+            "guidesStats": "Guides Stats",
+            "friends": "Friends",
+            "addFriends": "Add Friends",
+            "friend": "Friend"
+        }
     }
 }

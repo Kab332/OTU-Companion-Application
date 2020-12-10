@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
+
 import 'package:otu_companion/src/event_finder/event_finder_main.dart';
 import 'package:otu_companion/src/event_finder/views/event_form.dart';
 import 'package:otu_companion/src/event_finder/views/event_stats.dart';
@@ -63,51 +65,64 @@ class Routes {
       case homeMain:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                HomePageMain(title: 'Dash Board'));
+                HomePageMain(title: FlutterI18n.translate(
+            context, "routes.titles.dashboard")));
       case eventFinderMain:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                EventFinderMain(title: 'Event Finder'));
+                EventFinderMain(title: FlutterI18n.translate(
+            context, "routes.titles.eventFinder")));
       case eventForm:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                EventFormPage(title: 'Event Form', event: settings.arguments));
+                EventFormPage(title: FlutterI18n.translate(
+            context, "routes.titles.eventForm"), event: settings.arguments));
       case eventStats:
         return MaterialPageRoute(
-            builder: (BuildContext context) => EventStats(
-                  title: 'Event Stats',
+            builder: (BuildContext context) => EventStats(title: FlutterI18n.translate(
+                  context, "routes.titles.eventStats"),
                   userID: settings.arguments,
                 ));
       case roomFinderMain:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                RoomFinderMain(title: 'Empty Room Finder'));
+                RoomFinderMain(title: FlutterI18n.translate(
+            context, "routes.titles.emptyRoomFinder")));
       case settingMain:
         return MaterialPageRoute(
-            builder: (BuildContext context) => SettingMain(title: 'Settings'));
+            builder: (BuildContext context) => SettingMain(
+              title: FlutterI18n.translate(
+              context, "routes.titles.settings")));
       case appearanceSettingPage:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                AppearanceSettingPage(title: 'Appearance'));
+                AppearanceSettingPage(title: FlutterI18n.translate(
+            context, "routes.titles.appearance")));
       case feedBackPage:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                FeedBackPage(title: 'Feed Back'));
+                FeedBackPage(title: FlutterI18n.translate(
+            context, "routes.titles.feedback")));
       case aboutPage:
         return MaterialPageRoute(
-            builder: (BuildContext context) => AboutPage(title: 'About'));
+            builder: (BuildContext context) => AboutPage(title: FlutterI18n.translate(
+            context, "routes.titles.about")));
       case profileMain:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                ProfilePageMain(title: 'Profile'));
+                ProfilePageMain(
+                  title: FlutterI18n.translate(
+                  context, "routes.titles.profile")));
       case changeProfileInfoPage:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                ChangeProfileInfoPage(title: "Change Profile Info"));
+                ChangeProfileInfoPage(title: FlutterI18n.translate(
+            context, "routes.titles.changeProfileInfo")));
       case linkProfilePage:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                LinkProfilePage(title: "Link Accounts"));
+                LinkProfilePage(title: FlutterI18n.translate(
+            context, "routes.titles.linkAccounts")));
       case loginPage:
         return MaterialPageRoute(
             builder: (BuildContext context) => LoginPage());
@@ -117,35 +132,48 @@ class Routes {
       case signUpPage:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                SignUpPage(title: "Account Creation"));
+                SignUpPage(title: FlutterI18n.translate(
+            context, "routes.titles.accountCreation")));
       case chatMain:
         return MaterialPageRoute(
-            builder: (BuildContext context) => ChatPage(title: "Messaging"));
+            builder: (BuildContext context) => ChatPage(
+              title: FlutterI18n.translate(
+              context, "routes.titles.messaging")));
       case guidesMain:
         return MaterialPageRoute(
-            builder: (BuildContext context) => GuidesMain(title: "Guides"));
+            builder: (BuildContext context) => GuidesMain(
+              title: FlutterI18n.translate(
+              context, "routes.titles.guides")));
       case guidesForm:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                GuideFormPage(title: "Guides Form", guide: settings.arguments));
+                GuideFormPage(title: FlutterI18n.translate(
+            context, "routes.titles.guidesForm"), guide: settings.arguments));
       case guidesStats:
         return MaterialPageRoute(
             builder: (BuildContext context) => GuideStats(
-                  title: 'Guides Stats',
-                  userID: settings.arguments,
+              title: FlutterI18n.translate(
+                context, "routes.titles.guidesStats"),
+              userID: settings.arguments,
                 ));
       case chatMain:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                ChatPage(title: "Friends"));
+                ChatPage(
+                  title: FlutterI18n.translate(
+                  context, "routes.titles.friends")));
       case chatAddFriend:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                AddFriendPage(title: "Add Friend"));
+                AddFriendPage(
+                  title: FlutterI18n.translate(
+                  context, "routes.titles.addFriends")));
       case messagePage:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                MessagePage(title: "Friend"));
+                MessagePage(
+                  title: FlutterI18n.translate(
+                  context, "routes.titles.friend")));
     }
 
     return null;
