@@ -27,6 +27,7 @@ class Event {
     return 'event: $id, $name, $description, $createdBy, ($startDateTime) ($endDateTime), $location, $geoPoint, $participants';
   }
 
+  // entity from map function
   Event.fromMap(Map<String, dynamic> maps, {this.reference}) {
     this.id = reference.id;
     this.name = maps['name'];
@@ -45,6 +46,7 @@ class Event {
     }
   }
 
+  // entity to map function
   Map<String, dynamic> toMap() {
     return {
       'id': this.id,

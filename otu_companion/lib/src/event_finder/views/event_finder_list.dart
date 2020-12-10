@@ -29,7 +29,6 @@ class EventListWidget extends StatefulWidget {
 }
 
 class _EventListWidgetState extends State<EventListWidget> {
-  // List<Event> events;
   List<View> views;
   EventModel _eventModel = EventModel();
   final _viewModel = ViewModel();
@@ -52,6 +51,7 @@ class _EventListWidgetState extends State<EventListWidget> {
   @override
   void initState() {
     super.initState();
+    // initializing time zones, notification and getting views
     tz.initializeTimeZones();
     _eventNotifications.init();
     _getViews();
@@ -59,6 +59,7 @@ class _EventListWidgetState extends State<EventListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // authenticate and get current user 
     user = _authenticationService.getCurrentUser();
 
     return Scaffold(
@@ -169,12 +170,14 @@ class _EventListWidgetState extends State<EventListWidget> {
                 _selectedEvent = null;
                 _selectedDate = null;
 
+                // if current view is calendar view, refresh calendar and set selected day
                 if (this.views != null &&
                     this.views[0].viewType == "Calendar") {
                   _calendarController.setSelectedDay(_currentDate);
                   _showCustomSnackBar(FlutterI18n.translate(context,
                       "eventFinderList.snackBarLabels.refreshCalendar"));
                 }
+                // clear calendar buttons array
                 _calendarEvents.clear();
               });
             },
@@ -224,6 +227,7 @@ class _EventListWidgetState extends State<EventListWidget> {
             child: Text(FlutterI18n.translate(
                 context, "eventFinderList.buttonLabels.listView")),
             onPressed: () {
+              // set view to list view and clear variables, 
               setState(() {
                 this.views[0].viewType = "List";
                 _selectedEvent = null;
@@ -247,6 +251,7 @@ class _EventListWidgetState extends State<EventListWidget> {
             child: Text(FlutterI18n.translate(
                 context, "eventFinderList.buttonLabels.tableView")),
             onPressed: () {
+              // set view to table and clear variables
               setState(() {
                 this.views[0].viewType = 'Table';
                 _selectedEvent = null;
@@ -755,6 +760,7 @@ class _EventListWidgetState extends State<EventListWidget> {
       print("Views: ${views[i].toMap()}");
     }
 
+    // refresh and assign to global variable
     if (this.views == null) {
       setState(() {
         this.views = views;
@@ -1023,6 +1029,7 @@ class _EventListWidgetState extends State<EventListWidget> {
     }
   }
 
+  // void function to send a notification now or later, depending on the start date 
   void sendNotification(Event event) {
     var secondsDiff = (event.startDateTime.millisecondsSinceEpoch -
             tz.TZDateTime.now(tz.local).millisecondsSinceEpoch) ~/
