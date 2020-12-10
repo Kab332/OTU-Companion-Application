@@ -70,5 +70,46 @@
             "domainLabel": "Event Names",
             "measureLabel": "Number of participants"
         }
+    },
+    "guidesList": {
+        "buttonLabels": {
+            "submitGuide": "Submit a Guide"
+        },
+        "listLabels": {
+            "by": "By: "
+        },
+        "formLabels": {
+            "name": "Guide Name",
+            "by": "By: ",
+            "description": "Description",
+            "dismissButton": "Dismiss"
+        },
+        "snackBarLabels": {
+            "guideAdded": "Guide has been added.",
+            "guideDeleted": "Guide has been deleted.",
+            "guideEdited": "Guide has been edited.",
+            "dismissButton": "Dismiss"
+        }
+    },
+    "guidesForm": {
+        "formLabels": {
+            "name":"Guide Name",
+            "description":"Description"
+        },
+        "errorLabels": {
+            "emptyName": "Error: Please enter the guide name!",
+            "nameLength": "Error: Max name length is 12 characters",
+            "emptyDescription": "Error: Please enter the guide description!"
+        }
+    },
+    "guidesStats": {
+        "chartLabels": {
+            "domainLabel": "Guide Names",
+            "measureLabel": "Number of Votes"
+        },
+        "legendLabels": {
+            "upVotes": "Up votes",
+            "downVotes": "Down votes"
+        }
     }
 }

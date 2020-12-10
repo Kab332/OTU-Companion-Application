@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:charts_flutter/flutter.dart' as charts;
 
+import 'package:flutter_i18n/flutter_i18n.dart';
+
 import '../model/guide_model.dart';
 import '../model/guide.dart';
 
@@ -36,6 +38,7 @@ class _GuideStatsState extends State<GuideStats> {
             return Container(
               child: charts.BarChart(
                 convertData(
+                  context,
                   snapshot.data.docs
                       .map((document) => Guide.fromMap(document.data(),
                           reference: document.reference))
@@ -45,9 +48,13 @@ class _GuideStatsState extends State<GuideStats> {
                 barGroupingType: charts.BarGroupingType.grouped,
                 vertical: false,
                 behaviors: [
-                  new charts.ChartTitle("Guide Names",
+                  new charts.ChartTitle(
+                      FlutterI18n.translate(
+                          context, "guidesStats.chartLabels.domainLabel"),
                       behaviorPosition: charts.BehaviorPosition.start),
-                  new charts.ChartTitle("Number of Votes",
+                  new charts.ChartTitle(
+                      FlutterI18n.translate(
+                          context, "guidesStats.chartLabels.measureLabel"),
                       behaviorPosition: charts.BehaviorPosition.bottom),
                   new charts.SeriesLegend(),
                 ],
@@ -59,18 +66,21 @@ class _GuideStatsState extends State<GuideStats> {
         });
   }
 
-  static List<charts.Series<Guide, String>> convertData(List<Guide> guides) {
+  static List<charts.Series<Guide, String>> convertData(
+      BuildContext context, List<Guide> guides) {
     if (guides != null) {
       return [
         new charts.Series<Guide, String>(
-          id: "Up votes",
+          id: FlutterI18n.translate(
+              context, "guidesStats.legendLabels.upVotes"),
           domainFn: (Guide guide, _) => guide.name,
           measureFn: (Guide guide, _) => guide.upVoters.length,
           colorFn: (_, __) => charts.MaterialPalette.deepOrange.shadeDefault,
           data: guides,
         ),
         new charts.Series<Guide, String>(
-          id: "Down votes",
+          id: FlutterI18n.translate(
+              context, "guidesStats.legendLabels.downVotes"),
           domainFn: (Guide guide, _) => guide.name,
           measureFn: (Guide guide, _) => guide.downVoters.length,
           colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,

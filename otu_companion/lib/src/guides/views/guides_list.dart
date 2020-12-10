@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../model/guide.dart';
 import '../model/guide_model.dart';
 
+import 'package:flutter_i18n/flutter_i18n.dart';
+
 import 'package:otu_companion/src/navigation_views/main_side_drawer.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -79,7 +81,8 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
       width: double.infinity,
       child: RaisedButton(
         color: Colors.blue,
-        child: Text("Submit a Guide"),
+        child: Text(FlutterI18n.translate(
+            context, "guidesList.buttonLabels.submitGuide")),
         onPressed: _addGuide,
       ),
     );
@@ -128,7 +131,9 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
     return Card(
         child: ListTile(
             title: Text(guide.name),
-            subtitle: Text("By: " + guide.username),
+            subtitle: Text(
+                FlutterI18n.translate(context, "guidesList.listLabels.by") +
+                    guide.username),
             leading: IconButton(
               icon: Icon(Icons.book, color: Colors.blue),
               onPressed: () {
@@ -178,7 +183,8 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
       guide.downVoters = [];
       setState(() {
         _guideModel.insert(guide);
-        _showCustomSnackBar("Guide has been added.");
+        _showCustomSnackBar(FlutterI18n.translate(
+            context, "guidesList.snackBarLabels.guideAdded"));
       });
     }
     print("Adding guide $guide...");
@@ -188,7 +194,8 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
     if (_selectedGuide != null) {
       setState(() {
         _guideModel.delete(_selectedGuide);
-        _showCustomSnackBar("Guide has been deleted.");
+        _showCustomSnackBar(FlutterI18n.translate(
+            context, "guidesList.snackBarLabels.guideDeleted"));
       });
     }
   }
@@ -210,7 +217,8 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
           _guideModel.update(newGuide);
           _selectedGuide = null;
         });
-        _showCustomSnackBar("Guide has been edited.");
+        _showCustomSnackBar(FlutterI18n.translate(
+            context, "guidesList.snackBarLabels.guideEdited"));
       }
     }
   }
@@ -267,16 +275,18 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
                   // Guide name form field
                   TextFormField(
                     enabled: false,
-                    decoration: const InputDecoration(
-                      labelText: 'Guide Name',
+                    decoration: InputDecoration(
+                      labelText: FlutterI18n.translate(
+                          context, "guidesList.formLabels.name"),
                     ),
                     initialValue: guide.name,
                   ),
                   // Guide description form field
                   TextFormField(
                     enabled: false,
-                    decoration: const InputDecoration(
-                      labelText: 'By',
+                    decoration: InputDecoration(
+                      labelText: FlutterI18n.translate(
+                          context, "guidesList.formLabels.by"),
                     ),
                     initialValue: guide.username,
                   ),
@@ -284,8 +294,9 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
                   TextFormField(
                     enabled: false,
                     maxLines: 20,
-                    decoration: const InputDecoration(
-                      labelText: 'Guide Description',
+                    decoration: InputDecoration(
+                      labelText: FlutterI18n.translate(
+                          context, "guidesList.formLabels.description"),
                     ),
                     initialValue: guide.description,
                   ),
@@ -298,7 +309,8 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
               alignment: MainAxisAlignment.spaceBetween,
               children: [
                 FlatButton(
-                  child: Text('Dismiss'),
+                  child: Text(FlutterI18n.translate(
+                      context, "guidesList.formLabels.dismissButton")),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -319,7 +331,8 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
     var snackbar = SnackBar(
         content: Text(content),
         action: SnackBarAction(
-            label: "Dismiss",
+            label: FlutterI18n.translate(
+                context, "guidesList.snackBarLabels.dismissButton"),
             onPressed: () {
               Scaffold.of(context).hideCurrentSnackBar();
             }));
