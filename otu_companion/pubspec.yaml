@@ -72,10 +72,7 @@ flutter:
     - lib/res/images/icons/
     - lib/res/images/
     - lib/res/flutter_i18n/
-
-  # To add assets to your application, add an assets section, like this:
-  assets:
-      - lib/res/database/room_manager.db
+    - lib/res/database/room_manager.db
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
