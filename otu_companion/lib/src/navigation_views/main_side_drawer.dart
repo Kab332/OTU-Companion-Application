@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:otu_companion/res/routes/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:otu_companion/src/services/authentication/model/authentication_service.dart';
@@ -139,7 +140,8 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
 
   Widget _buildHomeTile(BuildContext context) {
     return ListTile(
-      title: Text('Home'),
+      title: Text(FlutterI18n.translate(
+            context, "mainSideDrawer.navigationButtons.home")),
       leading: Icon(Icons.home),
       onTap: () {
         // Pop Side Menu
@@ -152,7 +154,8 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
 
   Widget _buildProfileTile(BuildContext context) {
     return ListTile(
-      title: Text('Profile'),
+      title: Text(FlutterI18n.translate(
+            context, "mainSideDrawer.navigationButtons.profile")),
       leading: Icon(Icons.account_box),
       onTap: () {
         // Pop Side Menu
@@ -165,7 +168,8 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
 
   Widget _buildLogOutTile(BuildContext context) {
     return ListTile(
-      title: Text('Log Out'),
+      title: Text(FlutterI18n.translate(
+            context, "mainSideDrawer.navigationButtons.logout")),
       leading: Icon(Icons.exit_to_app),
       onTap: () {
         // Pop everything to login page
@@ -177,7 +181,8 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
 
   Widget _buildEventTile(BuildContext context) {
     return ListTile(
-      title: Text('Event Finder'),
+      title: Text(FlutterI18n.translate(
+            context, "mainSideDrawer.navigationButtons.eventFinder")),
       leading: Icon(Icons.event),
       onTap: () {
         // Pop Side Menu
@@ -190,7 +195,8 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
 
   Widget _buildRoomTile(BuildContext context) {
     return ListTile(
-      title: Text('Classroom Finder'),
+      title: Text(FlutterI18n.translate(
+            context, "mainSideDrawer.navigationButtons.classroomFinder")),
       leading: Icon(Icons.room),
       onTap: () {
         // Pop Side Menu
@@ -203,7 +209,8 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
 
   Widget _buildGuideTile(BuildContext context) {
     return ListTile(
-      title: Text('Guides'),
+      title: Text(FlutterI18n.translate(
+            context, "mainSideDrawer.navigationButtons.guides")),
       leading: Icon(Icons.menu_book),
       onTap: () {
         Navigator.pop(context);
@@ -214,7 +221,8 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
 
   Widget _buildChatTile(BuildContext context) {
     return ListTile(
-      title: Text('Chat'),
+      title: Text(FlutterI18n.translate(
+            context, "mainSideDrawer.navigationButtons.chat")),
       leading: Icon(Icons.chat),
       onTap: () {
         // Pop Side Menu
@@ -227,7 +235,8 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
 
   Widget _buildSettingsTile(BuildContext context) {
     return ListTile(
-      title: Text('Settings'),
+      title: Text(FlutterI18n.translate(
+            context, "mainSideDrawer.navigationButtons.settings")),
       leading: Icon(Icons.settings),
       trailing: Icon(Icons.nights_stay),
       onTap: () {
@@ -238,8 +247,10 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
 
   Widget _buildGroupTile(BuildContext context) {
     return ListTile(
-      title: Text('Groups and Events'),
-      trailing: Text('Edit'),
+      title: Text(FlutterI18n.translate(
+            context, "mainSideDrawer.navigationButtons.groupsAndEvents")),
+      trailing: Text(FlutterI18n.translate(
+            context, "mainSideDrawer.navigationButtons.edit")),
       onTap: () {
         Navigator.pop(context);
       },

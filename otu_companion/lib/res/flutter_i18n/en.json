@@ -70,5 +70,19 @@
             "domainLabel": "Event Names",
             "measureLabel": "Number of participants"
         }
+    },
+    "mainSideDrawer": { 
+        "navigationButtons": {
+            "home": "Home",
+            "profile": "Profile",
+            "logout": "Logout",
+            "eventFinder": "Event Finder",
+            "classroomFinder": "Classroom Finder",
+            "guides": "Guides",
+            "chat": "Chat",
+            "settings": "Settings",
+            "groupsAndEvents": "Groups and Events",
+            "edit": "Edit"
+        }
     }
 }
