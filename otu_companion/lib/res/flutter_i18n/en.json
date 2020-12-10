@@ -191,5 +191,33 @@
             "email": "Email is required",
             "password": "Password is required"
         }
+    },
+    "signUpPage": {
+        "buttonLabels": {
+            "signUp": "Sign Up With Email"
+        },
+        "labelText": {
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "email": "Email",
+            "password": "Password",
+            "rePassword": "Re-enter Your Password"
+        },
+        "hintText": {
+            "firstName": "Enter First Name",
+            "lastName": "Enter Last Name",
+            "email": "Enter Email Address",
+            "password": "Enter Password",
+            "rePassword": "Re-enter Your Password"
+        },
+        "isEmptyText": {
+            "firstName": "First name is required",
+            "lastName": "Last name is required",
+            "email": "Email is required",
+            "password": "Password is required"
+        },
+        "doesNotMatch": {
+            "password": "Password does not match"
+        }
     }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:otu_companion/src/services/authentication/model/authentication_service.dart';
 import 'package:otu_companion/res/routes/routes.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 
 class SignUpPage extends StatefulWidget
 {
@@ -104,16 +105,19 @@ class _SignUpPageState extends State<SignUpPage>
   Widget _buildFirstNameField()
   {
     return TextFormField(
-      decoration: const InputDecoration(
-        labelText: "First Name",
+      decoration: InputDecoration(
+        labelText: FlutterI18n.translate(
+          context, "signUpPage.labelText.firstName"),
         icon: Icon(Icons.person),
-        hintText:"Enter First Name",
+        hintText: FlutterI18n.translate(
+          context, "signUpPage.hintText.firstName"),
         border: const OutlineInputBorder(),
       ),
       controller: _firstName,
       validator: (String value) {
         if (value.isEmpty) {
-          return "Name is required";
+          return FlutterI18n.translate(
+          context, "signUpPage.isEmptyText.firstName");
         }
         return null;
       },
@@ -123,16 +127,19 @@ class _SignUpPageState extends State<SignUpPage>
   Widget _buildLastNameField()
   {
     return TextFormField(
-      decoration: const InputDecoration(
-        labelText: "Last Name",
+      decoration: InputDecoration(
+        labelText: FlutterI18n.translate(
+          context, "signUpPage.labelText.lastName"),
         icon: Icon(Icons.person),
-        hintText:"Enter Last Name",
+        hintText: FlutterI18n.translate(
+          context, "signUpPage.hintText.lastName"),
         border: const OutlineInputBorder(),
       ),
       controller: _lastName,
       validator: (String value) {
         if (value.isEmpty) {
-          return "Name is required";
+          return FlutterI18n.translate(
+          context, "signUpPage.isEmptyText.lastName");
         }
         return null;
       },
@@ -142,16 +149,19 @@ class _SignUpPageState extends State<SignUpPage>
   Widget _buildEmailField()
   {
     return TextFormField(
-      decoration: const InputDecoration(
-        labelText: "Email",
+      decoration: InputDecoration(
+        labelText: FlutterI18n.translate(
+          context, "signUpPage.labelText.email"),
         icon: Icon(Icons.email),
-        hintText:"Enter Email Address",
+        hintText: FlutterI18n.translate(
+          context, "signUpPage.hintText.email"),
         border: const OutlineInputBorder(),
       ),
       controller: _email,
       validator: (String value) {
         if (value.isEmpty) {
-          return "Email is required";
+          return FlutterI18n.translate(
+          context, "signUpPage.isEmptyText.email");
         }
         return null;
       },
@@ -163,16 +173,19 @@ class _SignUpPageState extends State<SignUpPage>
     return TextFormField(
       obscureText: true,
       obscuringCharacter: "*",
-      decoration: const InputDecoration(
-        labelText: "Password",
+      decoration: InputDecoration(
+        labelText: FlutterI18n.translate(
+          context, "signUpPage.labelText.password"),
         icon: Icon(Icons.lock),
-        hintText:"Enter Password",
+        hintText: FlutterI18n.translate(
+          context, "signUpPage.hintText.password"),
         border: const OutlineInputBorder(),
       ),
       controller: _password,
       validator: (String value) {
         if (value.isEmpty) {
-          return "Password is required";
+          return FlutterI18n.translate(
+          context, "signUpPage.isEmptyText.password");
         }
         return null;
       },
@@ -184,19 +197,24 @@ class _SignUpPageState extends State<SignUpPage>
     return TextFormField(
       obscureText: true,
       obscuringCharacter: "*",
-      decoration: const InputDecoration(
-        labelText: "Re-Enter Your Password",
+      decoration: InputDecoration(
+        labelText: FlutterI18n.translate(
+          context, "signUpPage.labelText.rePassword"),
         icon: Icon(Icons.lock),
-        hintText:"Re-Enter Your Password",
+        hintText: FlutterI18n.translate(
+          context, "signUpPage.hintText.rePassword"),
         border: const OutlineInputBorder(),
       ),
       controller: _passwordRe,
       validator: (String value) {
         if (value.isEmpty) {
-          return "Password is required";
-        }else if (_password.text != value)
-        {
-          return "Password does not match";
+          return FlutterI18n.translate(
+          context, "signUpPage.isEmptyText.rePassword"
+          );
+        } else if (_password.text != value) {
+          return FlutterI18n.translate(
+            context, "signUpPage.doesNotMatch.rePassword"
+          );
         }
         return null;
       },
@@ -245,7 +263,9 @@ class _SignUpPageState extends State<SignUpPage>
                 ),
                 child: Center(
                   child: Text(
-                    "Sign Up With Email",
+                    FlutterI18n.translate(
+                      context, "signUpPage.buttonLabels.signUp"
+                    ),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
