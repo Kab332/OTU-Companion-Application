@@ -57,6 +57,7 @@ class _HomePageMainState extends State<HomePageMain> {
                     .toList(),
               );
             } else {
+              // empty container if user has no events joined
               return Container(
                 padding: const EdgeInsets.all(16.0),
                 child: Center(

@@ -302,6 +302,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                     .toList(),
               );
             } else {
+              // empty container if user has no events joined
               return Container(
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
@@ -520,6 +521,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                 ),
               );
             } else {
+              // empty container if user has no events joined
               return Container(
                 padding: const EdgeInsets.all(16.0),
                 child: Center(

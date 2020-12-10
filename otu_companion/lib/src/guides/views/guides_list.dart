@@ -101,6 +101,7 @@ class GuidesListWidgetState extends State<GuidesListWidget> {
                     .toList(),
               );
             } else {
+              // empty container if no guides in the database
               return Container(
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
