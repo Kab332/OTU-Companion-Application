@@ -73,6 +73,10 @@ Users are able to write and send feedback for the app.
 
 # Event Finder
 
+![](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/blob/master/sample_images/event_finder_calendar_view_sample.png)
+![](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/blob/master/sample_images/event_form_sample.png)
+![](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/blob/master/sample_images/event_stats_sample.png)
+
 ## Description
 The purpose of the Event Finder is to help users find club events happening around the university. Users can add, edit, delete, and find events created by other users. These events will be presented to the user, and they will be able to manage and view events at their leisure. These events also have push notifications to let the user know when the event is approaching. 
 
@@ -152,6 +156,11 @@ In form end DateTime can be lower than start DateTime even if the form shows tha
 # Empty Room Finder
 A campus empty classroom finder 
 
+![](https://i.imgur.com/LLBDuBP.png)
+![](https://i.imgur.com/IvH9oGM.png)
+![](https://i.imgur.com/AwuAchB.png)
+![](https://i.imgur.com/AAyiWVG.png)
+
 ## Purpose:
 To help students find empty classrooms for studying, club events, etc.
 
@@ -167,6 +176,11 @@ Simply just select a room from the rooms dropdown list
 A python webscraper was made to crawl through the Available Courses preview collecting the occupied class time schedules and then the data was parsed to find the empty class time schedules. That db is then saved locally as a pre-made asset for the app so the user can use the room finder tool offline. After that, its simply a matter of getting the users input to query through the db and return the right query. For the list of free times, the return is every 10 minute interval from 8am to 9:30pm, times between 9:30pm to 8am are not included as those time slots are inherently free as classes are not allowed to scheduled at those times.
 
 # Guides
+
+![](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/blob/master/sample_images/guides_view_sample.png)
+![](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/blob/master/sample_images/guides_form_sample.png)
+![](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/blob/master/sample_images/guides_chart_sample.png)
+
 
 ## Description
 The purpose of Guides is to allow users to post useful guides and tips about things happening around the university. Users can add, edit and delete guides and vote on guides created by other users. These guides will be presented to the user, and they will be able to manage and view guides at their leisure. Guides is mostly a lesser version of the event finder, with the only new functionality being votes, but we included it because it was in our original design. 

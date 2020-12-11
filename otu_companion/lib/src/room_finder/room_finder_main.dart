@@ -231,7 +231,7 @@ class _RoomFinderMainState extends State<RoomFinderMain> {
                   }
                   else if (type == 'room' && snapshot.data[index].time != null){
                     return ListTile(
-                      title: Text(DateFormat("h:mm a").format(DateFormat('HH:mm').parse(snapshot.data[index].time))),
+                      title: Text(DateFormat("h:mm a").format(DateFormat('HH:mm').parse(snapshot.data[index].time)) + " on " + snapshot.data[index].day),
                     );
                   }
                   else{
