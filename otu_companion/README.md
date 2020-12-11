@@ -8,6 +8,7 @@ This app uses [Firebase](https://firebase.google.com/) for user authentication,
 
 > * [Event Finder](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#event-finder)
 > * [Empty Room Finder](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#empty-room-finder)
+> * [Guides](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#guides)
 
 For the Room Finder, Minh Huynh did a lot of pair programming with Aron-Seth Cohen.
 
@@ -81,17 +82,17 @@ The purpose of the Event Finder is to help users find club events happening arou
 
 ## How to interact with the Event Finder
 Upon navigating to the event finder, a list of events will be displayed from the Firestore in the event box. If there are no events, then the database is empty, and it is up to the user to populate it with events. Our event finder supports the following main functions
-  1. Add an event
-  2. Join an event
-  3. Leave an event
-  4. View event details
-  5. Select an event
-  6. Edit an event
-  7. Delete an event
-  8. Switch views
-  9. Form buttons
-  10. View chart for joined events
-  11. View chart for all events
+  1. [Add an event](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#add-an-event)
+  2. [Join an event](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#join-an-event)
+  3. [Leave an event](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#leave-an-event)
+  4. [View event details](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#view-event-details)
+  5. [Select an event](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#select-an-event)
+  6. [Edit an event](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#edit-an-event)
+  7. [Delete an event](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#delete-an-event)
+  8. [Switch views](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#switch-views)
+  9. [Form buttons](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#form-buttons)
+  10. [View chart for joined events](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#view-chart-for-joined-events)
+  11. [View chart for all events](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#view-chart-for-all-events)
 
 ## Features
 
@@ -177,13 +178,13 @@ The purpose of Guides is to allow users to post useful guides and tips about thi
 ## How to interact with Guides
 Upon navigating to the guides, a list of guides will be displayed from the Firestore in the guide box. If there are no guides, then the database is empty, and it is up to the user to populate it with guides. Our guides supports the following main functions
 
-  1. Submit a guide
-  2. Select a guide
-  3. Edit a guide
-  4. Delete a guide
-  5. Vote on a guide
-  6. View guide details
-  7. View chart for all guides 
+  1. [Submit a guide](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#submit-a-guide)
+  2. [Select a guide](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#select-a-guide)
+  3. [Edit a guide](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#edit-a-guide)
+  4. [Delete a guide](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#delete-a-guide)
+  5. [Vote on a guide](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#vote-on-a-guide)
+  6. [View guide details](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#view-guide-details)
+  7. [View chart for all guides](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#view-chart-for-all-guides) 
 
 ## Submit a guide
 To add a guide click on the “+” icon on the app bar in the top right corner. You will be taken to the “Guides Form” page and will need to fill in the required information, then press the save icon in the bottom right. Tapping the save icon should bring the user back to the main list view, with the added guide. 
