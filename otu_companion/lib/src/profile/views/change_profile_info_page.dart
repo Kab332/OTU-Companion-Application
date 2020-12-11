@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter/services.dart';
 
 class ChangeProfileInfoPage extends StatefulWidget
 {
@@ -46,6 +47,7 @@ class _ChangeProfileInfoPageState extends State<ChangeProfileInfoPage>
     }
     else {
       _urlString = "";
+      _pictureURL.text = "";
     }
 
     super.initState();
@@ -208,6 +210,7 @@ class _ChangeProfileInfoPageState extends State<ChangeProfileInfoPage>
     return RaisedButton(
       onPressed: (){
         setState(() {
+          imageCache.clear();
           _urlString = _pictureURL.text;
         });
       },
@@ -224,28 +227,9 @@ class _ChangeProfileInfoPageState extends State<ChangeProfileInfoPage>
 
   Widget _buildAvatarImage()
   {
-    return CachedNetworkImage(
-      imageUrl: _urlString,
-      progressIndicatorBuilder:(context, url, downloadProgress)
-      {
-        return CircularProgressIndicator(
-            value: downloadProgress.progress
-        );
-      },
-      errorWidget: (context, url, error)
-      {
-        return CircleAvatar(
-          backgroundColor: Colors.black,
-          radius: 50,
-        );
-      },
-      imageBuilder: (context, imageProvider)
-      {
-        return CircleAvatar(
-          backgroundImage: imageProvider,
-          radius: 50,
-        );
-      },
+    return CircleAvatar(
+      backgroundImage: NetworkImage(_urlString),
+      radius: 50,
     );
   }
 }
