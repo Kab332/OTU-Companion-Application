@@ -73,7 +73,7 @@ class RoomModel {
   // Returns a list of free times at specified query
   Future<List<Room>> getTimesAtRoom(String room) async {
     final db = await DBUtils.init();
-    final List<Map<String, dynamic>> maps = await db.rawQuery("SELECT DISTINCT time FROM room_items WHERE room LIKE '$room'");
+    final List<Map<String, dynamic>> maps = await db.rawQuery("SELECT DISTINCT time, day FROM room_items WHERE room LIKE '$room' ORDER BY day ASC");
 
     List<Room> result = [];
 
