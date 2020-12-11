@@ -397,6 +397,7 @@ class _EventFormPageState extends State<EventFormPage> {
       },
       onChanged: (String newValue) {
         _location = newValue;
+        locationException = true;
       },
       controller: _locationController,
     );
