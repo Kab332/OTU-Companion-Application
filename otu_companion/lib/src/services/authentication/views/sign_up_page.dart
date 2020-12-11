@@ -260,14 +260,17 @@ class _SignUpPageState extends State<SignUpPage>
                   ),
                 ),
                 child: Center(
-                  child: Text(
-                    FlutterI18n.translate(
-                      context, "signUpPage.buttonLabels.signUp"
-                    ),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                  child: FittedBox(
+                    fit: BoxFit.fill,
+                    child: Text(
+                      FlutterI18n.translate(
+                        context, "signUpPage.buttonLabels.signUp"
+                      ),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 )
