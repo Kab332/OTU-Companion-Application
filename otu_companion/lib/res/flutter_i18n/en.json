@@ -15,7 +15,7 @@
             "location": "Location"
         },
         "tableLabels": {
-            "joinEvent": "Join Event?",
+            "joinEvent": "Join/Leave",
             "leaveEvent": "Leave Event?",
             "viewDetails": "View Details",
             "name": "Event Name",
