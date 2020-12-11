@@ -28,7 +28,7 @@ For the Room Finder, Minh Huynh did a lot of pair programming with Aron-Seth Coh
 4. Run the build in __non-debug mode__.
 
 # Features
-![](https://gfycat.com/TerrificThisBovine)
+![](https://i.imgur.com/9KtHHiR.mp4)
 
 ## Login Feature 
 
