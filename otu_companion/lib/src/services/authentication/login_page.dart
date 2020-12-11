@@ -19,7 +19,6 @@ class _LoginPageState extends State<LoginPage>
 
   final _email = TextEditingController();
   final _password = TextEditingController();
-  String _errorMessage;
   bool _disableButton;
 
   @override
@@ -180,17 +179,17 @@ class _LoginPageState extends State<LoginPage>
             email: _email.text,
             password: _password.text,
           ).then((verifying){
-            _errorMessage = verifying;
-          }
-          ).whenComplete((){
-            if (_errorMessage == null) {
+            if (verifying == null) {
               Navigator.pushReplacementNamed(context, Routes.homeMain);
             }
             else {
-              var snackbar = SnackBar(content: Text(_errorMessage));
+              var snackbar = SnackBar(content: Text(verifying));
               _scaffoldKey.currentState.showSnackBar(snackbar);
             }
             _disableButton = false;
+          }
+          ).whenComplete((){
+
           });
         }
       },

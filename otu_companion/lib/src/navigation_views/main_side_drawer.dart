@@ -147,7 +147,7 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
         // Pop Side Menu
         Navigator.pop(context);
         // Pop Current Scaffold and Push Home Scaffold
-        Navigator.popAndPushNamed(context, Routes.homeMain);
+        Navigator.pushReplacementNamed(context, Routes.homeMain);
       },
     );
   }
@@ -161,7 +161,7 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
         // Pop Side Menu
         Navigator.pop(context);
         // Pop Current Scaffold and Push Home Scaffold
-        Navigator.popAndPushNamed(context, Routes.profileMain);
+        Navigator.pushReplacementNamed(context, Routes.profileMain);
       },
     );
   }
@@ -188,7 +188,7 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
         // Pop Side Menu
         Navigator.pop(context);
         // Pop Current Scaffold and Push Event Finder Scaffold
-        Navigator.popAndPushNamed(context, Routes.eventFinderMain);
+        Navigator.pushReplacementNamed(context, Routes.eventFinderMain);
       },
     );
   }
@@ -202,7 +202,7 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
         // Pop Side Menu
         Navigator.pop(context);
         // Pop Current Scaffold and Push Room Finder Scaffold
-        Navigator.popAndPushNamed(context, Routes.roomFinderMain);
+        Navigator.pushReplacementNamed(context, Routes.roomFinderMain);
       },
     );
   }
@@ -214,7 +214,7 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
       leading: Icon(Icons.menu_book),
       onTap: () {
         Navigator.pop(context);
-        Navigator.popAndPushNamed(context, Routes.guidesMain);
+        Navigator.pushReplacementNamed(context, Routes.guidesMain);
       },
     );
   }
@@ -228,7 +228,7 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
         // Pop Side Menu
         Navigator.pop(context);
         // Pop Current Scaffold and Push Chat Scaffold
-        Navigator.popAndPushNamed(context, Routes.chatMain);
+        Navigator.pushReplacementNamed(context, Routes.chatMain);
       },
     );
   }

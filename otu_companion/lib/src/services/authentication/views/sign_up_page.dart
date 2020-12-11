@@ -24,7 +24,6 @@ class _SignUpPageState extends State<SignUpPage>
   final _email = TextEditingController();
   final _password = TextEditingController();
   final _passwordRe = TextEditingController();
-  String _errorMessage;
   bool _disableButton = false;
 
   @override
@@ -233,14 +232,13 @@ class _SignUpPageState extends State<SignUpPage>
             firstName: _firstName.text,
             lastName: _lastName.text
           ).then((errorMessage){
-            _errorMessage = errorMessage;
-          }).whenComplete((){
-            if (_errorMessage == null) {
+            if (errorMessage == null) {
+              Navigator.pop(context);
               Navigator.pushReplacementNamed(context, Routes.homeMain);
             }
             else
             {
-              var snackbar = SnackBar(content: Text(_errorMessage));
+              var snackbar = SnackBar(content: Text(errorMessage));
               _scaffoldKey.currentState.showSnackBar(snackbar);
             }
             _disableButton = false;
