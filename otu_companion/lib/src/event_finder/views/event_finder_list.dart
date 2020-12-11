@@ -414,22 +414,17 @@ class _EventListWidgetState extends State<EventListWidget> {
                                                 Icons.person,
                                                 color: Colors.blue,
                                               )
-                                            : userView == true
+                                            : Event.fromMap(document.data(),
+                                                        reference:
+                                                            document.reference)
+                                                    .participants
+                                                    .contains(user.uid)
                                                 ? Icon(
                                                     Icons.cancel,
                                                     color: Colors.red,
                                                   )
-                                                : Event.fromMap(document.data(),
-                                                            reference: document
-                                                                .reference)
-                                                        .participants
-                                                        .contains(user.uid)
-                                                    ? Icon(
-                                                        Icons.people,
-                                                        color: Colors.blue,
-                                                      )
-                                                    : Icon(Icons.add,
-                                                        color: Colors.green),
+                                                : Icon(Icons.add,
+                                                    color: Colors.green),
                                         onPressed: () {
                                           _manageEvent(Event.fromMap(
                                               document.data(),
@@ -1027,7 +1022,9 @@ class _EventListWidgetState extends State<EventListWidget> {
       print("Remove from list");
       setState(() {
         if (this.views[0].viewType == "Calendar") {
-          _calendarEvents.remove(event);
+          if (userView == true) {
+            _calendarEvents.remove(event);
+          }
         }
 
         event.participants.remove(user.uid);
