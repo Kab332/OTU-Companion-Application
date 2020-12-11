@@ -28,7 +28,7 @@ For the Room Finder, Minh Huynh did a lot of pair programming with Aron-Seth Coh
 4. Run the build in __non-debug mode__.
 
 # Features
-![](https://i.imgur.com/9KtHHiR.mp4)
+![](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/blob/master/sample_images/demo.gif)
 
 ## Login Feature 
 
