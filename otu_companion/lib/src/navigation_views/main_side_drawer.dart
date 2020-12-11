@@ -238,7 +238,7 @@ class _MainSideDrawerState extends State<MainSideDrawer> {
       title: Text(FlutterI18n.translate(
             context, "mainSideDrawer.navigationButtons.settings")),
       leading: Icon(Icons.settings),
-      trailing: Icon(Icons.nights_stay),
+      //trailing: Icon(Icons.nights_stay),
       onTap: () {
         Navigator.popAndPushNamed(context, Routes.settingMain);
       },
