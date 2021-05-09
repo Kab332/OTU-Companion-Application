@@ -1,132 +1,223 @@
-# Major Group Project
-The starter code for the major group project.
+# OTU Companion App
 
-Group members (3-5) (no Student IDs, only names):
-1. Aron-Seth Cohen (SethCohen)
-2. Kabilan Manogaran (Kab332)
-3. Anthony Huang (Nycarus)
-4. Minh Huynh (QuangMinhHuynh)
-5. Leon Chow (leon-chow)
-## Overview
-This group project is designed for you to demonstrate the skills that you have learned in this course.  The final project that you submit in the last week of classes will be a completed mobile application.  Non-functional requirements, especially those associated with production-readiness, will be considered extremely important when marking this project.  You are expected to work in a group of three to five students when completing this project.  Students are not permitted to work alone on the project, as this eliminates one of the learning objectives of this assessment.  
+A companion app for OTU students.
 
-_**Note:**  Any projects from individual students will not be accepted, except if special permission has been given by the instructor in advance._
+### Notes:
 
-## Detailed Instructions
+This app uses [Firebase](https://firebase.google.com/) for user authentication,
 
-### Choosing a Topic
+> * [Event Finder](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#event-finder)
+> * [Empty Room Finder](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#empty-room-finder)
+> * [Guides](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#guides)
 
-The project topic is, for the most part, up to you.  Therefore, ensure that you choose a project topic that lets you demonstrate the skills learned in this course.  Consideration will be given to projects whose functionality is rather different from sample applications and those developed in assignments in this course.  When evaluating your project, I will consider this as requiring extra work.  More work done often equates to a higher grade.
+For the Room Finder, Minh Huynh did a lot of pair programming with Aron-Seth Cohen.
 
-It is acceptable if you want to do a project related to industry.  If someone you know wants a web application developed, and it lets you demonstrate the skills you’ve learned in this course, then you can use it for your project (even if you plan to sell that web application when you are finished).  Please keep in mind that nothing your prospective buyer says or does will affect the due date or expectations that I have for this project.  No matter what happens, this project is due when it is due, my expectations will be based on the content of this course, and I will expect a certain degree of professionalism and production-readiness.  Anything outside of the scope of this course will likely not earn you much, in terms of marks.  Proceed with caution.
+# How to setup the project
 
-### Basic Requirements
+### Requirements:
 
-It is your job to incorporate as many course concepts into your project as possible.  At a minimum, your project must include the following:
-- Dialogs and pickers
-- Multiple screens and navigation
-- Snack bars
-- Notifications
-- Local storage (SQLite)
-- Cloud storage (Firestore or other)
-- HTTP requests
-- Data tables
-- Charts
-- Maps
-- Geolocation
-- Geocoding
-- Internationalization
+- Android SDK 29 or higher
+- Use Android 10 (Q), Pixel 3a XL (Recommended)
 
-The actual size of the project (in terms of the number of screens, number of use cases, or amount of code) will differ from group to group.  Ultimately, the factor being considered is how much work appears to have gone into the project.  Larger groups will be expected to do proportionally more work.
-If you incorporate concepts outside of this course (e.g. game engines, 3D graphics, sound) you will get credit, but in the subjective part of the evaluation only.  Thus, ensure that you meet the minimum requirements, outlined above, first.
+### Steps:
 
-### Game Development Alternative
+1. Clone this repository to a location on your desktop.
+2. Setup Flutter SDK.
+3. Build the project using either Android Studios or VSCode.
+    - Dependency Error: Go to `*/otu_companion/pubspec.yaml` and run the Pub get command.
+4. Run the build in __non-debug mode__.
 
-Students who want to create a mobile game have the option to do so, but this topic won’t be covered until week 10 of the course.  Therefore, it is expected that this option will require significant self-learning to get a head start before the main lectures/examples covering game development.  The objective requirements, listed above, will be relaxed quite a bit for groups developing a game, but the expectations are just as high.  If you wish to pursue this option, please contact the instructor so that we can work out a set of expectations for the major project.
+# Features
+![](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/blob/master/sample_images/demo.gif)
 
-### Evaluation
-When evaluating this project, the instructor and the TAs will attempt to give a metric to the amount of work involved, considering several important factors (design, cleanliness of code, code comments, variable/function naming, security checks, error checking, usability/user-friendliness/aesthetic, accessibility, and performance).  This metric will be affected by the size of your group (i.e. what will be evaluated is the average work done per group member).
+## Login Feature 
 
-The marking will occur in two phases.  The idea behind these phases is that your project should improve over time, so that the final product is comprehensive, professional, and production-ready.  It is hoped that your project will make a great portfolio item for when you apply for jobs.  The phased marking should also prevent groups from waiting until just a few days before the due date before starting their project.
+The __Login__ page will be the first page that greets the user who is new or have signed out. Its purpose is to help the system identify the different users and store their data. After registering or signing in, the user will move into the __Dash Board__. 
 
-### Formative Assessment
-The first phase of marking, performed by a TA(s) in week 10.  This will evaluate whether or not you have included the topics from the first 9 weeks of the course, which will be mostly objective, but will also include a small subjective mark describing the work done, the user interface design, and the code/design quality.  A rubric will be included on Canvas, so you can verify in advance which topics will be included.  The purpose of the pre-evaluation is to give you an idea of the quality of your project before the end of the term, so that you can make any adjustments necessary to get the grade you want.  This evaluation will be worth 10% of your final grade.
+__Notes:__ Any invalid inputs will return an error message back to the user in the form of a snackbar.
 
-#### Functional requirements (7 marks total)
+### Login:
 
-Max Score | Requirement
---------- | ----------- 
-1.50 | Multiple screens/navigation
-1.00 | Dialogs and pickers
-1.00 | Notifications
-0.50 | Snackbars
-1.50 | Local storage
-1.50 | Cloud storage
+The login page allows pre-existing users to sign into their accounts, by inputting their email and password.
 
-#### Non-functional requirements (3 marks total)
+### Sign Up:
 
-Max Score | Requirement
---------- | ----------- 
-1.00 | Amount of work done
-1.00 | User interface design/usability
-1.00 | Code and design quality
+The sign up page allows the user to register a new account into the system. The user may access this page by clicking the __Create Account__ button in the __Login__ page.
 
-### Summative Assessment
+## Navigation Drawer:
 
-The final phase of marking will be carried out exclusively by the instructor.  For students who have met all of the objective requirements, as evaluated in the first two marking phases, will be evaluated on a strictly subjective evaluation, similar to that done in the second phase.  This evaluation will be carried out more strictly, with higher expectations.  This evaluation will be worth 30% of your final grade.
+This drawer may be accessed in the majority of the feature’s AppBar as well as signing out of their accounts. It grants the user access to their __Profile__, __Event Finder__, __Classroom Finder__, and  __Guides__ features. The user will also be able to access the __Settings__ menu.
 
-#### Functional requirements (5 marks total)
+## Dashboard
 
-Max Score | Requirement
---------- | ----------- 
-0.50 | multiple screens and navigation
-0.25 | dialogs and pickers
-0.50 | snackbars and notifications
-0.75 | local storage
-0.75 | cloud storage
-0.50 | data tables and charts
-0.50 | maps
-0.50 | geolocation
-0.25 | geocoding
-0.50 | internationalization
+The __Dash Board__ acts as the central hub. Here the user will be able to access the many features the app will offer. Users will be shown recent news of registered events.
 
-#### Non-functional requirements (25 marks total)
+## Profile
 
-Max Score | Requirement
---------- | ----------- 
-5.00 | code and design quality
-5.00 | user interface design and usability
-15.00 | amount of work done
+The profile page will allow the user to view different actions to change their account information.
 
-## How to Submit
-The project starter is available on GitHub Classroom, which really just has a `.gitignore`, since I want you to have freedom over this project.  There won’t be any starter code, you will start from scratch.  Accept the invite link for this project on GitHub Classroom (shared in Canvas), and use the new repository generated to store your project files.  This is setup as a group project, so one person can sign up, and others group members can also contribute to the project in that new repository.  
+### Change Profile Info:
 
-The instructor and the TA(s) will use this repository to download the latest version of your project, along with other information (e.g. commit logs) available through Git, when they want to mark the project.
+This page allows users to change and update their name and profile picture.
 
-_**Note:**  Only one of the group members will accept the GitHub Classroom invitation.  It is recommended that every member of the team verify the final repository on GitHub on submission day, so that everybody can be sure that the correct files were submitted and on time.  You should also clone the latest version into a fresh directory, and run it locally on your machine to ensure that it works without any unusual configuration._
+### Change Password:
 
-_**Note:**  Work equity will be evaluated using the Git commit logs for your project.  If you decide to work together which results in a misrepresentation of work equity in the commit logs, be sure to mention this in your `README.md`._
+This button will inform the user that the system will send an email to confirm a password reset, before sending an email.
 
-To submit this project, please push all your work to your repository, and add the names of all group members names (but not their SIDs) and their corresponding GitHub usernames (so we can tell who made which commits) to the `README.md` file (at the top).
+## Settings
 
-_**Note:**  Any instances of plagiarism will result in the student(s) receiving a mark of zero for the project, and further disciplinary action will be taken.  Plagiarism includes, but is not limited to:_
-- Copying of (any amount of) work from the Internet, without proper citation
-- Submitting a body of work, cited or not, that is primarily not your own work
-- Copying of (any amount of) work from another student, past or present, without proper citation
-- Allowing your own work to be copied by a fellow student
+The settings page allows the user to access the feedback option.
 
-## Getting Help
-If you run into difficulty, you may wish to check out some of the following resources:
+### Feedback
 
-- https://api.flutter.dev/  - The standard documentation for Flutter, all classes and methods.
-- https://dart.dev/tutorials - A series of tutorials for the Dart programming language, focusing entirely on the features of Dart.
-- https://flutter.dev/docs/reference/tutorials - A series of tutorials for the Flutter platform, focusing mainly on the widgets and API.
-- https://flutter.dev/docs/codelabs - A series of deep-dive, more comprehensive, tutorials to learn more about the Flutter platform.
-- https://flutter.dev/docs/cookbook - A set of recipes for commonly used features of Flutter.
-- https://github.com/flutter/samples/blob/master/INDEX.md - A repository containing some completed Flutter applications.
-- http://stackoverflow.com/ - A forum for asking questions about programming.  I bet you know this one already!
+Users are able to write and send feedback for the app.
 
-Of course, you can always ask the TA for help!  However, learning how to find the answers out for yourself is not only more satisfying, but results in greater learning as well.
+# Event Finder
 
-## How to Submit
-Create your flutter project, and copy it into this folder, commit, and then push your code to this repository to submit your major group project.
+![](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/blob/master/sample_images/event_finder_calendar_view_sample.png)
+![](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/blob/master/sample_images/event_form_sample.png)
+![](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/blob/master/sample_images/event_stats_sample.png)
+
+## Description
+The purpose of the Event Finder is to help users find club events happening around the university. Users can add, edit, delete, and find events created by other users. These events will be presented to the user, and they will be able to manage and view events at their leisure. These events also have push notifications to let the user know when the event is approaching. 
+
+## How to get to Event Finder
+1. Sign in to your account.
+2. Click the drawers on the top left and select Event Finder.
+
+## How to interact with the Event Finder
+Upon navigating to the event finder, a list of events will be displayed from the Firestore in the event box. If there are no events, then the database is empty, and it is up to the user to populate it with events. Our event finder supports the following main functions
+  1. [Add an event](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#add-an-event)
+  2. [Join an event](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#join-an-event)
+  3. [Leave an event](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#leave-an-event)
+  4. [View event details](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#view-event-details)
+  5. [Select an event](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#select-an-event)
+  6. [Edit an event](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#edit-an-event)
+  7. [Delete an event](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#delete-an-event)
+  8. [Switch views](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#switch-views)
+  9. [Form buttons](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#form-buttons)
+  10. [View chart for joined events](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#view-chart-for-joined-events)
+  11. [View chart for all events](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#view-chart-for-all-events)
+
+## Features
+
+### Add an event
+To add an event, tap on the "All Events" button and click on the “+” icon on the app bar in the top right corner. You will be taken to the “Event Form” page and will need to fill in the required information, then press the save icon in the bottom right. Tapping the save icon should bring the user back to the main list view, with the added event **NOTE: When joining an event, "+" means that you can join the event, one person icon means that you created the event, two person icon means that you are already in that event.**
+
+### Join an event
+To join an event, tap on the "All Events" button and click on the "+" icon next to the event. For the calendar view, you will need to select a day first. Then, you can select the "+" icon for the events you want to join, from the scrollable list of events for that day. **NOTE: You can only join events that you did not create. If you are the creator of the event, you are automatically joined.
+
+### Leave an event
+To leave an event, tap on the "Joined Events" button and click on the red "-" icon next to the event. For calendar view, you will need to select a day first. Then, you can select the "-" icon for the events you want to leave, from the scrollable list of events for that day **NOTE: You can only leave events that you did not create. If you are the creator of the event, you cannot leave the event.
+
+### View event details
+To view event details click on the “eye” icon to quickly have the details pop up in a dialog for the user to see.
+
+### Select an event 
+To select an event, simply click the event in the list, table or calendar. A blue border will appear around the event you have selected.
+
+### Edit an event
+To edit an event, tap on the "All Events" button and then you will need to select the event, otherwise an alert dialog will pop up asking for you to select an event first. Upon selecting an event, the user can tap the “edit” icon on the top right to edit the event. The button will take the user to the event form page, and allow them to edit the fields and save, which will bring them back to the main Event Finder view. If the option is greyed out, it's because only the user who created that event can edit it, every other user can only view or join the event. 
+
+### Delete an event
+To delete an event, tap on the "All Events" button, select the event and then click the trash can icon on the top right. If an event is not selected when the icon is clicked then an alert will pop up warning you of your mistake. If the option is greyed out, it's because only the user who created that event can delete it, every other user can only view or join the event. 
+
+### Switch views
+To switch views, tap the corresponding buttons for the view you would like. Calendar, list or table view to switch to the corresponding view. The current view is stored locally and will be retrieved when the program is reopened. In calendar view, you are able to switch the view to show only one week, two weeks or one month. In table view, the table is draggable so that you can view all the details.
+
+To switch views between joined events and all events, tap the corresponding buttons. 
+
+### Form buttons
+The event form has 4 special buttons that affect the map inside it.
+
+#### Check Location
+This button gets the latitude and longitude for the address in the location field and uses it to display a marker on a map. If a new location is entered then this button must be pressed to check the location. 
+#### Zoom in 
+This button has a magnifying glass with a plus icon. It zooms into the map.
+
+#### Zoom out 
+This button has a magnifying glass with a minus icon. It zooms out of the map.
+
+#### Get my location 
+This is the button with the crosshairs like icon, it is below zoom out. This button gets your current location, automatically enters its postal code into the location form field, and shows the location on the map. This may take a few seconds to load, and it requires the user to have allowed locations on the device to function.
+
+### View chart for joined events 
+To view joined event chart statistics, tap the "Joined Events'' icon, then tap the chart icon in the top right corner. From there, you can analyze the chart based on the number of participants in the event to the corresponding event.
+
+### View chart for all events
+To view chart statistics for all events, tap the "All Events'' icon, then tap the chart icon in the top right corner. From there, you can analyze the chart based on the number of participants in the event to the corresponding event.
+
+## Note: 
+Notifications will show up based on the start date of the event. If the start date is within 24 hours then the notification will be sent instantly. If it is greater than 24 hours then the notification will be sent later on when there is 24 hours left until the start date. 
+
+In calendar view, when you click on a specific date, you can click on the buttons created from selecting that day.
+
+In form end DateTime can be lower than start DateTime even if the form shows that they have the same values. This is because DateTime’s compareTo function considers milliseconds (and micro) and when we initialize with DateTime.now() we have milliseconds but when we select a time it is set to 0. 
+
+# Empty Room Finder
+A campus empty classroom finder 
+
+![](https://i.imgur.com/LLBDuBP.png)
+![](https://i.imgur.com/IvH9oGM.png)
+![](https://i.imgur.com/AwuAchB.png)
+![](https://i.imgur.com/AAyiWVG.png)
+
+## Purpose:
+To help students find empty classrooms for studying, club events, etc.
+
+## How to use:
+To find a list of rooms at a specified time:
+Select a day, the start time, and the end time.
+Optionally select a building to limit the list of rooms to a specific building (To switch, press the x beside the buildings dropdown to clear the previous selection before selecting a new building)
+Click confirm
+To find a list of times at a specified room:
+Simply just select a room from the rooms dropdown list
+
+## How it works:
+A python webscraper was made to crawl through the Available Courses preview collecting the occupied class time schedules and then the data was parsed to find the empty class time schedules. That db is then saved locally as a pre-made asset for the app so the user can use the room finder tool offline. After that, its simply a matter of getting the users input to query through the db and return the right query. For the list of free times, the return is every 10 minute interval from 8am to 9:30pm, times between 9:30pm to 8am are not included as those time slots are inherently free as classes are not allowed to scheduled at those times.
+
+# Guides
+
+![](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/blob/master/sample_images/guides_view_sample.png)
+![](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/blob/master/sample_images/guides_form_sample.png)
+![](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/blob/master/sample_images/guides_chart_sample.png)
+
+
+## Description
+The purpose of Guides is to allow users to post useful guides and tips about things happening around the university. Users can add, edit and delete guides and vote on guides created by other users. These guides will be presented to the user, and they will be able to manage and view guides at their leisure. Guides is mostly a lesser version of the event finder, with the only new functionality being votes, but we included it because it was in our original design. 
+
+## How to get to Guides
+1. Sign in to your account.
+2. Click the drawers on the top left and select Guides.
+
+## How to interact with Guides
+Upon navigating to the guides, a list of guides will be displayed from the Firestore in the guide box. If there are no guides, then the database is empty, and it is up to the user to populate it with guides. Our guides supports the following main functions
+
+  1. [Submit a guide](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#submit-a-guide)
+  2. [Select a guide](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#select-a-guide)
+  3. [Edit a guide](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#edit-a-guide)
+  4. [Delete a guide](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#delete-a-guide)
+  5. [Vote on a guide](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#vote-on-a-guide)
+  6. [View guide details](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#view-guide-details)
+  7. [View chart for all guides](https://github.com/CSCI4100U/major-group-project-studio-wewanttopass/tree/master/otu_companion#view-chart-for-all-guides) 
+
+## Submit a guide
+To add a guide click on the “+” icon on the app bar in the top right corner. You will be taken to the “Guides Form” page and will need to fill in the required information, then press the save icon in the bottom right. Tapping the save icon should bring the user back to the main list view, with the added guide. 
+
+## Select a guide
+To select a guide, simply click the guide in the list. A blue border will appear around the guide you have selected.
+
+## Edit a guide
+To edit a guide, the user needs to select a guide first. Then, the user can tap the “edit” icon on the top app bar to edit the guide. The button will take the user to the guides form page, and allow them to edit the fields and save, which will bring them back to the main Guides view. **NOTE: If the option is greyed out, it's because only the user who created that guide can edit it. **
+
+## Delete a guide
+To delete a guide, select the guide that you created and then click the trash can icon on the top app bar. If a guide is not selected when the icon is clicked then an alert will pop up warning you of your mistake. **NOTE: If the option is greyed out, it's because only the user who created that guide can delete it.**
+
+## Vote on a guide
+To vote on a guide, click on the up arrow to give it an up vote (orange) and on the down arrow to give it a down vote (blue). If you have already given it a vote then clicking it again will undo that vote. If you have given an up vote and click down vote or vice versa, then your vote will switch to the one you last clicked. 
+
+## View guide details
+To view guide details, click on the “book” icon to have the details pop up in a dialog for the user to see.
+
+## View chart for all guides
+To view chart statistics for all guides, tap the chart icon in the top right corner of the app bar. From there, you can analyze the chart based on the number of upvotes and downvotes for each guide.
